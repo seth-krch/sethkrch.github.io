@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>RemitDesk — Provider Remittance Workspace (TEST ONLY)</title>
+<style>
+  :root{
+    --ink:#1f2933; --muted:#5f6b76; --faint:#8b96a0;
+    --bg:#eef1f4; --panel:#ffffff; --line:#cfd6dd; --line-lt:#e4e9ee;
+    --brand:#33526b; --brand-dk:#243d52; --brand-wash:#e8eef3;
+    --red:#b3261e; --red-bg:#fbeae9;
+    --green:#1e7a3c; --green-bg:#e6f4ea;
+    --amber:#8a6100; --amber-bg:#fcf1d4;
+    --violet:#5b4a8a; --violet-bg:#edeaf6;
+    --gray-badge:#e2e6ea; --gray-badge-ink:#414d59;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;}
+  button{font-family:inherit;cursor:pointer;}
+  a{color:var(--brand);}
+  :focus-visible{outline:3px solid #7aa3c4;outline-offset:1px;}
+
+  .eyebrow{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700;}
+
+  /* ===== disclaimer chrome ===== */
+  .test-banner{background:var(--red);color:#fff;text-align:center;font-weight:700;font-size:13px;padding:7px 10px;letter-spacing:.02em;}
+  .mega-disclaimer{background:var(--red-bg);border:3px solid var(--red);color:var(--red);text-align:center;font-weight:800;font-size:15px;line-height:1.45;padding:14px;border-radius:6px;margin-bottom:20px;text-transform:uppercase;letter-spacing:.02em;}
+
+  /* ===== login ===== */
+  #view-login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,#243d52,#33526b 55%,#41708f);padding:20px;}
+  .login-card{background:var(--panel);width:400px;max-width:100%;border-radius:8px;padding:30px;box-shadow:0 12px 40px rgba(10,20,30,.45);}
+  .login-card .brand{font-size:22px;font-weight:800;color:var(--brand-dk);letter-spacing:-.01em;}
+  .login-card .brand small{display:block;font-size:12px;font-weight:400;color:var(--muted);letter-spacing:.02em;margin-top:2px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+  .field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:4px;font-size:14px;font-family:inherit;background:#fff;color:var(--ink);}
+  .btn{border:none;border-radius:4px;padding:9px 16px;font-size:13.5px;font-weight:600;}
+  .btn-primary{background:var(--brand);color:#fff;}
+  .btn-primary:hover{background:var(--brand-dk);}
+  .btn-outline{background:#fff;color:var(--brand);border:1px solid var(--brand);}
+  .btn-danger{background:var(--red);color:#fff;}
+  .btn-quiet{background:#eef1f4;color:var(--ink);border:1px solid var(--line);}
+  .btn-block{width:100%;}
+  .error-banner{background:var(--red-bg);border:1px solid var(--red);color:var(--red);padding:9px 11px;border-radius:4px;font-size:13px;margin:0 0 14px;display:none;}
+  .login-note{margin-top:16px;font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;line-height:1.5;}
+
+  /* ===== app chrome ===== */
+  header.topbar{background:var(--panel);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:26px;padding:0 20px;height:56px;}
+  .topbar .brand{font-weight:800;font-size:17px;color:var(--brand-dk);}
+  .topbar .brand span{font-weight:400;color:var(--muted);font-size:12px;margin-left:6px;}
+  nav.tabs{display:flex;gap:4px;height:100%;}
+  nav.tabs button{background:none;border:none;border-bottom:3px solid transparent;color:var(--muted);font-size:13.5px;padding:0 12px;height:100%;}
+  nav.tabs button.active{color:var(--brand-dk);border-bottom-color:var(--brand);font-weight:700;}
+  nav.tabs button:hover:not(.active){color:var(--ink);background:var(--brand-wash);}
+  .session{margin-left:auto;font-size:12px;color:var(--muted);text-align:right;line-height:1.4;}
+  .session b{color:var(--ink);}
+  #logout-btn{margin-left:12px;}
+
+  .page{max-width:1140px;margin:0 auto;padding:20px 18px 70px;}
+  .crumbs{font-size:12px;color:var(--muted);margin-bottom:12px;}
+  .crumbs a{cursor:pointer;}
+  h1{font-size:21px;color:var(--brand-dk);margin-bottom:4px;letter-spacing:-.01em;}
+  h2{font-size:15px;color:var(--brand-dk);margin-bottom:10px;}
+  .lede{color:var(--muted);font-size:13px;margin-bottom:16px;max-width:70ch;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;margin-bottom:16px;}
+
+  /* ===== dashboard ===== */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .stat .val{font-size:26px;font-weight:800;color:var(--brand-dk);font-variant-numeric:tabular-nums;}
+  .stat.attn .val{color:var(--amber);}
+  .stat.bad .val{color:var(--red);}
+
+  /* ===== filters ===== */
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:14px;}
+  .filters .field{margin-bottom:0;min-width:150px;}
+  .filters .field.grow{flex:1;min-width:180px;}
+
+  /* ===== tables ===== */
+  table.grid{width:100%;border-collapse:collapse;background:#fff;font-size:13px;}
+  table.grid th{background:var(--brand-wash);color:var(--brand-dk);text-align:left;padding:8px 10px;border:1px solid var(--line);font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
+  table.grid td{padding:8px 10px;border:1px solid var(--line-lt);vertical-align:top;}
+  table.grid tbody tr:nth-child(even){background:#f7f9fa;}
+  tr.rowlink{cursor:pointer;}
+  tr.rowlink:hover{background:var(--brand-wash)!important;}
+  td.r, th.r{text-align:right;font-variant-numeric:tabular-nums;}
+  .neg{color:var(--red);}
+
+  .badge{display:inline-block;padding:2px 9px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.02em;white-space:nowrap;}
+  .b-paid{background:var(--green-bg);color:var(--green);}
+  .b-denied{background:var(--red-bg);color:var(--red);}
+  .b-partial{background:var(--amber-bg);color:var(--amber);}
+  .b-reversal{background:#fde3e1;color:#7a1712;border:1px dashed var(--red);}
+  .b-posted{background:var(--gray-badge);color:var(--gray-badge-ink);}
+  .b-appealed{background:var(--violet-bg);color:var(--violet);}
+  .b-ack{background:var(--gray-badge);color:var(--gray-badge-ink);}
+  .b-new{background:var(--brand-wash);color:var(--brand-dk);}
+  .b-inreview{background:var(--amber-bg);color:var(--amber);}
+  .b-done{background:var(--gray-badge);color:var(--gray-badge-ink);}
+
+  .pager{display:flex;gap:6px;align-items:center;margin-top:12px;font-size:12.5px;flex-wrap:wrap;}
+  .pager button{border:1px solid var(--line);background:#fff;padding:5px 11px;border-radius:3px;}
+  .pager button.current{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .pager button:disabled{opacity:.4;cursor:default;}
+  .pager .count{margin-left:8px;color:var(--muted);}
+
+  /* ===== EOB ===== */
+  .eob-meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 20px;font-size:13px;}
+  .eob-meta dt{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);font-weight:700;}
+  .eob-meta dd{margin:1px 0 0;font-weight:600;font-variant-numeric:tabular-nums;}
+  .recon{margin-top:14px;border-top:1px solid var(--line-lt);padding-top:12px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px;font-variant-numeric:tabular-nums;}
+  .recon .term{background:var(--brand-wash);border:1px solid var(--line);border-radius:4px;padding:6px 10px;}
+  .recon .term small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);}
+  .recon .op{font-weight:800;color:var(--muted);}
+  .recon .term.total{background:#243d52;color:#fff;border-color:#243d52;}
+  .recon .term.total small{color:#b9c9d6;}
+
+  .plb-panel{border:1px solid #d9c07a;background:#fdf8ea;border-radius:6px;padding:12px 14px;margin-bottom:16px;}
+  .plb-panel h2{color:#7a5d00;}
+
+  .claim-card{border:1px solid var(--line);border-radius:6px;margin-bottom:14px;background:#fff;overflow:hidden;}
+  .claim-card.flash{animation:flashbg 2.2s ease-out;}
+  @keyframes flashbg{0%{box-shadow:0 0 0 4px #ffd76e;background:#fff8e1;}100%{box-shadow:none;background:#fff;}}
+  .claim-head{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;background:#f4f6f8;border-bottom:1px solid var(--line);padding:10px 14px;font-size:13px;}
+  .claim-head .cno{font-weight:800;color:var(--brand-dk);}
+  .claim-head .meta{color:var(--muted);}
+  .claim-head .actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+  .claim-body{padding:12px 14px;}
+  .statusline{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  .xover{display:inline-block;background:var(--brand-wash);border:1px solid var(--line);color:var(--brand-dk);font-size:11px;font-weight:700;border-radius:3px;padding:2px 8px;}
+  .adj{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
+  .adj b{font-weight:700;}
+  .adj .c-co{color:var(--red);}
+  .adj .c-pr{color:#6a4d00;}
+  .prsum{margin-top:10px;font-size:12.5px;background:#fbf6e8;border:1px solid #e6d191;border-radius:4px;padding:7px 10px;display:inline-block;}
+  .remarks{margin-top:10px;background:var(--brand-wash);border:1px solid var(--line);border-radius:4px;padding:8px 10px;font-size:12.5px;line-height:1.55;}
+  .corrected-note{margin-top:10px;font-size:12.5px;color:var(--violet);font-weight:600;}
+
+  /* ===== modal / toast / spinner ===== */
+  .overlay{position:fixed;inset:0;background:rgba(15,25,35,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:16px;}
+  .overlay.open{display:flex;}
+  .modal{background:#fff;width:460px;max-width:100%;border-radius:6px;overflow:hidden;}
+  .modal-title{background:var(--brand-dk);color:#fff;padding:11px 15px;font-size:14px;font-weight:700;}
+  .modal-body{padding:16px;font-size:13.5px;line-height:1.6;}
+  .modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line-lt);background:#f7f9fa;}
+  #toast{position:fixed;bottom:22px;right:22px;background:#1f2933;color:#fff;padding:12px 18px;border-radius:5px;font-size:13px;display:none;z-index:60;box-shadow:0 6px 18px rgba(0,0,0,.35);border-left:5px solid var(--green);max-width:420px;}
+  .spin-wrap{padding:44px;text-align:center;color:var(--muted);font-size:13px;}
+  .spinner{width:30px;height:30px;border:4px solid var(--line);border-top-color:var(--brand);border-radius:50%;margin:0 auto 10px;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @media (prefers-reduced-motion: reduce){.spinner{animation:none;}.claim-card.flash{animation:none;background:#fff8e1;}}
+
+  .hidden{display:none!important;}
+  .empty{padding:28px;text-align:center;color:var(--muted);font-size:13px;}
+
+  /* ===== print ===== */
+  @media print{
+    body{background:#fff;}
+    header.topbar,.crumbs,.filters,.actions,.btn,#toast,.pager{display:none!important;}
+    .test-banner{background:#fff;color:var(--red);border:2px solid var(--red);}
+    .page{max-width:none;padding:0;}
+    .claim-card{break-inside:avoid;}
+  }
+  @media (max-width:760px){
+    header.topbar{flex-wrap:wrap;height:auto;padding:8px 12px;gap:8px;}
+    nav.tabs{order:3;width:100%;overflow-x:auto;}
+    nav.tabs button{padding:10px 10px;}
+    .session{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="view-login">
+  <div class="login-card">
+    <div class="mega-disclaimer" role="alert">This website is for testing only and is not real.<br>All data is fictitious.</div>
+    <div class="brand">RemitDesk<small>Provider remittance workspace</small></div>
+    <div style="height:16px"></div>
+    <div class="error-banner" id="login-error" role="alert">Invalid username or password. Check your credentials and try again.</div>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password">
+    </div>
+    <button class="btn btn-primary btn-block" id="login-btn">Sign in</button>
+    <p class="login-note">Demo credentials: <b>biller</b> / <b>practice123</b>. This is a training and automation-testing sandbox for Smith Chiropractic (TIN 12-3456789). No real patient, payer, or payment data exists here.</p>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="brand">RemitDesk<span>Provider Remittance Workspace</span></div>
+    <nav class="tabs" aria-label="Main navigation">
+      <button data-nav="dashboard" class="active">Dashboard</button>
+      <button data-nav="remits">Remittance Advice</button>
+      <button data-nav="claimsearch">Claim Search</button>
+      <button data-nav="worklog">Work Log</button>
+      <button data-nav="glossary">Code Glossary</button>
+    </nav>
+    <div class="session">Signed in as <b>biller</b><br>Smith Chiropractic · TIN 12-3456789</div>
+    <button class="btn btn-quiet" id="logout-btn">Log out</button>
+  </header>
+  <div class="test-banner" role="alert">THIS WEBSITE IS FOR TESTING ONLY — ALL DATA IS FICTITIOUS</div>
+
+  <!-- ---- Dashboard ---- -->
+  <main class="page" id="view-dashboard">
+    <h1>Dashboard</h1>
+    <p class="lede">Remittance activity for Smith Chiropractic. Figures reflect the current reporting period (June 1 – July 15, 2026).</p>
+    <div class="stats">
+      <div class="stat"><div class="val" id="st-remits">0</div><div class="eyebrow">Remittances received</div></div>
+      <div class="stat attn"><div class="val" id="st-awaiting">0</div><div class="eyebrow">Claims awaiting review</div></div>
+      <div class="stat bad"><div class="val" id="st-denied">0</div><div class="eyebrow">Denied claims</div></div>
+      <div class="stat"><div class="val" id="st-paid">$0.00</div><div class="eyebrow">Total payments this period</div></div>
+      <div class="stat bad"><div class="val" id="st-recoup">$0.00</div><div class="eyebrow">Total recoupments this period</div></div>
+    </div>
+    <div class="panel">
+      <h2>Working your remits</h2>
+      <p style="font-size:13.5px;line-height:1.65;max-width:78ch;">New electronic remittance advice files arrive under <a id="dash-link">Remittance Advice</a>. Open a check to review each claim's adjudication. Post paid claims to the ledger, appeal denials you can support with documentation, and acknowledge payer reversals so the recoupment is reflected in your books. Use Claim Search when a patient calls about a specific date of service, and the Code Glossary for any adjustment or remark code you don't recognize. Everything you do this session is captured in the Work Log.</p>
+    </div>
+  </main>
+
+  <!-- ---- Remittance Advice list ---- -->
+  <main class="page hidden" id="view-remits">
+    <div class="crumbs">Home › Remittance Advice</div>
+    <h1>Remittance Advice</h1>
+    <p class="lede">Electronic remittance advice (835) files received for TIN 12-3456789. Click a row to open the explanation of benefits.</p>
+    <div class="panel">
+      <div class="filters">
+        <div class="field grow">
+          <label for="f-check">Check / EFT number</label>
+          <input type="text" id="f-check" placeholder="e.g. 88210012">
+        </div>
+        <div class="field">
+          <label for="f-payer">Payer</label>
+          <select id="f-payer"><option value="">All payers</option></select>
+        </div>
+        <div class="field">
+          <label for="f-from">Pay date from</label>
+          <input type="date" id="f-from" min="2026-06-01" max="2026-07-15">
+        </div>
+        <div class="field">
+          <label for="f-to">Pay date to</label>
+          <input type="date" id="f-to" min="2026-06-01" max="2026-07-15">
+        </div>
+        <div class="field">
+          <label for="f-status">Remit status</label>
+          <select id="f-status">
+            <option value="">All statuses</option>
+            <option>New</option><option>In review</option><option>Completed</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="f-search">Search</button>
+        <button class="btn btn-outline" id="f-clear">Clear</button>
+      </div>
+      <div id="remit-area" aria-live="polite"></div>
+    </div>
+  </main>
+
+  <!-- ---- Claim Search ---- -->
+  <main class="page hidden" id="view-claimsearch">
+    <div class="crumbs">Home › Claim Search</div>
+    <h1>Claim Search</h1>
+    <p class="lede">Search across every remittance on file — the fastest way to locate a claim when a patient calls about a date of service.</p>
+    <div class="panel">
+      <div class="filters">
+        <div class="field grow">
+          <label for="cs-name">Patient last name</label>
+          <input type="text" id="cs-name" placeholder="e.g. Whitfield">
+        </div>
+        <div class="field grow">
+          <label for="cs-claim">Claim number</label>
+          <input type="text" id="cs-claim" placeholder="e.g. HZ26100042">
+        </div>
+        <div class="field">
+          <label for="cs-from">DOS from</label>
+          <input type="date" id="cs-from" min="2026-06-01" max="2026-07-15">
+        </div>
+        <div class="field">
+          <label for="cs-to">DOS to</label>
+          <input type="date" id="cs-to" min="2026-06-01" max="2026-07-15">
+        </div>
+        <button class="btn btn-primary" id="cs-search">Search claims</button>
+        <button class="btn btn-outline" id="cs-clear">Clear</button>
+      </div>
+      <div id="cs-area" aria-live="polite"><div class="empty">Enter a patient last name, claim number, or date-of-service range, then search.</div></div>
+    </div>
+  </main>
+
+  <!-- ---- EOB detail ---- -->
+  <main class="page hidden" id="view-eob">
+    <div class="crumbs">Home › <a id="crumb-remits">Remittance Advice</a> › <span id="crumb-check"></span></div>
+    <div id="eob-area" aria-live="polite"></div>
+  </main>
+
+  <!-- ---- Work Log ---- -->
+  <main class="page hidden" id="view-worklog">
+    <div class="crumbs">Home › Work Log</div>
+    <h1>Work Log</h1>
+    <p class="lede">Every action taken this session. The log resets when the page reloads.</p>
+    <div class="panel">
+      <div class="empty" id="wl-empty">No actions yet. Post a payment, submit an appeal, or acknowledge a reversal and it will appear here.</div>
+      <table class="grid hidden" id="wl-table">
+        <thead><tr><th>Time</th><th>Claim #</th><th>Patient</th><th>Action</th><th>Detail</th></tr></thead>
+        <tbody id="wl-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ---- Code Glossary ---- -->
+  <main class="page hidden" id="view-glossary">
+    <div class="crumbs">Home › Code Glossary</div>
+    <h1>Code Glossary</h1>
+    <p class="lede">Every adjustment (CARC), remark (RARC), and provider-level adjustment code that appears in the current dataset.</p>
+    <div class="panel">
+      <div class="filters">
+        <div class="field grow">
+          <label for="g-filter">Filter codes</label>
+          <input type="text" id="g-filter" placeholder="Type a code or any part of a description, e.g. CO-97 or bundled">
+        </div>
+      </div>
+      <table class="grid" id="g-table">
+        <thead><tr><th style="width:110px">Code</th><th style="width:150px">Type</th><th>Description</th></tr></thead>
+        <tbody id="g-body"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- ---- Post payment modal ---- -->
+<div class="overlay" id="post-modal" role="dialog" aria-modal="true" aria-labelledby="post-title">
+  <div class="modal">
+    <div class="modal-title" id="post-title">Post payment to ledger</div>
+    <div class="modal-body">
+      Post claim <b id="pm-claim"></b> for <b id="pm-patient"></b>?<br>
+      Payment amount: <b id="pm-amount"></b><span id="pm-deniednote" class="hidden"><br><span style="color:var(--red);">This claim was denied — posting records a zero payment and closes the claim without appeal.</span></span>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-quiet" id="pm-cancel">Cancel</button>
+      <button class="btn btn-primary" id="pm-confirm">Post payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ---- Appeal modal ---- -->
+<div class="overlay" id="appeal-modal" role="dialog" aria-modal="true" aria-labelledby="ap-title">
+  <div class="modal">
+    <div class="modal-title" id="ap-title">Submit appeal</div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px;">Appeal the denial on claim <b id="ap-claim"></b> for <b id="ap-patient"></b>.</p>
+      <div class="field">
+        <label for="ap-reason">Appeal reason</label>
+        <select id="ap-reason">
+          <option value="">— Select a reason —</option>
+          <option>Medical necessity documented in chart notes</option>
+          <option>Service not bundled — modifier 59 supports separate procedure</option>
+          <option>Authorization was obtained — reference number attached</option>
+          <option>Corrected claim — missing information supplied</option>
+          <option>Timely filing — proof of original submission attached</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="ap-notes">Supporting notes (required)</label>
+        <textarea id="ap-notes" rows="4" placeholder="Describe the supporting documentation you are attaching…"></textarea>
+      </div>
+      <div class="error-banner" id="ap-error" role="alert">Select an appeal reason and enter supporting notes before submitting.</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-quiet" id="ap-cancel">Cancel</button>
+      <button class="btn btn-danger" id="ap-submit">Submit appeal</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+   RemitDesk — deterministic seeded dataset + UI
+   FICTITIOUS DATA ONLY. Fixed seed ⇒ identical data on every load.
+   ===================================================================== */
+const SEED = 12345;
+const IS_BROWSER = (typeof document !== "undefined");
+
+/* ---------- seeded PRNG (mulberry32) ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rng = mulberry32(SEED);
+const ri = (a,b)=>a+Math.floor(rng()*(b-a+1));        // int in [a,b]
+const pick = arr=>arr[Math.floor(rng()*arr.length)];
+const chance = p=>rng()<p;
+
+/* ---------- reference dictionaries ---------- */
+const CARC = {
+  "CO-45":"Charge exceeds fee schedule / maximum allowable or contracted/legislated fee arrangement. (Contractual obligation — provider write-off; do not bill the patient.)",
+  "CO-50":"These are non-covered services because this is not deemed a medical necessity by the payer.",
+  "CO-97":"The benefit for this service is included in the payment/allowance for another service that has already been adjudicated. (Commonly called a bundling denial — the modality was bundled into the primary procedure.)",
+  "CO-16":"Claim/service lacks information or has submission/billing error(s) needed for adjudication.",
+  "CO-151":"Payment adjusted because the payer deems the information submitted does not support this many/frequency of services.",
+  "CO-197":"Precertification/authorization/notification absent.",
+  "CO-29":"The time limit for filing has expired.",
+  "PR-1":"Deductible amount. (Patient responsibility.)",
+  "PR-2":"Coinsurance amount. (Patient responsibility.)",
+  "PR-3":"Co-payment amount. (Patient responsibility.)",
+  "PR-204":"This service/equipment/drug is not covered under the patient's current benefit plan. (Patient responsibility.)"
+};
+const RARC = {
+  "N115":"This decision was based on a Local Coverage Determination (LCD).",
+  "N130":"Consult plan benefit documents/guidelines for information about restrictions for this service.",
+  "M25":"The information furnished does not substantiate the need for this level of service.",
+  "MA130":"Your claim contains incomplete and/or invalid information, and no appeal rights are afforded because the claim is unprocessable. Please submit a new claim with the complete/correct information.",
+  "N56":"Procedure code billed is not correct/valid for the services billed or the date of service billed.",
+  "N361":"Payment adjusted based on multiple diagnostic imaging procedure rules — authorization required for this service.",
+  "M16":"Alert: Please see our web site, mailings, or bulletins for more details concerning this policy/procedure/decision — service frequency limit reached.",
+  "N211":"Alert: You may not appeal this decision."
+};
+const PLB_TYPES = {
+  "L6":"Interest owed to the provider on a delayed clean claim.",
+  "WO":"Overpayment recovery (withholding) — funds recouped from this check for a prior overpayment.",
+  "FB":"Forwarding balance — amount carried between remittances."
+};
+const CPT = {
+  "98940":{desc:"Chiropractic manipulative treatment, spinal, 1–2 regions", billed:5200},
+  "98941":{desc:"Chiropractic manipulative treatment, spinal, 3–4 regions", billed:6500},
+  "98942":{desc:"Chiropractic manipulative treatment, spinal, 5 regions", billed:7800},
+  "97110":{desc:"Therapeutic exercises, each 15 minutes", billed:4200},
+  "97014":{desc:"Electrical stimulation (unattended)", billed:2800},
+  "97012":{desc:"Mechanical traction", billed:2200},
+  "97140":{desc:"Manual therapy techniques, each 15 minutes", billed:4800}
+};
+const MODALITIES = ["97110","97014","97012","97140"];
+const DX = ["M54.5","M54.2","M25.511","M79.1"];
+const OFF = {"98940":0.01,"98941":0,"98942":-0.01,"97110":-0.02,"97014":-0.03,"97012":-0.03,"97140":-0.015};
+
+/* ---------- payer profiles ---------- */
+const PAYERS = [
+  {name:"Horizon BCBS", px:"HZ", ckBase:88210000, fee:0.82, method:"EFT", runDays:[2,5], lag:[5,9],
+   benefit:{type:"copay",amt:2500}, denial:[["CO-197",0.10],["CO-151",0.02],["CO-50",0.05]], bundleP:0.06},
+  {name:"Aetna", px:"AE", ckBase:77310000, fee:0.88, method:"EFT", runDays:[1,4], lag:[5,10],
+   benefit:{type:"coins",pct:0.20}, denial:[["CO-50",0.13],["CO-197",0.03]], bundleP:0.14, dedPool:[0,0,10000,15000,25000]},
+  {name:"UnitedHealthcare", px:"UH", ckBase:66410000, fee:0.85, method:"EFT", runDays:[3,5], lag:[6,11],
+   benefit:{type:"copay",amt:3000}, denial:[["CO-16",0.12],["CO-197",0.08],["CO-50",0.03]], bundleP:0.08},
+  {name:"Medicare Part B", px:"MC", ckBase:55510000, fee:0.48, method:"Check", runDays:[2,4], lag:[7,14],
+   benefit:{type:"coins",pct:0.20}, denial:[["CO-50",0.13]], bundleP:0, medicare:true},
+  {name:"Cigna", px:"CG", ckBase:44610000, fee:0.85, method:"EFT", runDays:[1,3], lag:[5,9],
+   benefit:{type:"copay",amt:2000}, denial:[["CO-50",0.08],["CO-197",0.04]], bundleP:0.07, secondaryP:0.08}
+];
+
+/* ---------- patients ---------- */
+const FIRST = ["Marisol","Devon","Priya","Colin","Yusuf","Renata","Tobias","Ingrid","Marcus","Adaeze","Shannon","Viktor","Lena","Omar","Bethany","Craig","Noemi","Terrence","Salma","Wade","Iris","Franklin","Dahlia","Reuben","Celeste","Mateo","Harriet","Gideon","Paloma","Stefan","Wilma","Anders","Rochelle","Kenji","Beatriz"];
+const LAST = ["Whitfield","Okonkwo","Salazar","Brennan","Toussaint","Lindqvist","Marchetti","Delacroix","Pemberton","Villanueva","Ashworth","Kaplan","Otieno","Ferreira","McAllister","Novak","Thibodeaux","Grantham","Iverson","Castellano","Radcliffe","Osei","Barrington","Fontaine","Kowalczyk","Merriweather","Duarte","Holloway","Sandoval","Ackerman","Prentiss","Vieira","Langston","Moreau","Ricci"];
+
+/* ---------- date helpers ---------- */
+const MS = 86400000;
+const D0 = Date.UTC(2026,5,1);            // Jun 1 2026
+const DMAX = Date.UTC(2026,6,15);         // Jul 15 2026
+const iso = t=>new Date(t).toISOString().slice(0,10);
+function nextRunDay(t, runDays){
+  let d = t;
+  for(let i=0;i<8;i++){ if(runDays.includes(new Date(d).getUTCDay())) return Math.min(d, DMAX); d+=MS; }
+  return Math.min(d, DMAX);
+}
+
+/* ---------- money in integer cents ---------- */
+const fmt = c=>{ const n=Math.abs(c)/100; const s="$"+n.toFixed(2); return c<0 ? "("+s+")" : s; };
+
+/* =====================================================================
+   GENERATION
+   ===================================================================== */
+let claimSeq = 100000;
+const newClaimNo = px => px + "26" + (claimSeq++);
+
+function allowedFor(payer,cpt){
+  return Math.round(CPT[cpt].billed * (payer.fee + OFF[cpt]));
+}
+function makePaidLine(payer,cpt,ded,claimAdj){
+  const billed = CPT[cpt].billed;
+  const allowed = allowedFor(payer,cpt);
+  const adjs = [{code:"CO-45",amt:billed-allowed}];
+  let net = allowed;
+  if(ded.rem>0){ const d=Math.min(ded.rem,net); adjs.push({code:"PR-1",amt:d}); ded.rem-=d; net-=d; }
+  if(payer.benefit.type==="coins" && net>0){ const c=Math.round(net*payer.benefit.pct); if(c>0){adjs.push({code:"PR-2",amt:c}); net-=c;} }
+  if(payer.benefit.type==="copay" && !claimAdj.copayUsed && net>0){ const c=Math.min(payer.benefit.amt,net); adjs.push({code:"PR-3",amt:c}); net-=c; claimAdj.copayUsed=true; }
+  return {cpt,desc:CPT[cpt].desc,billed,allowed,paid:net,adjs,remark:null};
+}
+function makeDeniedLine(payer,cpt,code,remark){
+  const billed = CPT[cpt].billed;
+  return {cpt,desc:CPT[cpt].desc,billed,allowed:0,paid:0,adjs:[{code,amt:billed}],remark};
+}
+const REMARK_FOR = {
+  "CO-50":()=>pick(["N115","N130","M25"]),
+  "CO-16":()=>pick(["MA130","N56"]),
+  "CO-197":()=>"N361",
+  "CO-151":()=>"M16",
+  "CO-29":()=>"N211",
+  "PR-204":()=>"N130"
+};
+
+function buildClaim(payer,patient,dosTs,visitIdx,forceDeny){
+  const cpts=[patient.manip];
+  if(payer.medicare){ if(chance(0.22)) cpts.push(pick(MODALITIES)); }
+  else { if(chance(0.55)) cpts.push(pick(MODALITIES)); if(chance(0.18)){const m=pick(MODALITIES); if(!cpts.includes(m)) cpts.push(m);} }
+
+  const claim = {claimNo:newClaimNo(payer.px), patient:patient.name, dos:iso(dosTs), dx:patient.dx,
+                 statusCode:1, lines:[], crossover:false, correctedNote:null, workStatus:"New"};
+
+  // whole-claim denial?
+  let denyCode = forceDeny || null;
+  if(!denyCode){ let r=rng(); for(const [code,p] of payer.denial){ if(r<p){denyCode=code;break;} r-=p; } }
+  if(denyCode){
+    const remark = REMARK_FOR[denyCode]?REMARK_FOR[denyCode]():null;
+    claim.lines = cpts.map(c=>makeDeniedLine(payer,c,denyCode,remark));
+    claim.statusCode = 4;
+  } else {
+    const claimAdj={copayUsed:false};
+    claim.lines = cpts.map((c,i)=>{
+      if(i>0 && payer.medicare) return makeDeniedLine(payer,c,"PR-204","N130");           // chiro: Medicare covers CMT only
+      if(i>0 && chance(payer.bundleP)) return makeDeniedLine(payer,c,"CO-97",null);        // bundled modality
+      return makePaidLine(payer,c,patient.ded,claimAdj);
+    });
+    if(payer.medicare && chance(0.45)) claim.crossover = true;
+    if(payer.secondaryP && chance(payer.secondaryP)) claim.statusCode = 2;
+  }
+  finalizeClaim(claim);
+  return claim;
+}
+function finalizeClaim(c){
+  c.billed = c.lines.reduce((s,l)=>s+l.billed,0);
+  c.paid   = c.lines.reduce((s,l)=>s+l.paid,0);
+  c.patResp= c.lines.reduce((s,l)=>s+l.adjs.filter(a=>a.code.startsWith("PR")).reduce((x,a)=>x+a.amt,0),0);
+  if(c.statusCode===22){ c.status="Reversal"; return; }
+  const zeroDenied = c.lines.some(l=>l.paid===0 && l.adjs.some(a=>a.code!=="CO-45"));
+  if(c.lines.every(l=>l.paid===0)) { c.status="Denied"; c.statusCode=4; }
+  else if(zeroDenied) c.status="Partially Paid";
+  else c.status="Paid";
+}
+function negateClaim(orig){
+  const rev = {claimNo:orig.claimNo, patient:orig.patient, dos:orig.dos, dx:orig.dx, statusCode:22,
+    crossover:false, correctedNote:null, workStatus:"New",
+    lines: orig.lines.map(l=>({cpt:l.cpt,desc:l.desc,billed:-l.billed,allowed:-l.allowed,paid:-l.paid,
+      adjs:l.adjs.map(a=>({code:a.code,amt:-a.amt})),remark:l.remark}))};
+  finalizeClaim(rev); rev.status="Reversal"; rev.statusCode=22;
+  return rev;
+}
+
+/* ---------- generate patients & claims ---------- */
+const shuffledIdx = [...Array(35).keys()];
+for(let i=shuffledIdx.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[shuffledIdx[i],shuffledIdx[j]]=[shuffledIdx[j],shuffledIdx[i]];}
+const PATIENTS = shuffledIdx.map((li,i)=>{
+  const payer = (i===0)? PAYERS[0] : PAYERS[i % PAYERS.length];   // patient 0 pinned to Horizon for the CO-151 scenario
+  const dedBase = payer.dedPool ? pick(payer.dedPool) : 0;
+  return {name: LAST[li]+", "+FIRST[i], payer, dx:pick(DX), manip:pick(["98940","98941","98941","98942"]),
+          ded:{rem:dedBase}, visits:(i===0)?16:ri(5,13), start:D0 + ri(0,12)*MS};
+});
+
+const allClaims = [];  // {claim, payer, payTs}
+for(const pt of PATIENTS){
+  let t = pt.start;
+  for(let v=1; v<=pt.visits; v++){
+    if(t > Date.UTC(2026,6,6)) break;                              // keep DOS ≤ Jul 6
+    const forceDeny = (pt===PATIENTS[0] && v>=15) ? "CO-151" : null; // frequency limit on visit 15+
+    const claim = buildClaim(pt.payer, pt, t, v, forceDeny);
+    const lag = ri(pt.payer.lag[0], pt.payer.lag[1]);
+    const payTs = nextRunDay(t + lag*MS, pt.payer.runDays);
+    allClaims.push({claim, payer:pt.payer, payTs: Math.max(payTs, t+MS)});
+    t += ri(2,4)*MS;
+  }
+}
+
+/* ---------- group claims into remittances (checks) ---------- */
+const ckSeq = {}; PAYERS.forEach(p=>ckSeq[p.name]=p.ckBase + ri(10,60));
+const groups = new Map();
+for(const rec of allClaims){
+  const key = rec.payer.name + "|" + rec.payTs;
+  if(!groups.has(key)) groups.set(key, {payer:rec.payer, payTs:rec.payTs, claims:[]});
+  groups.get(key).claims.push(rec.claim);
+}
+let REMITS = [];
+for(const g of [...groups.values()]){
+  let i = 0;
+  while(i < g.claims.length){
+    const k = ri(2,4);
+    const slice = g.claims.slice(i, i+k); i += k;
+    REMITS.push({payer:g.payer.name, method:(g.payer.method==="Check"? (chance(0.8)?"Check":"EFT") : (chance(0.9)?"EFT":"Check")),
+                 payDate:iso(g.payTs), payTs:g.payTs, check:String(ckSeq[g.payer.name]+=ri(3,17)), claims:slice, plb:[]});
+  }
+}
+REMITS.sort((a,b)=> a.payTs-b.payTs || a.payer.localeCompare(b.payer));
+REMITS.forEach((r,i)=>r.id="R-"+(1001+i));
+
+/* ---------- handcrafted scenario splices ---------- */
+const dupAllowed = new Set();
+const findRemit = (payerName, minTs, hasPaidClaim)=>REMITS.find(r=>r.payer===payerName && r.payTs>=minTs && (!hasPaidClaim || r.claims.some(c=>c.status==="Paid")));
+const lateRemit = payerName=>[...REMITS].reverse().find(r=>r.payer===payerName && r.payTs>=Date.UTC(2026,5,30));
+
+// (1)+(2) two reversal/correction pairs — payment retracted, claim re-adjudicated at a lower allowable
+for(const payerName of ["Horizon BCBS","Aetna"]){
+  const src = findRemit(payerName, D0, true);
+  const orig = src.claims.find(c=>c.status==="Paid");
+  const host = lateRemit(payerName);
+  const rev = negateClaim(orig);
+  const payer = PAYERS.find(p=>p.name===payerName);
+  const corr = {claimNo:orig.claimNo, patient:orig.patient, dos:orig.dos, dx:orig.dx, statusCode:1,
+    crossover:false, workStatus:"New",
+    correctedNote:"Corrected adjudication — original payment reversed above and reprocessed at the revised allowable.",
+    lines: orig.lines.map(l=>{
+      const allowed = Math.max(0, l.allowed - Math.round(l.billed*0.06));
+      const prs = l.adjs.filter(a=>a.code.startsWith("PR")).map(a=>({...a}));
+      const prSum = prs.reduce((s,a)=>s+a.amt,0);
+      const paid = Math.max(0, allowed - prSum);
+      return {cpt:l.cpt,desc:l.desc,billed:l.billed,allowed,paid,
+              adjs:[{code:"CO-45",amt:l.billed-allowed},...prs],remark:null};
+    })};
+  finalizeClaim(corr);
+  host.claims.push(rev, corr);
+  dupAllowed.add(orig.claimNo);
+}
+
+// (3) PLB WO recoupment on a later UHC check, referencing an earlier paid claim
+{
+  const src = findRemit("UnitedHealthcare", D0, true);
+  const orig = src.claims.find(c=>c.status==="Paid");
+  const host = lateRemit("UnitedHealthcare");
+  host.plb.push({code:"WO", ref:orig.claimNo, amt:-orig.paid,
+    desc:"Overpayment recovery for claim "+orig.claimNo+" ("+orig.patient+", DOS "+orig.dos+") — audit determined duplicate payment."});
+}
+// (4) L6 interest on a Medicare check
+{
+  const host = lateRemit("Medicare Part B");
+  host.plb.push({code:"L6", ref:null, amt:187, desc:"Interest paid on delayed clean claim per prompt-payment requirements."});
+}
+// (5) FB forwarding balance pair on consecutive Cigna checks
+{
+  const cg = REMITS.filter(r=>r.payer==="Cigna" && r.payTs>=Date.UTC(2026,5,24));
+  if(cg.length>=2){
+    cg[0].plb.push({code:"FB", ref:null, amt:-1240, desc:"Balance forwarded to next remittance."});
+    cg[1].plb.push({code:"FB", ref:null, amt: 1240, desc:"Balance forwarded from prior remittance."});
+  }
+}
+// (6) CO-16 denial later resubmitted and paid under the same claim number
+{
+  const payer = PAYERS.find(p=>p.name==="UnitedHealthcare");
+  const pt = PATIENTS.find(p=>p.payer===payer);
+  const early = REMITS.find(r=>r.payer===payer.name && r.payTs>=D0+9*MS) || REMITS.find(r=>r.payer===payer.name);
+  const denDos = iso(Math.max(D0, early.payTs - ri(6,9)*MS));
+  const den = {claimNo:newClaimNo(payer.px), patient:pt.name, dos:denDos, dx:pt.dx, statusCode:4,
+    crossover:false, correctedNote:null, workStatus:"New",
+    lines:[makeDeniedLine(payer,"98941","CO-16","MA130")]};
+  finalizeClaim(den);
+  early.claims.push(den);
+  const host = lateRemit(payer.name);
+  const claimAdj={copayUsed:false};
+  const paidLine = makePaidLine(payer,"98941",{rem:0},claimAdj);
+  const resub = {claimNo:den.claimNo, patient:pt.name, dos:denDos, dx:pt.dx, statusCode:1,
+    crossover:false, workStatus:"New",
+    correctedNote:"Corrected claim — originally returned as unprocessable (CO-16 / MA130); resubmitted with complete information.",
+    lines:[paidLine]};
+  finalizeClaim(resub);
+  host.claims.push(resub);
+  dupAllowed.add(den.claimNo);
+}
+// (7) timely-filing denial (CO-29) on a late Horizon check, oldest DOS in the window
+{
+  const payer = PAYERS.find(p=>p.name==="Horizon BCBS");
+  const pt = PATIENTS.find(p=>p.payer===payer && p!==PATIENTS[0]);
+  const host = lateRemit(payer.name);
+  const tf = {claimNo:newClaimNo(payer.px), patient:pt.name, dos:"2026-06-01", dx:pt.dx, statusCode:4,
+    crossover:false, correctedNote:null, workStatus:"New",
+    lines:[makeDeniedLine(payer,"98941","CO-29","N211"),
+           makeDeniedLine(payer,"97110","CO-29","N211")]};
+  finalizeClaim(tf);
+  host.claims.push(tf);
+}
+// (8) guarantee at least one Medicare crossover
+{
+  for(const r of REMITS){ if(r.payer==="Medicare Part B"){ const c=r.claims.find(c=>c.status==="Paid"); if(c){c.crossover=true; break;} } }
+}
+
+/* ---------- totals ---------- */
+for(const r of REMITS){
+  r.billed = r.claims.reduce((s,c)=>s+c.billed,0);
+  r.claimPaid = r.claims.reduce((s,c)=>s+c.paid,0);
+  r.plbTotal = r.plb.reduce((s,p)=>s+p.amt,0);
+  r.checkAmt = r.claimPaid + r.plbTotal;
+}
+
+/* ---------- used-code registry for the glossary ---------- */
+const USED = [];
+{
+  const seen=new Set();
+  const add=(code,type,desc)=>{ if(!seen.has(type+code)){seen.add(type+code); USED.push({code,type,desc});} };
+  for(const r of REMITS){
+    for(const p of r.plb) add(p.code,"Provider-level (PLB)",PLB_TYPES[p.code]);
+    for(const c of r.claims) for(const l of c.lines){
+      for(const a of l.adjs) add(a.code,"Adjustment (CARC)",CARC[a.code]);
+      if(l.remark) add(l.remark,"Remark (RARC)",RARC[l.remark]);
+    }
+  }
+  USED.sort((a,b)=>a.type.localeCompare(b.type)||a.code.localeCompare(b.code,undefined,{numeric:true}));
+}
+
+/* ---------- self-checks ---------- */
+function runChecks(){
+  const errs=[];
+  const ckSeen=new Set(), claimSeen=new Map();
+  for(const r of REMITS){
+    if(ckSeen.has(r.check)) errs.push("dup check "+r.check); ckSeen.add(r.check);
+    if(r.payDate<"2026-06-01"||r.payDate>"2026-07-15") errs.push("payDate range "+r.check);
+    if(Math.round(r.claimPaid+r.plbTotal)!==Math.round(r.checkAmt)) errs.push("check math "+r.check);
+    for(const c of r.claims){
+      if(c.dos<"2026-06-01"||c.dos>"2026-07-15") errs.push("dos range "+c.claimNo);
+      if(c.dos>=r.payDate) errs.push("payDate<=dos "+c.claimNo);
+      const n=(claimSeen.get(c.claimNo)||0)+1; claimSeen.set(c.claimNo,n);
+      if(n>1 && !dupAllowed.has(c.claimNo)) errs.push("dup claim "+c.claimNo);
+      for(const l of c.lines){
+        const adjSum=l.adjs.reduce((s,a)=>s+a.amt,0);
+        if(l.paid!==l.billed-adjSum) errs.push("line math "+c.claimNo+" "+l.cpt);
+        if(c.statusCode!==22 && (l.paid<0||l.billed<0)) errs.push("negative "+c.claimNo);
+      }
+      if(/patient|test/i.test(c.patient)) errs.push("bad name "+c.patient);
+    }
+  }
+  return errs;
+}
+if(!IS_BROWSER){
+  const errs=runChecks();
+  const claims=REMITS.flatMap(r=>r.claims);
+  const mix={}; claims.forEach(c=>mix[c.status]=(mix[c.status]||0)+1);
+  console.log(JSON.stringify({remits:REMITS.length, claims:claims.length, mix,
+    patients:new Set(claims.map(c=>c.patient)).size,
+    plbEntries:REMITS.reduce((s,r)=>s+r.plb.length,0),
+    crossovers:claims.filter(c=>c.crossover).length,
+    secondary:claims.filter(c=>c.statusCode===2).length,
+    usedCodes:USED.length, errs},null,1));
+}
+
+/* =====================================================================
+   UI  (browser only)
+   ===================================================================== */
+if(IS_BROWSER){
+  const $ = s=>document.querySelector(s);
+  const DELAY = 600;
+  const STATUS_LABEL = {1:"1 — Processed as Primary", 2:"2 — Processed as Secondary", 4:"4 — Denied", 22:"22 — Reversal of Previous Payment"};
+  const workLog = [];
+  let currentRemit = null;
+
+  const remitStatus = r=>{
+    const worked = r.claims.filter(c=>c.workStatus!=="New").length;
+    return worked===0 ? "New" : worked===r.claims.length ? "Completed" : "In review";
+  };
+  const badgeFor = s=>({ "Paid":"b-paid","Denied":"b-denied","Partially Paid":"b-partial","Reversal":"b-reversal",
+                         "New":"b-new","In review":"b-inreview","Completed":"b-done"})[s]||"b-posted";
+
+  /* ---- login ---- */
+  $("#login-btn").addEventListener("click",()=>{
+    if($("#username").value.trim()==="biller" && $("#password").value==="practice123"){
+      $("#view-login").classList.add("hidden");
+      $("#app").classList.remove("hidden");
+      renderDashboard();
+    } else $("#login-error").style.display="block";
+  });
+  $("#password").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#login-btn").click(); });
+  $("#logout-btn").addEventListener("click",()=>location.reload());
+
+  /* ---- nav ---- */
+  const VIEWS=["dashboard","remits","claimsearch","eob","worklog","glossary"];
+  function show(v){
+    VIEWS.forEach(x=>$("#view-"+x).classList.add("hidden"));
+    $("#view-"+v).classList.remove("hidden");
+    document.querySelectorAll(".tabs button").forEach(b=>
+      b.classList.toggle("active", b.dataset.nav===v || (v==="eob"&&b.dataset.nav==="remits")));
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll(".tabs button").forEach(b=>b.addEventListener("click",()=>{
+    const v=b.dataset.nav;
+    if(v==="dashboard")renderDashboard();
+    if(v==="remits")renderRemitList();
+    if(v==="worklog")renderWorkLog();
+    if(v==="glossary")renderGlossary();
+    show(v);
+  }));
+  $("#dash-link").addEventListener("click",()=>{renderRemitList();show("remits");});
+  $("#crumb-remits").addEventListener("click",()=>{renderRemitList();show("remits");});
+
+  /* ---- dashboard ---- */
+  function renderDashboard(){
+    const claims=REMITS.flatMap(r=>r.claims);
+    $("#st-remits").textContent=REMITS.length;
+    $("#st-awaiting").textContent=claims.filter(c=>c.workStatus==="New").length;
+    $("#st-denied").textContent=claims.filter(c=>c.status==="Denied").length;
+    $("#st-paid").textContent=fmt(REMITS.reduce((s,r)=>s+r.checkAmt,0));
+    const recoup = Math.abs(REMITS.reduce((s,r)=>s+r.plb.filter(p=>p.code==="WO").reduce((x,p)=>x+p.amt,0),0))
+                 + Math.abs(claims.filter(c=>c.statusCode===22).reduce((s,c)=>s+c.paid,0));
+    $("#st-recoup").textContent=fmt(recoup);
+  }
+
+  /* ---- remit list ---- */
+  const PAGE=10; let page=1, filtered=REMITS.slice();
+  [...new Set(REMITS.map(r=>r.payer))].sort().forEach(p=>{
+    const o=document.createElement("option"); o.value=o.textContent=p; $("#f-payer").appendChild(o);
+  });
+  function applyRemitFilters(){
+    const ck=$("#f-check").value.trim(), py=$("#f-payer").value, st=$("#f-status").value;
+    const from=$("#f-from").value, to=$("#f-to").value;
+    filtered=REMITS.filter(r=> (!ck||r.check.includes(ck)) && (!py||r.payer===py) && (!st||remitStatus(r)===st)
+      && (!from||r.payDate>=from) && (!to||r.payDate<=to));
+    page=1;
+  }
+  function renderRemitList(){
+    const area=$("#remit-area");
+    area.innerHTML=`<div class="spin-wrap" id="remit-loading"><div class="spinner" aria-hidden="true"></div>Loading remittance files…</div>`;
+    setTimeout(()=>{
+      if(!filtered.length){ area.innerHTML=`<div class="empty" id="no-results">No remittance files match these filters. Adjust the search and try again.</div>`; return; }
+      const totalPages=Math.ceil(filtered.length/PAGE);
+      page=Math.min(page,totalPages);
+      const start=(page-1)*PAGE, rows=filtered.slice(start,start+PAGE);
+      area.innerHTML=`<table class="grid" id="remit-table">
+        <thead><tr><th>Check / EFT #</th><th>Payer</th><th>Pay date</th><th>Method</th>
+        <th class="r">Billed</th><th class="r">Check total</th><th class="r">Claims</th><th>Status</th></tr></thead>
+        <tbody>${rows.map(r=>{const st=remitStatus(r);return `<tr class="rowlink" data-check="${r.check}" data-remit-id="${r.id}">
+          <td>${r.check}</td><td>${r.payer}</td><td>${r.payDate}</td><td>${r.method}</td>
+          <td class="r">${fmt(r.billed)}</td><td class="r ${r.checkAmt<0?"neg":""}">${fmt(r.checkAmt)}</td>
+          <td class="r">${r.claims.length}</td><td><span class="badge ${badgeFor(st)}">${st}</span></td></tr>`;}).join("")}</tbody></table>
+        ${totalPages>1?`<div class="pager" id="pager">
+          <button id="pg-prev" ${page===1?"disabled":""}>‹ Prev</button>
+          ${Array.from({length:totalPages},(_,i)=>`<button class="pg ${i+1===page?"current":""}" data-page="${i+1}">${i+1}</button>`).join("")}
+          <button id="pg-next" ${page===totalPages?"disabled":""}>Next ›</button>
+          <span class="count">Showing ${start+1}–${start+rows.length} of ${filtered.length}</span></div>`:""}`;
+      area.querySelectorAll(".rowlink").forEach(tr=>tr.addEventListener("click",()=>openEob(tr.dataset.remitId)));
+      if(totalPages>1){
+        $("#pg-prev").addEventListener("click",()=>{page--;renderRemitList();});
+        $("#pg-next").addEventListener("click",()=>{page++;renderRemitList();});
+        area.querySelectorAll(".pg").forEach(b=>b.addEventListener("click",()=>{page=+b.dataset.page;renderRemitList();}));
+      }
+    },DELAY);
+  }
+  $("#f-search").addEventListener("click",()=>{applyRemitFilters();renderRemitList();});
+  $("#f-clear").addEventListener("click",()=>{["f-check","f-payer","f-from","f-to","f-status"].forEach(id=>$("#"+id).value="");applyRemitFilters();renderRemitList();});
+
+  /* ---- claim search ---- */
+  function renderClaimSearch(){
+    const area=$("#cs-area");
+    const name=$("#cs-name").value.trim().toLowerCase(), cno=$("#cs-claim").value.trim().toLowerCase();
+    const from=$("#cs-from").value, to=$("#cs-to").value;
+    if(!name && !cno && !from && !to){ area.innerHTML=`<div class="empty">Enter a patient last name, claim number, or date-of-service range, then search.</div>`; return; }
+    area.innerHTML=`<div class="spin-wrap" id="cs-loading"><div class="spinner" aria-hidden="true"></div>Searching all remittances…</div>`;
+    setTimeout(()=>{
+      const hits=[];
+      for(const r of REMITS) for(const c of r.claims){
+        if(name && !c.patient.toLowerCase().startsWith(name)) continue;
+        if(cno && !c.claimNo.toLowerCase().includes(cno)) continue;
+        if(from && c.dos<from) continue;
+        if(to && c.dos>to) continue;
+        hits.push({r,c});
+        if(hits.length>=60) break;
+      }
+      if(!hits.length){ area.innerHTML=`<div class="empty" id="cs-none">No claims match this search.</div>`; return; }
+      area.innerHTML=`<table class="grid" id="cs-table">
+        <thead><tr><th>Claim #</th><th>Patient</th><th>DOS</th><th>Payer</th><th>Check #</th><th>Status</th><th class="r">Paid</th></tr></thead>
+        <tbody>${hits.map(({r,c},i)=>`<tr class="rowlink" data-hit="${i}">
+          <td>${c.claimNo}</td><td>${c.patient}</td><td>${c.dos}</td><td>${r.payer}</td><td>${r.check}</td>
+          <td><span class="badge ${badgeFor(c.status)}">${c.status}</span></td>
+          <td class="r ${c.paid<0?"neg":""}">${fmt(c.paid)}</td></tr>`).join("")}</tbody></table>
+        <p class="count" style="margin-top:10px;color:var(--muted);font-size:12.5px;">${hits.length} claim(s) found${hits.length>=60?" (first 60 shown)":""}. Click a row to open its remittance.</p>`;
+      area.querySelectorAll(".rowlink").forEach(tr=>tr.addEventListener("click",()=>{
+        const {r,c}=hits[+tr.dataset.hit];
+        openEob(r.id, c.claimNo);
+      }));
+    },DELAY);
+  }
+  $("#cs-search").addEventListener("click",renderClaimSearch);
+  $("#cs-clear").addEventListener("click",()=>{["cs-name","cs-claim","cs-from","cs-to"].forEach(id=>$("#"+id).value="");$("#cs-area").innerHTML=`<div class="empty">Enter a patient last name, claim number, or date-of-service range, then search.</div>`;});
+
+  /* ---- EOB detail ---- */
+  function openEob(remitId, focusClaimNo){
+    currentRemit=REMITS.find(r=>r.id===remitId);
+    $("#crumb-check").textContent="Check "+currentRemit.check;
+    $("#eob-area").innerHTML=`<div class="spin-wrap" id="eob-loading"><div class="spinner" aria-hidden="true"></div>Retrieving remittance detail…</div>`;
+    show("eob");
+    setTimeout(()=>{ renderEob(); if(focusClaimNo) highlightClaim(focusClaimNo); },DELAY);
+  }
+  function highlightClaim(claimNo){
+    const cards=document.querySelectorAll(`.claim-card[data-claim-no="${claimNo}"]`);
+    if(cards.length){ cards[0].scrollIntoView({block:"center"}); cards.forEach(el=>el.classList.add("flash")); }
+  }
+  function adjHtml(a){
+    const grp=a.code.startsWith("PR")?"c-pr":"c-co";
+    return `<div class="adj"><b class="${grp}" data-carc="${a.code}">${a.code}</b> ${fmt(a.amt)} — ${CARC[a.code]}</div>`;
+  }
+  function renderEob(){
+    const r=currentRemit;
+    const plbHtml = r.plb.length?`
+      <div class="plb-panel" id="plb-section">
+        <h2>Provider-level adjustments (PLB)</h2>
+        <table class="grid">
+          <thead><tr><th style="width:70px">Code</th><th style="width:140px">Reference</th><th class="r" style="width:110px">Amount</th><th>Description</th></tr></thead>
+          <tbody>${r.plb.map(p=>`<tr><td><b data-plb="${p.code}">${p.code}</b></td><td>${p.ref||"—"}</td>
+            <td class="r ${p.amt<0?"neg":""}">${fmt(p.amt)}</td><td>${p.desc}</td></tr>`).join("")}</tbody>
+        </table>
+      </div>`:"";
+    const claimsHtml=r.claims.map(c=>{
+      const canAct = c.workStatus==="New";
+      const actions = !canAct ? "" :
+        c.statusCode===22 ? `<button class="btn btn-quiet ack-btn" data-claim="${c.claimNo}" data-sc="22">Acknowledge reversal</button>` :
+        c.status==="Denied" ? `<button class="btn btn-danger appeal-btn" data-claim="${c.claimNo}">Appeal denial</button>
+                               <button class="btn btn-outline post-btn" data-claim="${c.claimNo}" data-denied="1">Post as denied</button>` :
+        `<button class="btn btn-primary post-btn" data-claim="${c.claimNo}">Post to ledger</button>`;
+      const workBadge = c.workStatus==="Posted" ? `<span class="badge b-posted">Posted</span>` :
+                        c.workStatus==="Appeal Submitted" ? `<span class="badge b-appealed">Appeal Submitted</span>` :
+                        c.workStatus==="Acknowledged" ? `<span class="badge b-ack">Reversal Acknowledged</span>` : "";
+      const remarks=[...new Set(c.lines.map(l=>l.remark).filter(Boolean))];
+      return `<div class="claim-card" data-claim-no="${c.claimNo}" data-claim-status="${c.status}" data-work-status="${c.workStatus}">
+        <div class="claim-head">
+          <span class="cno">Claim ${c.claimNo}</span>
+          <span>${c.patient}</span>
+          <span class="meta">DOS ${c.dos} · Dx ${c.dx}</span>
+          <span class="badge ${badgeFor(c.status)}">${c.status}</span>${workBadge}
+          <div class="actions">${actions}</div>
+        </div>
+        <div class="claim-body">
+          <div class="statusline">Claim status ${STATUS_LABEL[c.statusCode]}${c.crossover?` &nbsp;<span class="xover">Crossover: forwarded to supplemental payer</span>`:""}</div>
+          <table class="grid">
+            <thead><tr><th style="width:30%">Service</th><th class="r">Billed</th><th class="r">Allowed</th><th class="r">Paid</th><th style="width:40%">Adjustments</th></tr></thead>
+            <tbody>${c.lines.map(l=>`<tr>
+              <td><b>${l.cpt}</b><br><span style="color:var(--muted);font-size:12px;">${l.desc}</span></td>
+              <td class="r ${l.billed<0?"neg":""}">${fmt(l.billed)}</td>
+              <td class="r ${l.allowed<0?"neg":""}">${fmt(l.allowed)}</td>
+              <td class="r ${l.paid<0?"neg":""}">${fmt(l.paid)}</td>
+              <td>${l.adjs.map(adjHtml).join("")||'<span style="color:var(--muted)">—</span>'}</td></tr>`).join("")}</tbody>
+          </table>
+          ${c.patResp!==0?`<div class="prsum">Patient responsibility this claim: <b>${fmt(c.patResp)}</b> (PR-group amounts — bill to patient)</div>`:""}
+          ${remarks.length?`<div class="remarks"><b>Remark codes:</b><br>${remarks.map(rc=>`<b data-rarc="${rc}">${rc}</b> — ${RARC[rc]}`).join("<br>")}</div>`:""}
+          ${c.correctedNote?`<div class="corrected-note">${c.correctedNote}</div>`:""}
+        </div>
+      </div>`;
+    }).join("");
+    $("#eob-area").innerHTML=`
+      <h1>Remittance Detail — Check ${r.check}</h1>
+      <div class="panel">
+        <dl class="eob-meta">
+          <div><dt>Payer</dt><dd id="eob-payer">${r.payer}</dd></div>
+          <div><dt>Check / EFT #</dt><dd id="eob-check">${r.check}</dd></div>
+          <div><dt>Pay date</dt><dd>${r.payDate}</dd></div>
+          <div><dt>Payment method</dt><dd>${r.method}</dd></div>
+          <div><dt>Total billed</dt><dd>${fmt(r.billed)}</dd></div>
+          <div><dt>Claims on check</dt><dd>${r.claims.length}</dd></div>
+        </dl>
+        <div class="recon" id="check-recon">
+          <span class="term"><small>Claim payments</small>${fmt(r.claimPaid)}</span>
+          <span class="op">+</span>
+          <span class="term"><small>Provider-level adj.</small>${fmt(r.plbTotal)}</span>
+          <span class="op">=</span>
+          <span class="term total"><small>Check total</small><span id="eob-total">${fmt(r.checkAmt)}</span></span>
+          <button class="btn btn-outline" id="print-eob-btn" style="margin-left:auto;">Print view</button>
+        </div>
+      </div>
+      ${plbHtml}
+      <h2 style="margin-bottom:10px;">Claims on this remittance</h2>
+      ${claimsHtml}`;
+    $("#print-eob-btn").addEventListener("click",()=>window.print());
+    $("#eob-area").querySelectorAll(".post-btn").forEach(b=>b.addEventListener("click",()=>openPost(b.dataset.claim,!!b.dataset.denied)));
+    $("#eob-area").querySelectorAll(".appeal-btn").forEach(b=>b.addEventListener("click",()=>openAppeal(b.dataset.claim)));
+    $("#eob-area").querySelectorAll(".ack-btn").forEach(b=>b.addEventListener("click",()=>ackReversal(b.dataset.claim)));
+  }
+
+  /* ---- actions ---- */
+  let active=null;
+  const findClaim=(no,sc)=>currentRemit.claims.find(c=>c.claimNo===no && c.workStatus==="New" && (sc?c.statusCode===+sc:true)) || currentRemit.claims.find(c=>c.claimNo===no);
+  function logAction(c,action,detail){ workLog.push({time:new Date().toLocaleTimeString(),claim:c.claimNo,patient:c.patient,action,detail}); }
+
+  function openPost(no,denied){
+    active=currentRemit.claims.find(c=>c.claimNo===no && c.workStatus==="New" && c.statusCode!==22) || findClaim(no);
+    $("#pm-claim").textContent=active.claimNo;
+    $("#pm-patient").textContent=active.patient;
+    $("#pm-amount").textContent=fmt(active.paid);
+    $("#pm-deniednote").classList.toggle("hidden",!denied);
+    $("#post-modal").classList.add("open");
+  }
+  $("#pm-cancel").addEventListener("click",()=>$("#post-modal").classList.remove("open"));
+  $("#pm-confirm").addEventListener("click",()=>{
+    active.workStatus="Posted";
+    logAction(active,"Posted",(active.status==="Denied"?"Denial posted, zero payment — claim closed without appeal":"Payment "+fmt(active.paid)+" posted to ledger"));
+    $("#post-modal").classList.remove("open");
+    toast(`Posted — claim ${active.claimNo} (${fmt(active.paid)}) recorded to the ledger.`);
+    renderEob();
+  });
+
+  function openAppeal(no){
+    active=currentRemit.claims.find(c=>c.claimNo===no && c.workStatus==="New") || findClaim(no);
+    $("#ap-claim").textContent=active.claimNo;
+    $("#ap-patient").textContent=active.patient;
+    $("#ap-reason").value=""; $("#ap-notes").value="";
+    $("#ap-error").style.display="none";
+    $("#appeal-modal").classList.add("open");
+  }
+  $("#ap-cancel").addEventListener("click",()=>$("#appeal-modal").classList.remove("open"));
+  $("#ap-submit").addEventListener("click",()=>{
+    const reason=$("#ap-reason").value, notes=$("#ap-notes").value.trim();
+    if(!reason||!notes){ $("#ap-error").style.display="block"; return; }
+    active.workStatus="Appeal Submitted";
+    logAction(active,"Appeal Submitted",reason);
+    $("#appeal-modal").classList.remove("open");
+    toast(`Appeal submitted — claim ${active.claimNo} routed to ${currentRemit.payer}.`);
+    renderEob();
+  });
+
+  function ackReversal(no){
+    const c=currentRemit.claims.find(x=>x.claimNo===no && x.statusCode===22 && x.workStatus==="New");
+    if(!c) return;
+    c.workStatus="Acknowledged";
+    logAction(c,"Reversal Acknowledged","Payment reversal of "+fmt(c.paid)+" acknowledged; ledger adjustment required");
+    toast(`Reversal acknowledged — claim ${c.claimNo}.`);
+    renderEob();
+  }
+
+  /* ---- work log ---- */
+  function renderWorkLog(){
+    const has=workLog.length>0;
+    $("#wl-empty").classList.toggle("hidden",has);
+    $("#wl-table").classList.toggle("hidden",!has);
+    $("#wl-body").innerHTML=workLog.map(w=>`<tr><td>${w.time}</td><td>${w.claim}</td><td>${w.patient}</td><td>${w.action}</td><td>${w.detail}</td></tr>`).join("");
+  }
+
+  /* ---- glossary ---- */
+  function renderGlossary(){
+    const q=$("#g-filter").value.trim().toLowerCase();
+    const rows=USED.filter(u=>!q || u.code.toLowerCase().includes(q) || u.desc.toLowerCase().includes(q) || u.type.toLowerCase().includes(q));
+    $("#g-body").innerHTML = rows.length
+      ? rows.map(u=>`<tr><td><b>${u.code}</b></td><td>${u.type}</td><td>${u.desc}</td></tr>`).join("")
+      : `<tr><td colspan="3" class="empty">No codes match "${$("#g-filter").value}".</td></tr>`;
+  }
+  $("#g-filter").addEventListener("input",renderGlossary);
+
+  /* ---- toast ---- */
+  let toastTimer=null;
+  function toast(msg){
+    const t=$("#toast"); t.textContent=msg; t.style.display="block";
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display="none",3200);
+  }
+}
+</script>
+</body>
+</html>
