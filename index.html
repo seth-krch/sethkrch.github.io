@@ -1027,7 +1027,7 @@ if(IS_BROWSER){
     $("#wl-body").innerHTML=workLog.map(w=>`<tr><td>${w.time}</td><td>${w.claim}</td><td>${w.patient}</td><td>${w.action}</td><td>${w.detail}</td></tr>`).join("");
   }
 
-  /* ---- glossary ---- */
+  /* ---- glossary ----- */
   function renderGlossary(){
     const q=$("#g-filter").value.trim().toLowerCase();
     const rows=USED.filter(u=>!q || u.code.toLowerCase().includes(q) || u.desc.toLowerCase().includes(q) || u.type.toLowerCase().includes(q));
