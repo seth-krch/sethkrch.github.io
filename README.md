@@ -1,1 +1,1 @@
-# sethkrch.github.io
+sethkrch.github.io
