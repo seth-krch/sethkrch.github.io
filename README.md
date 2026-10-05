@@ -1,17 +1,20 @@
 # sethkrch.com
 
-Personal site for Seth Krch, freelance automation developer. Served by GitHub
-Pages from the root of `main`, with the custom domain set in `CNAME`.
+Web-design studio site for Seth Krch. Served by GitHub Pages from the root of
+`main`, with the custom domain set in `CNAME`. Everything is static HTML with no
+build step.
 
-The whole site is one static file, `index.html`, with no build step:
+| Path | What it is |
+|---|---|
+| `index.html` | Studio home page: live contour-map hero, 3D carousel of work, pricing, contact |
+| `work/krch-auto/` | Krch Auto concept site (the "Bold" design) |
+| `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
+| `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
+| `work/thumbs/` | Screenshots used by the carousel |
+| `kit/` | Element kit: live components shown before/after, themeable as auto shop, dentist, café or salon |
 
-- **Styles** are inline in the `<style>` block. Colors and fonts are tokens on
-  `:root` at the top.
-- **The gravity-well hero** is drawn with Three.js r128, loaded from cdnjs.
-- **The small wireframes** on the cards are drawn on 2D canvases. The shape
-  each one draws comes from its `data-shape` attribute.
-- **The step animations** on the billing pipeline and the Method section are
-  driven by the sequencer near the end of the script.
+The carousel list lives in the `WORK` array near the end of `index.html`. To add
+a site, drop a 1280×800 screenshot in `work/thumbs/` and add an entry there.
 
 All motion stops when the visitor's system has reduced motion turned on.
 

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seth Krch · Automation Developer</title>
+<meta name="description" content="Freelance automation developer: ERP workflow orchestration, HxGN EAM and SAP S/4HANA automation, revenue cycle automation and authenticated web data collection.">
+<meta name="theme-color" content="#0c0a11">
+<meta property="og:title" content="Seth Krch · Automation Developer">
+<meta property="og:description" content="Automation systems for enterprise, healthcare and the web.">
+<meta property="og:url" content="https://krch.dev/">
+<link rel="canonical" href="https://krch.dev/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230c0a11'/%3E%3Cellipse cx='32' cy='32' rx='24' ry='9' fill='none' stroke='%237d45a8' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='7' fill='none' stroke='%2363e0d6' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Share+Tech+Mono&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&text=%E7%89%B9%E7%95%B0%E7%82%B9&display=swap">
+<style>
+/* Layout: a mission-control poster — hard bordered panels on a 12-col grid, one gravity-well hero, HUD labels everywhere. Single dark world by choice. */
+:root {
+  --void:   #0c0a11;   /* purple-black ground */
+  --panel:  #120e19;   /* raised panel */
+  --ink:    #b9b0c4;   /* lilac-grey fill type */
+  --dim:    #6f6680;   /* secondary text, ticks */
+  --violet: #7d45a8;   /* frames, echo outlines */
+  --glow:   #b98cff;   /* hover / live accent */
+  --teal:   #63e0d6;   /* deep-well highlight */
+  --copper: #d08a5e;   /* mesh gradient warm end */
+
+  --f-display: "Archivo", "Arial Black", Impact, sans-serif;
+  --f-hud: "Share Tech Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-kanji: "Dela Gothic One", "Hiragino Kaku Gothic Pro", "Yu Gothic", sans-serif;
+
+  --gut: clamp(16px, 4vw, 48px);
+  --gap: clamp(10px, 1.6vw, 18px);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--void);
+  color: var(--ink);
+  font: 400 16px/1.6 var(--f-body);
+  padding-inline: var(--gut);
+  padding-block: 0 40px;
+  overflow-x: hidden;
+}
+/* film grain over everything */
+body::after {
+  content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 50;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .09;
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-3%,2%)} 66%{transform:translate(2%,-3%)} 100%{transform:translate(0,0)} }
+
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--glow); outline-offset: 3px; }
+.hud { font-family: var(--f-hud); text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+.wrap { max-width: 1280px; margin-inline: auto; }
+
+/* ---------- chamfered tag ---------- */
+.tag {
+  --c: 7px;
+  display: inline-block; padding: 1px; background: var(--dim);
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+}
+.tag > span {
+  display: block; background: var(--void); padding: 3px 12px 2px;
+  clip-path: inherit;
+  font-family: var(--f-hud); text-transform: uppercase; letter-spacing: .08em; font-size: 13px; color: var(--ink);
+}
+.tag--live > span::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 8px; background: var(--teal); vertical-align: 1px; box-shadow: 0 0 10px var(--teal); animation: blink 1.6s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .2 } }
+
+/* ---------- top HUD bar ---------- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 12px 0; margin-bottom: var(--gap);
+  background: linear-gradient(var(--void) 70%, transparent);
+}
+.bar__mark { font-family: var(--f-display); font-weight: 900; font-stretch: 125%; font-size: 18px; text-decoration: none; letter-spacing: -.02em; }
+.bar__mark b { color: var(--violet); font-weight: 900; }
+.bar nav { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+.bar nav a { text-decoration: none; padding: 4px 10px; border: 1px solid transparent; color: var(--dim); }
+.bar nav a:hover { color: var(--ink); border-color: var(--violet); }
+.bar nav a i { font-style: normal; color: var(--violet); margin-right: 6px; }
+.bar__clock { color: var(--dim); font-variant-numeric: tabular-nums; }
+
+/* ---------- framed panel ---------- */
+.frame { position: relative; border: 2px solid var(--violet); padding: 6px; }
+.frame > .frame__in { position: relative; border: 1px solid #2a2036; height: 100%; overflow: hidden; background: var(--panel); }
+
+/* ---------- hero ---------- */
+.hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.title { grid-column: 1 / -1; position: relative; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 12px; padding-top: 8px; }
+.title__tags { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; padding-top: 6px; }
+.echo-wrap { margin: 0; line-height: .82; font-family: var(--f-display); font-weight: 900; font-stretch: 125%; letter-spacing: -.035em; font-size: clamp(64px, 15vw, 210px); text-transform: none; }
+.echo { display: block; position: relative; isolation: isolate; color: var(--ink); width: max-content; max-width: 100%; }
+.echo + .echo { margin-left: clamp(40px, 22vw, 330px); margin-top: .02em; }
+.echo::before, .echo::after {
+  content: attr(data-text); position: absolute; inset: 0; z-index: -1;
+  color: transparent; -webkit-text-stroke: 2px var(--violet);
+  transform: translate(.045em, .07em);
+  animation: echo-out 1.1s cubic-bezier(.2,.8,.2,1) both .25s;
+}
+.echo::after { transform: translate(.09em, .14em); opacity: .55; animation-delay: .4s; }
+@keyframes echo-out { from { transform: translate(0,0); opacity: 0; } }
+.kanji { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
+.kanji__jp { font-family: var(--f-kanji); font-size: clamp(34px, 6vw, 72px); line-height: 1; color: var(--ink); letter-spacing: .06em; }
+.kanji__gloss { color: var(--dim); }
+
+.well { grid-column: 1 / 9; min-height: clamp(360px, 52vw, 620px); }
+.well canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.well__fallback { position: absolute; inset: 0; background:
+  repeating-linear-gradient(90deg, #2a2036 0 1px, transparent 1px 48px),
+  repeating-linear-gradient(0deg, #2a2036 0 1px, transparent 1px 48px); }
+.well__hud { position: absolute; inset: 0; pointer-events: none; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between; }
+.well__row { display: flex; justify-content: space-between; gap: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.well__row b { color: var(--teal); font-weight: 400; }
+.crosshair { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; pointer-events: none; opacity: 0; transition: opacity .2s; }
+.crosshair::before, .crosshair::after { content: ""; position: absolute; background: var(--glow); }
+.crosshair::before { left: 10px; top: 0; width: 2px; height: 22px; }
+.crosshair::after { top: 10px; left: 0; height: 2px; width: 22px; }
+.well:hover .crosshair { opacity: .8; }
+
+.side { grid-column: 9 / -1; display: flex; flex-direction: column; gap: var(--gap); min-width: 0; }
+.brief { padding: 18px 18px 20px; }
+.brief .frame__in { padding: 18px 18px 20px; }
+.brief__role { font-family: var(--f-display); font-weight: 800; font-stretch: 112%; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.05; margin: 0 0 12px; color: var(--ink); text-wrap: balance; }
+.brief p { margin: 0; color: #9d93ab; max-width: 60ch; }
+.brief p strong { color: var(--ink); font-weight: 500; }
+.boot { color: var(--dim); white-space: pre-wrap; margin: 0; min-height: 7.5em; line-height: 1.55; }
+.boot .ok { color: var(--teal); }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  --c: 10px; display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+  padding: 12px 18px; font-family: var(--f-hud); text-transform: uppercase; letter-spacing: .1em; font-size: 14px;
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+  background: var(--ink); color: var(--void); transition: background .15s, color .15s;
+}
+.btn:hover { background: var(--glow); }
+.btn--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--dim); }
+.btn--ghost:hover { background: var(--violet); color: var(--ink); }
+
+.strip { grid-column: 1 / -1; display: grid; grid-template-columns: 2fr 3fr auto; gap: var(--gap); align-items: center; }
+.hazard { height: 22px; background: repeating-linear-gradient(-55deg, var(--dim) 0 9px, transparent 9px 17px); clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 0 100%); }
+.ruler { height: 22px; border-bottom: 2px solid var(--dim);
+  background:
+    repeating-linear-gradient(90deg, var(--dim) 0 2px, transparent 2px 60px) bottom / 100% 18px no-repeat,
+    repeating-linear-gradient(90deg, var(--dim) 0 1px, transparent 1px 12px) bottom / 100% 8px no-repeat; }
+.code { display: flex; align-items: center; gap: 12px; }
+.code__no { font-family: var(--f-hud); font-size: 54px; line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+
+/* ---------- section heads ---------- */
+section { scroll-margin-top: 70px; }
+.head { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 18px; margin: clamp(56px, 9vw, 110px) 0 var(--gap); }
+.head__no { font-family: var(--f-display); font-weight: 900; font-stretch: 125%; font-size: clamp(56px, 9vw, 120px); line-height: .75; color: transparent; -webkit-text-stroke: 2px var(--violet); }
+.head__t { margin: 0; font-family: var(--f-display); font-weight: 900; font-stretch: 125%; font-size: clamp(30px, 5vw, 64px); line-height: .9; letter-spacing: -.02em; text-wrap: balance; }
+.head__t small { display: block; font-family: var(--f-hud); font-weight: 400; font-stretch: 100%; font-size: 13px; letter-spacing: .14em; color: var(--dim); margin-bottom: 10px; }
+.head__bar { width: clamp(60px, 14vw, 180px); height: 14px; background: repeating-linear-gradient(-55deg, var(--violet) 0 6px, transparent 6px 11px); }
+
+/* ---------- capability matrix ---------- */
+.sector { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.sector + .sector { margin-top: clamp(28px, 4vw, 44px); }
+.sector__label { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; color: var(--dim); }
+.sector__label b { font-weight: 400; color: var(--ink); }
+.sector__label::after { content: ""; flex: 1; height: 1px; background: repeating-linear-gradient(90deg, var(--dim) 0 6px, transparent 6px 10px); }
+.card { grid-column: span 4; display: flex; }
+.card--half { grid-column: span 6; }
+.card--wide { grid-column: 1 / -1; }
+.card .frame { flex: 1; display: flex; flex-direction: column; transition: border-color .2s; }
+.card .frame:hover { border-color: var(--glow); }
+.card .frame__in { display: flex; flex-direction: column; flex: 1; }
+.card--wide .frame__in { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+.card__viz { position: relative; height: 210px; border-bottom: 1px solid #2a2036; flex: none; }
+.card--wide .card__viz { height: auto; min-height: 280px; border-bottom: 0; border-right: 1px solid #2a2036; }
+.card__viz canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.card__viz .hud { position: absolute; left: 12px; top: 10px; color: var(--dim); }
+.card__viz .hud.br { left: auto; top: auto; right: 12px; bottom: 10px; }
+.card__body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; }
+.card__top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.card__code { color: var(--dim); }
+.card__no { font-family: var(--f-hud); font-size: 34px; line-height: .8; color: transparent; -webkit-text-stroke: 1.2px var(--ink); }
+.card h3 { margin: 4px 0 0; font-family: var(--f-display); font-weight: 900; font-stretch: 115%; font-size: clamp(21px, 2.1vw, 28px); line-height: 1; letter-spacing: -.01em; text-wrap: balance; }
+.card p { margin: 0; color: #9d93ab; font-size: 15px; }
+.card p strong { color: var(--ink); font-weight: 500; }
+.proto { margin: auto 0 0; display: grid; grid-template-columns: auto 1fr; border-top: 1px solid #2a2036; }
+.proto dt, .proto dd { margin: 0; padding: 7px 0 0; }
+.proto dt { color: var(--dim); padding-right: 14px; }
+.proto dd { color: var(--ink); text-align: right; }
+.flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: f; }
+.flow li { position: relative; border: 1px solid #2a2036; margin-left: -1px; padding: 10px 10px 9px; counter-increment: f; }
+.flow li::before { content: "0" counter(f); display: block; color: var(--violet); margin-bottom: 6px; }
+.flow li b { display: block; font-weight: 400; color: var(--ink); }
+.flow li span { color: var(--dim); font-size: 11px; }
+.flow li:not(:last-child)::after { content: "▸"; position: absolute; right: -7px; top: 50%; transform: translateY(-50%); color: var(--teal); z-index: 1; background: var(--panel); line-height: 1; }
+.flow li.pulse { border-color: var(--teal); }
+.flow li.pulse b { color: var(--teal); }
+.flow--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.flow--4 li { padding: 8px 8px 7px; font-size: 11px; overflow-wrap: anywhere; }
+.flow--4 li b { font-size: 12px; }
+
+/* ---------- method ---------- */
+.method { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--gap); counter-reset: m; }
+.method li { counter-increment: m; display: flex; }
+.method .frame { flex: 1; transition: border-color .3s; }
+.method .frame__in { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 8px; transition: background .3s; }
+.method li .frame__in::before { content: "0" counter(m); font-family: var(--f-hud); font-size: 30px; line-height: .8; color: transparent; -webkit-text-stroke: 1.2px var(--dim); transition: -webkit-text-stroke-color .3s; }
+.method h3 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 900; font-stretch: 115%; font-size: 20px; line-height: 1; }
+.method p { margin: 0; font-size: 14px; color: #9d93ab; }
+.method__bar { height: 3px; background: #2a2036; margin-top: auto; position: relative; overflow: hidden; }
+.method__bar::after { content: ""; position: absolute; inset: 0; background: var(--teal); transform: scaleX(0); transform-origin: left; }
+.method li.pulse .frame { border-color: var(--teal); }
+.method li.pulse .frame__in::before { -webkit-text-stroke-color: var(--teal); }
+.method li.pulse .method__bar::after { animation: fill var(--step, 1.4s) linear forwards; }
+@keyframes fill { to { transform: scaleX(1); } }
+
+/* ---------- dossier ---------- */
+.dossier { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.dossier__text { grid-column: 1 / 8; }
+.dossier__text .frame__in, .dossier__spec .frame__in { padding: 20px 22px; }
+.dossier__text p { margin: 0 0 14px; font-size: clamp(17px, 1.6vw, 20px); line-height: 1.55; max-width: 58ch; color: var(--ink); }
+.dossier__text p + p { font-size: 15px; color: #9d93ab; }
+.dossier__spec { grid-column: 8 / -1; }
+.spec { margin: 0; display: grid; grid-template-columns: auto 1fr; }
+.spec dt, .spec dd { padding: 9px 0; border-bottom: 1px dashed #2a2036; margin: 0; }
+.spec dt { color: var(--dim); padding-right: 18px; }
+.spec dd { color: var(--ink); text-align: right; }
+.spheres { display: flex; gap: var(--gap); margin-top: 16px; }
+.spheres canvas { width: 72px; height: 72px; }
+
+/* ---------- contact ---------- */
+.channel .frame__in { padding: clamp(20px, 4vw, 44px); display: grid; gap: 18px; }
+.channel__mail { font-family: var(--f-display); font-weight: 900; font-stretch: 118%; font-size: clamp(26px, 6.2vw, 84px); line-height: .95; letter-spacing: -.03em; overflow-wrap: anywhere; user-select: all; }
+.channel__row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.channel__note { color: var(--dim); }
+
+/* ---------- footer ---------- */
+.foot { margin-top: clamp(48px, 7vw, 80px); display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: end; color: var(--dim); }
+.barcode { display: flex; height: 38px; align-items: stretch; gap: 2px; }
+.barcode i { display: block; background: var(--dim); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .flow--4 { grid-template-columns: 1fr 1fr; }
+  .flow--4 li { margin-top: -1px; }
+  .flow--4 li::after { display: none; }
+  .method { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .well { grid-column: 1 / -1; }
+  .side { grid-column: 1 / -1; }
+  .card { grid-column: span 6; }
+  .card--half, .card--wide { grid-column: 1 / -1; }
+  .card--wide .frame__in { grid-template-columns: 1fr; }
+  .card--wide .card__viz { min-height: 220px; border-right: 0; border-bottom: 1px solid #2a2036; }
+  .dossier__text, .dossier__spec { grid-column: 1 / -1; }
+}
+@media (max-width: 620px) {
+  .title { grid-template-columns: 1fr; }
+  .title__tags { justify-content: flex-start; order: -1; }
+  .card { grid-column: 1 / -1; }
+  .flow { grid-template-columns: 1fr 1fr; }
+  .method { grid-template-columns: 1fr 1fr; }
+  .flow li { margin-top: -1px; }
+  .flow li::after { display: none; }
+  .strip { grid-template-columns: 1fr; }
+  .ruler { display: none; }
+  .head { grid-template-columns: auto 1fr; }
+  .head__bar { display: none; }
+  .bar__clock { display: none; }
+  .foot { grid-template-columns: 1fr; }
+  .well__row span:nth-child(2) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar hud">
+    <a class="bar__mark" href="#top">SK<b>//</b>07</a>
+    <span class="tag tag--live"><span>Available for work</span></span>
+    <nav aria-label="Sections">
+      <a href="#files"><i>01</i>Modules</a>
+      <a href="#method"><i>02</i>Method</a>
+      <a href="#dossier"><i>03</i>Profile</a>
+      <a href="#channel"><i>04</i>Contact</a>
+    </nav>
+    <span class="bar__clock" id="clock">UTC --:--:--</span>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="Intro">
+      <div class="title">
+        <h1 class="echo-wrap" aria-label="Seth Krch">
+          <span class="echo" data-text="Seth" aria-hidden="true">Seth</span>
+          <span class="echo" data-text="Krch" aria-hidden="true">Krch</span>
+        </h1>
+        <div class="title__tags">
+          <span class="tag"><span>Sector_07</span></span>
+          <span class="tag"><span>Freelance automation</span></span>
+        </div>
+      </div>
+      <div class="kanji">
+        <span class="kanji__jp" lang="ja">特異点</span>
+        <span class="kanji__gloss hud">tokui-ten // singularity</span>
+      </div>
+
+      <div class="well frame" id="well">
+        <div class="frame__in">
+          <div class="well__fallback"></div>
+          <canvas id="wellCanvas" aria-hidden="true"></canvas>
+          <div class="crosshair" id="cross"></div>
+          <div class="well__hud hud">
+            <div class="well__row"><span>Grav_well // live</span><span>r<sub>s</sub> = 2GM / c²</span><span id="coords">x +0.000 / y +0.000</span></div>
+            <div class="well__row"><span>Fig. 01 — Schwarzschild well, embedding diagram</span><span>t = <b id="tick">0000</b></span></div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side">
+        <div class="frame brief" style="padding:6px">
+          <div class="frame__in">
+            <p class="brief__role">Automation systems for enterprise, healthcare and the web.</p>
+            <p>I design software that performs operational work end to end: <strong>ERP and EAM transactions, SAP processes, revenue-cycle workflows and authenticated web data collection</strong>. Each system runs unattended, verifies its own output and stays maintainable after handoff.</p>
+          </div>
+        </div>
+        <div class="frame" style="padding:6px">
+          <div class="frame__in" style="padding:14px 16px">
+            <pre class="boot hud" id="boot" aria-label="System status">&gt; init gravity_well ....... <span class="ok">ok</span>
+&gt; mount modules [6] ....... <span class="ok">ok</span>
+&gt; load method [6 phases] .. <span class="ok">ok</span>
+&gt; status: available for new engagements</pre>
+          </div>
+        </div>
+        <div class="cta">
+          <a class="btn" href="#files">View modules →</a>
+          <a class="btn btn--ghost" href="#channel">Contact</a>
+        </div>
+      </aside>
+
+      <div class="strip" aria-hidden="true">
+        <div class="hazard"></div>
+        <div class="ruler"></div>
+        <div class="code"><span class="code__no">07</span><span class="tag"><span>Generate_code</span></span></div>
+      </div>
+    </section>
+
+        <section id="files" aria-labelledby="files-t">
+      <div class="head">
+        <span class="head__no" aria-hidden="true">01</span>
+        <h2 class="head__t" id="files-t"><small>Module index // 6 active</small>Automation modules</h2>
+        <span class="head__bar" aria-hidden="true"></span>
+      </div>
+
+      <div class="sector">
+        <div class="sector__label hud"><b>Sector A</b> Enterprise operations</div>
+        <article class="card ">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="lattice" aria-hidden="true"></canvas>
+              <span class="hud">Obj_A1 // network</span>
+              <span class="hud br">nodes 12 · edges 30</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_A1 // ERP</span><h3>ERP Workflow Orchestration</h3></div>
+                <span class="card__no" aria-hidden="true">A1</span>
+              </div>
+              <p>Multi-step business processes executed across <strong>networked ERP environments</strong>. Order entry, approvals, inventory transactions and departmental handoffs run on schedule, with every action logged and auditable.</p>
+              <dl class="proto hud"><dt>Interface</dt><dd>APIs · scheduled jobs · file exchange</dd><dt>Replaces</dt><dd>Manual re-entry and follow-up</dd></dl>
+            </div>
+          </div></div>
+        </article>
+        <article class="card ">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="cube" aria-hidden="true"></canvas>
+              <span class="hud">Obj_A2 // asset grid</span>
+              <span class="hud br">3 × 3 × 3</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_A2 // HxGN EAM</span><h3>Headless HxGN EAM Integration</h3></div>
+                <span class="card__no" aria-hidden="true">A2</span>
+              </div>
+              <p>Direct interaction with Hexagon EAM at the <strong>HTTP layer</strong>, independent of the user interface. Work orders, asset records and parts inventory are created and updated in bulk under managed sessions, with every response verified.</p>
+              <dl class="proto hud"><dt>Interface</dt><dd>HTTP · session management</dd><dt>Replaces</dt><dd>Screen-by-screen data entry</dd></dl>
+            </div>
+          </div></div>
+        </article>
+        <article class="card ">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="torus" aria-hidden="true"></canvas>
+              <span class="hud">Obj_A3 // transaction loop</span>
+              <span class="hud br">gui scripting</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_A3 // SAP S/4HANA</span><h3>SAP S/4HANA GUI Scripting</h3></div>
+                <span class="card__no" aria-hidden="true">A3</span>
+              </div>
+              <p>VBScript automation on the <strong>SAP GUI Scripting API</strong>. Transactions execute end to end, from data entry through validation and report extraction, at a volume and consistency that manual T-code work cannot sustain.</p>
+              <dl class="proto hud"><dt>Interface</dt><dd>SAP GUI Scripting · VBScript</dd><dt>Replaces</dt><dd>Repetitive transaction entry</dd></dl>
+            </div>
+          </div></div>
+        </article>
+      </div>
+
+      <div class="sector">
+        <div class="sector__label hud"><b>Sector B</b> Revenue cycle</div>
+        <article class="card card--wide">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="throat" aria-hidden="true"></canvas>
+              <span class="hud">Obj_B1 // claim throat</span>
+              <span class="hud br">submitted → paid</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_B1 // Healthcare billing</span><h3>Revenue Cycle Automation</h3></div>
+                <span class="card__no" aria-hidden="true">B1</span>
+              </div>
+              <p>Claims processing across payer portals, clearinghouses and practice-management systems that share no common interface. Each claim moves from <strong>eligibility verification through payment posting</strong> without manual re-keying, which reduces denials, data-entry errors and days in A/R.</p>
+              <ol class="flow hud" aria-label="Billing pipeline">
+                <li><b>Eligibility</b><span>270 / 271</span></li>
+                <li><b>Claim</b><span>837</span></li>
+                <li><b>Status</b><span>276 / 277</span></li>
+                <li><b>Remit</b><span>835</span></li>
+                <li><b>Posting</b><span>ledger</span></li>
+              </ol>
+              <dl class="proto hud"><dt>Interface</dt><dd>Payer portals · EDI · browser automation</dd><dt>Replaces</dt><dd>Re-keying between systems</dd></dl>
+            </div>
+          </div></div>
+        </article>
+      </div>
+
+      <div class="sector">
+        <div class="sector__label hud"><b>Sector C</b> Web data acquisition</div>
+        <article class="card card--half">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="whorl" aria-hidden="true"></canvas>
+              <span class="hud">Obj_C1 // fingerprint</span>
+              <span class="hud br">entropy: consistent</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_C1 // Stealth</span><h3>Fingerprint-Consistent Collection</h3></div>
+                <span class="card__no" aria-hidden="true">C1</span>
+              </div>
+              <p>Data-collection clients engineered to present as ordinary browser traffic. <strong>Device fingerprints, header order, TLS signatures and request timing</strong> remain internally consistent, so collection stays reliable on sites with active bot detection.</p>
+              <dl class="proto hud"><dt>Interface</dt><dd>Custom HTTP clients</dd><dt>Replaces</dt><dd>Blocked or unstable collection</dd></dl>
+            </div>
+          </div></div>
+        </article>
+        <article class="card card--half">
+          <div class="frame"><div class="frame__in">
+            <div class="card__viz">
+              <canvas data-shape="tunnel" aria-hidden="true"></canvas>
+              <span class="hud">Obj_C2 // session depth</span>
+              <span class="hud br">step 1 → n</span>
+            </div>
+            <div class="card__body">
+              <div class="card__top">
+                <div><span class="card__code hud">Mod_C2 // Browser</span><h3>Authenticated Browser Automation</h3></div>
+                <span class="card__no" aria-hidden="true">C2</span>
+              </div>
+              <p>Headless browser sessions that <strong>sign in, traverse multi-step forms and extract structured data</strong> from portals that expose no API. Output arrives as clean, typed records ready for downstream systems.</p>
+              <dl class="proto hud"><dt>Interface</dt><dd>Headless browsers · structured export</dd><dt>Replaces</dt><dd>Manual click-through</dd></dl>
+            </div>
+          </div></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="method" aria-labelledby="method-t">
+      <div class="head">
+        <span class="head__no" aria-hidden="true">02</span>
+        <h2 class="head__t" id="method-t"><small>Engagement sequence // 6 phases</small>Method</h2>
+        <span class="head__bar" aria-hidden="true"></span>
+      </div>
+      <ol class="method" id="method-steps">
+        <li><div class="frame"><div class="frame__in"><h3>Map</h3><p>Document the current process: every screen, field, exception and handoff.</p><span class="method__bar"></span></div></div></li>
+        <li><div class="frame"><div class="frame__in"><h3>Specify</h3><p>Define inputs, outputs, failure modes and acceptance criteria.</p><span class="method__bar"></span></div></div></li>
+        <li><div class="frame"><div class="frame__in"><h3>Build</h3><p>Target the most stable interface available: API, HTTP layer or GUI scripting.</p><span class="method__bar"></span></div></div></li>
+        <li><div class="frame"><div class="frame__in"><h3>Validate</h3><p>Run in parallel with the manual process until outputs match.</p><span class="method__bar"></span></div></div></li>
+        <li><div class="frame"><div class="frame__in"><h3>Deploy</h3><p>Schedule, log and monitor. Failures raise alerts instead of passing silently.</p><span class="method__bar"></span></div></div></li>
+        <li><div class="frame"><div class="frame__in"><h3>Maintain</h3><p>Adapt as upstream systems change. Hand off with full documentation.</p><span class="method__bar"></span></div></div></li>
+      </ol>
+    </section>
+
+    <section id="dossier" aria-labelledby="dossier-t">
+      <div class="head">
+        <span class="head__no" aria-hidden="true">03</span>
+        <h2 class="head__t" id="dossier-t"><small>Operator profile</small>Profile</h2>
+        <span class="head__bar" aria-hidden="true"></span>
+      </div>
+      <div class="dossier">
+        <div class="dossier__text frame"><div class="frame__in">
+          <p>Freelance automation developer. My work sits between the systems a business depends on and the repetitive labor performed inside them.</p>
+          <p>Typical input: a manual process, an undocumented endpoint or an authenticated portal. Typical output: a monitored, repeatable workflow that someone else can maintain.</p>
+          <div class="spheres" aria-hidden="true">
+            <canvas data-shape="sphere" data-small="1"></canvas>
+            <canvas data-shape="sphere" data-small="1" data-tilt="1.2"></canvas>
+            <canvas data-shape="disc" data-small="1"></canvas>
+          </div>
+        </div></div>
+        <div class="dossier__spec frame"><div class="frame__in">
+          <dl class="spec hud">
+            <dt>Languages</dt><dd>Python · VBScript</dd>
+            <dt>Enterprise</dt><dd>SAP S/4HANA · HxGN EAM · ERP</dd>
+            <dt>Healthcare</dt><dd>Claims · eligibility · remittance</dd>
+            <dt>Web</dt><dd>HTTP clients · headless browsers</dd>
+            <dt>Mode</dt><dd>Freelance · remote</dd>
+            <dt>Status</dt><dd style="color:var(--teal)">Available for new engagements</dd>
+          </dl>
+        </div></div>
+      </div>
+    </section>
+
+    <section id="channel" aria-labelledby="channel-t">
+      <div class="head">
+        <span class="head__no" aria-hidden="true">04</span>
+        <h2 class="head__t" id="channel-t"><small>Direct line</small>Contact</h2>
+        <span class="head__bar" aria-hidden="true"></span>
+      </div>
+      <div class="channel frame"><div class="frame__in">
+        <span class="hud" style="color:var(--dim)">Email</span>
+        <span class="channel__mail" id="mail">sethkrch@gmail.com</span>
+        <div class="channel__row">
+          <a class="btn" href="mailto:sethkrch@gmail.com">Send email →</a>
+          <button class="btn btn--ghost" id="copy" type="button" style="border:0;cursor:pointer">Copy address</button>
+          <span class="channel__note hud" id="copyNote" aria-live="polite">Describe the process you want automated. I'll reply with questions and a proposed approach.</span>
+        </div>
+      </div></div>
+    </section>
+  </main>
+
+  <footer class="foot hud">
+    <div class="barcode" id="barcode" aria-hidden="true"></div>
+    <span>© <span id="yr">2026</span> Seth Krch · Freelance automation</span>
+    <span>Sector_07</span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- clock, year, barcode, copy ---------- */
+  const clock = document.getElementById("clock");
+  const pad = n => String(n).padStart(2, "0");
+  const tickClock = () => { const d = new Date(); clock.textContent = `UTC ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`; };
+  tickClock(); setInterval(tickClock, 1000);
+  document.getElementById("yr").textContent = new Date().getFullYear();
+
+  const bc = document.getElementById("barcode");
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  for (let i = 0; i < 46; i++) { const b = document.createElement("i"); b.style.width = (1 + Math.floor(rnd() * 4)) + "px"; if (rnd() > .82) b.style.opacity = 0; bc.appendChild(b); }
+
+  const note = document.getElementById("copyNote");
+  document.getElementById("copy").addEventListener("click", () => {
+    const addr = document.getElementById("mail").textContent;
+    const done = () => (note.textContent = "Copied // " + addr);
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); note.textContent = "Selected // press copy"; };
+    try { navigator.clipboard.writeText(addr).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  /* ---------- gravity well (Three.js) ---------- */
+  const well = document.getElementById("well");
+  const canvas = document.getElementById("wellCanvas");
+  const coords = document.getElementById("coords");
+  const tickEl = document.getElementById("tick");
+  const cross = document.getElementById("cross");
+  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+
+  well.addEventListener("pointermove", e => {
+    const r = well.getBoundingClientRect();
+    const px = e.clientX - r.left, py = e.clientY - r.top;
+    mouse.tx = (px / r.width) * 2 - 1; mouse.ty = (py / r.height) * 2 - 1;
+    cross.style.left = px + "px"; cross.style.top = py + "px";
+    const sx = v => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(3);
+    coords.textContent = `x ${sx(mouse.tx)} / y ${sx(-mouse.ty)}`;
+  });
+  well.addEventListener("pointerleave", () => { mouse.tx = 0; mouse.ty = 0; });
+
+  if (window.THREE) {
+    try { initWell(); } catch (e) { canvas.remove(); }
+  } else { canvas.remove(); }
+
+  function initWell() {
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x120e19, 14, 30);
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+
+    const S = 11, N = 44, SEG = 140, HOLE = 0.42;
+    const depth = r => -Math.min(10, 3.4 / Math.sqrt(r * r * 0.28 + 0.05)) + 3.4 / Math.sqrt(S * S * 0.28 + 0.05);
+    const cFlat = new THREE.Color(0x5e5470), cMid = new THREE.Color(0x7d45a8), cDeep = new THREE.Color(0x63e0d6), cWarm = new THREE.Color(0xd08a5e);
+
+    // build base xz points for every grid line segment
+    const base = [];
+    for (let i = 0; i <= N; i++) {
+      const k = -S + (2 * S * i) / N;
+      for (let s = 0; s < SEG; s++) {
+        const a = -S + (2 * S * s) / SEG, b = -S + (2 * S * (s + 1)) / SEG;
+        base.push(a, k, b, k);   // line along x at z=k
+        base.push(k, a, k, b);   // line along z at x=k
+      }
+    }
+    const segCount = base.length / 4;
+    const pos = new Float32Array(segCount * 6);
+    const col = new Float32Array(segCount * 6);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    const mat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .95, blending: THREE.AdditiveBlending, depthWrite: false });
+    const grid = new THREE.LineSegments(geo, mat);
+    scene.add(grid);
+
+    // photon ring at the throat
+    const ringGeo = new THREE.BufferGeometry();
+    const ringPts = []; for (let i = 0; i <= 128; i++) { const t = i / 128 * Math.PI * 2; ringPts.push(Math.cos(t) * HOLE, depth(HOLE), Math.sin(t) * HOLE); }
+    ringGeo.setAttribute("position", new THREE.Float32BufferAttribute(ringPts, 3));
+    const ring = new THREE.Line(ringGeo, new THREE.LineBasicMaterial({ color: 0x9ff5ee, transparent: true, opacity: .9 }));
+    scene.add(ring);
+
+    // infalling particles
+    const P = 520, pPos = new Float32Array(P * 3), pState = [];
+    for (let i = 0; i < P; i++) pState.push({ r: 1 + Math.random() * (S - 1), a: Math.random() * Math.PI * 2, v: .4 + Math.random() * .6 });
+    const pGeo = new THREE.BufferGeometry(); pGeo.setAttribute("position", new THREE.BufferAttribute(pPos, 3));
+    const pts = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xd9c6ff, size: .06, transparent: true, opacity: .8, blending: THREE.AdditiveBlending, depthWrite: false }));
+    scene.add(pts);
+
+    const tmp = new THREE.Color();
+    function shade(r, y, out, o) {
+      const t = Math.min(1, Math.max(0, -y / 9));
+      if (t < .35) tmp.copy(cFlat).lerp(cMid, t / .35);
+      else tmp.copy(cMid).lerp(cDeep, (t - .35) / .65);
+      const edge = Math.min(1, r / S);           // warm tint toward the rim, like the poster mesh
+      tmp.lerp(cWarm, Math.max(0, edge - .55) * .7);
+      out[o] = tmp.r; out[o + 1] = tmp.g; out[o + 2] = tmp.b;
+    }
+
+    function update(t) {
+      let w = 0;
+      for (let i = 0; i < base.length; i += 4) {
+        const x1 = base[i], z1 = base[i + 1], x2 = base[i + 2], z2 = base[i + 3];
+        const r1 = Math.hypot(x1, z1), r2 = Math.hypot(x2, z2);
+        const o = w * 6; w++;
+        if (r1 < HOLE || r2 < HOLE) { pos.fill(0, o, o + 6); col.fill(0, o, o + 6); continue; }
+        const y1 = depth(r1) + Math.sin(r1 * 1.4 - t * 1.8) * .12 * Math.exp(-r1 * .12);
+        const y2 = depth(r2) + Math.sin(r2 * 1.4 - t * 1.8) * .12 * Math.exp(-r2 * .12);
+        pos[o] = x1; pos[o + 1] = y1; pos[o + 2] = z1;
+        pos[o + 3] = x2; pos[o + 4] = y2; pos[o + 5] = z2;
+        shade(r1, y1, col, o); shade(r2, y2, col, o + 3);
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.attributes.color.needsUpdate = true;
+
+      for (let i = 0; i < P; i++) {
+        const p = pState[i];
+        p.a += (.6 / (p.r + .4)) * p.v * .03;
+        p.r -= (.012 + .05 / (p.r + .3)) * p.v;
+        if (p.r < HOLE) { p.r = S - Math.random() * 2; p.a = Math.random() * Math.PI * 2; }
+        pPos[i * 3] = Math.cos(p.a) * p.r; pPos[i * 3 + 1] = depth(p.r) + .04; pPos[i * 3 + 2] = Math.sin(p.a) * p.r;
+      }
+      pGeo.attributes.position.needsUpdate = true;
+    }
+
+    function resize() {
+      const r = canvas.getBoundingClientRect();
+      renderer.setSize(r.width, r.height, false);
+      camera.aspect = r.width / Math.max(1, r.height);
+      camera.position.set(0, 6, camera.aspect < 1 ? 15 : 10.5);
+      camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(canvas); resize();
+
+    let visible = true, t0 = performance.now(), frame = 0;
+    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(well);
+
+    function render(now) {
+      const t = (now - t0) / 1000;
+      mouse.x += (mouse.tx - mouse.x) * .05; mouse.y += (mouse.ty - mouse.y) * .05;
+      grid.rotation.y = ring.rotation.y = pts.rotation.y = t * .06;
+      camera.position.x = mouse.x * 3;
+      camera.position.y = 6 - mouse.y * 2.2;
+      camera.lookAt(0, -3.4, 0);
+      update(t);
+      renderer.render(scene, camera);
+      tickEl.textContent = String(frame++ % 10000).padStart(4, "0");
+    }
+    if (reduce) { render(performance.now()); return; }
+    (function loop(now) { if (visible) render(now); requestAnimationFrame(loop); })(performance.now());
+  }
+
+  /* ---------- small wireframe objects (canvas 2D) ---------- */
+  const shapes = {
+    sphere: (lines) => {
+      for (let i = 1; i < 12; i++) { const v = -Math.PI / 2 + i * Math.PI / 12, l = []; for (let j = 0; j <= 48; j++) { const u = j / 48 * Math.PI * 2; l.push([Math.cos(v) * Math.cos(u), Math.sin(v), Math.cos(v) * Math.sin(u)]); } lines.push(l); }
+      for (let j = 0; j < 16; j++) { const u = j / 16 * Math.PI * 2, l = []; for (let i = 0; i <= 32; i++) { const v = -Math.PI / 2 + i / 32 * Math.PI; l.push([Math.cos(v) * Math.cos(u), Math.sin(v), Math.cos(v) * Math.sin(u)]); } lines.push(l); }
+    },
+    throat: (lines) => {
+      const R = y => .28 * Math.sqrt(1 + 9 * y * y);
+      for (let i = 0; i <= 18; i++) { const y = -1 + i / 9, l = []; for (let j = 0; j <= 48; j++) { const u = j / 48 * Math.PI * 2; l.push([R(y) * Math.cos(u), y, R(y) * Math.sin(u)]); } lines.push(l); }
+      for (let j = 0; j < 20; j++) { const u = j / 20 * Math.PI * 2, l = []; for (let i = 0; i <= 40; i++) { const y = -1 + i / 20; l.push([R(y) * Math.cos(u), y, R(y) * Math.sin(u)]); } lines.push(l); }
+    },
+    torus: (lines) => {
+      const R = .72, r = .26;
+      for (let i = 0; i < 40; i++) { const u = i / 40 * Math.PI * 2, l = []; for (let j = 0; j <= 24; j++) { const v = j / 24 * Math.PI * 2 + u * .5; l.push([(R + r * Math.cos(v)) * Math.cos(u), r * Math.sin(v) * 1.6, (R + r * Math.cos(v)) * Math.sin(u)]); } lines.push(l); }
+    },
+    lattice: (lines) => {
+      const g = (1 + Math.sqrt(5)) / 2, v = [[-1,g,0],[1,g,0],[-1,-g,0],[1,-g,0],[0,-1,g],[0,1,g],[0,-1,-g],[0,1,-g],[g,0,-1],[g,0,1],[-g,0,-1],[-g,0,1]].map(p => p.map(c => c / 1.9));
+      for (let i = 0; i < 12; i++) for (let j = i + 1; j < 12; j++) { const d = Math.hypot(v[i][0]-v[j][0], v[i][1]-v[j][1], v[i][2]-v[j][2]); if (d < 1.1) { const l = []; for (let k = 0; k <= 8; k++) { const t = k / 8; l.push([0,1,2].map(a => v[i][a] + (v[j][a] - v[i][a]) * t)); } lines.push(l); } }
+      v.forEach(p => { const l = []; for (let k = 0; k <= 12; k++) { const u = k / 12 * Math.PI * 2; l.push([p[0] + Math.cos(u) * .05, p[1] + Math.sin(u) * .05, p[2]]); } lines.push(l); });
+    },
+    cube: (lines) => {
+      const n = 3, a = .62;
+      for (let i = 0; i <= n; i++) for (let j = 0; j <= n; j++) {
+        const p = -a + 2 * a * i / n, q = -a + 2 * a * j / n;
+        lines.push([[-a, p, q], [a, p, q]], [[p, -a, q], [p, a, q]], [[p, q, -a], [p, q, a]]);
+      }
+    },
+    whorl: (lines) => {
+      for (let k = 1; k <= 16; k++) { const l = [], r0 = k * .062; for (let j = 0; j <= 96; j++) { const u = j / 96 * Math.PI * 2; const r = r0 * (1 + .18 * Math.sin(u * 2 + k * .4)) * (1 + .1 * Math.cos(u)); l.push([Math.cos(u) * r * 1.0, Math.sin(u) * r * 1.25, Math.sin(u * 3 + k) * .03]); } lines.push(l); }
+    },
+    tunnel: (lines) => {
+      for (let k = 0; k < 9; k++) { const z = -1 + k * .25, s = .75; lines.push([[-s,-s,z],[s,-s,z],[s,s,z],[-s,s,z],[-s,-s,z]]); }
+      [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([x,y]) => lines.push([[x*.75,y*.75,-1],[x*.75,y*.75,1]]));
+      for (let k = 1; k < 4; k++) { const o = -.75 + k * .375; lines.push([[o,-.75,-1],[o,-.75,1]], [[-.75,o,-1],[-.75,o,1]]); }
+    },
+    disc: (lines) => {
+      for (let k = 0; k < 2; k++) { const l = []; for (let j = 0; j <= 64; j++) { const u = j / 64 * Math.PI * 2; l.push([Math.cos(u), k ? -.12 : .12, Math.sin(u)]); } lines.push(l); }
+      for (let k = 0; k < 2; k++) { const l = []; for (let j = 0; j <= 64; j++) { const u = j / 64 * Math.PI * 2; l.push([Math.cos(u) * .82, k ? -.12 : .12, Math.sin(u) * .82]); } lines.push(l); }
+    }
+  };
+  const lerpHex = (a, b, t) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(",")})`; };
+
+  const objs = [...document.querySelectorAll("canvas[data-shape]")].map(c => {
+    const lines = []; shapes[c.dataset.shape](lines);
+    return { c, ctx: c.getContext("2d"), lines, small: !!c.dataset.small, tilt: parseFloat(c.dataset.tilt || ({ whorl: .3, tunnel: .25 }[c.dataset.shape] ?? .45)), on: true };
+  });
+  const io = new IntersectionObserver(es => es.forEach(e => { const o = objs.find(o => o.c === e.target); if (o) o.on = e.isIntersecting; }));
+  objs.forEach(o => io.observe(o.c));
+
+  function draw(o, t) {
+    const { c, ctx } = o, dpr = Math.min(devicePixelRatio, 2);
+    const w = c.clientWidth, h = c.clientHeight;
+    if (c.width !== Math.round(w * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const s = Math.min(w, h) * (o.small ? .44 : .42) * ({ whorl: .62, throat: .85, tunnel: .8 }[o.c.dataset.shape] ?? 1), cx = w / 2, cy = h / 2;
+    const spin = { whorl: .12, tunnel: .18 }[o.c.dataset.shape] ?? .35;
+    const ay = o.c.dataset.shape === "tunnel" ? Math.sin(t * .4) * .5 : t * spin, ax = o.tilt + Math.sin(t * .3) * .15;
+    const cyA = Math.cos(ay), syA = Math.sin(ay), cxA = Math.cos(ax), sxA = Math.sin(ax);
+    ctx.lineWidth = o.small ? .8 : 1;
+    for (const l of o.lines) {
+      for (let i = 0; i < l.length - 1; i++) {
+        const P = [l[i], l[i + 1]].map(([x, y, z]) => { const x1 = x * cyA + z * syA, z1 = -x * syA + z * cyA; const y1 = y * cxA - z1 * sxA, z2 = y * sxA + z1 * cxA; return [x1, y1, z2]; });
+        const d = (P[0][2] + 1) / 2;
+        ctx.strokeStyle = o.small ? lerpHex("#3c3348", "#9a90a6", d) : lerpHex("#d08a5e", "#63e0d6", (P[0][1] + 1) / 2);
+        ctx.globalAlpha = o.small ? 1 : .25 + d * .75;
+        ctx.beginPath(); ctx.moveTo(cx + P[0][0] * s, cy - P[0][1] * s); ctx.lineTo(cx + P[1][0] * s, cy - P[1][1] * s); ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  /* step sequencers: the billing pipeline and the method grid cycle through their steps */
+  if (!reduce) {
+    const seqs = [...document.querySelectorAll(".flow:not(.flow--4), #method-steps")];
+    seqs.forEach((seq, n) => {
+      const items = seq.querySelectorAll(":scope > li");
+      const ms = seq.id === "method-steps" ? 5000 : 900;
+      seq.style.setProperty("--step", ms + "ms");
+      let k = 0;
+      setTimeout(() => {
+        items[0].classList.add("pulse");
+        setInterval(() => { items[k].classList.remove("pulse"); k = (k + 1) % items.length; items[k].classList.add("pulse"); }, ms);
+      }, n * 230);
+    });
+  }
+
+  const start = performance.now();
+  if (reduce) objs.forEach(o => draw(o, 0));
+  else (function loop(now) { const t = (now - start) / 1000; objs.forEach(o => o.on && draw(o, t)); requestAnimationFrame(loop); })(performance.now());
+})();
+</script>
+</body>
+</html>
