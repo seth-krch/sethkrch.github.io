@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Seth Krch · Websites for Local Business</title>
-<meta name="description" content="Custom websites for small businesses in rural Kansas. Designed and built by Seth Krch in Lincolnville.">
+<title>Seth Krch · Web Design</title>
+<meta name="description" content="Website design and hosting for small businesses.">
 <meta name="theme-color" content="#0a0f1d">
-<meta property="og:title" content="Seth Krch · Websites for Local Business">
-<meta property="og:description" content="Custom websites for small businesses in rural Kansas.">
+<meta property="og:title" content="Seth Krch · Web Design">
+<meta property="og:description" content="Website design and hosting for small businesses.">
 <meta property="og:url" content="https://sethkrch.com/">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,8 +64,7 @@ main, header, footer { position: relative; z-index: 1; }
 .hero__copy { position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(24px, 5vh, 56px); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; pointer-events: none; }
 .hero h1 { margin: 0 0 -.06em; font: 800 clamp(96px, 19vw, 280px)/.8 var(--f-display); letter-spacing: -.06em; text-shadow: 0 0 40px var(--bg), 0 0 18px var(--bg); }
 .hero h1 span { display: block; }
-.hero__sub { margin: 0; max-width: 30ch; text-align: right; color: var(--dim); font-size: clamp(15px, 1.4vw, 18px); text-shadow: 0 0 14px var(--bg); }
-.hero__sub b { color: var(--ink); font-weight: 500; }
+.hero__sub { margin: 0 0 .6em; text-align: right; color: var(--dim); text-shadow: 0 0 14px var(--bg); }
 .hero__corner { position: absolute; top: 18px; color: var(--dim); text-shadow: 0 0 10px var(--bg); }
 .hero__corner.l { left: var(--gut); }
 .hero__corner.r { right: var(--gut); text-align: right; }
@@ -76,7 +75,7 @@ main, header, footer { position: relative; z-index: 1; }
 .head__no { color: var(--peach); grid-row: span 2; align-self: start; padding-top: 10px; }
 .head h2 { margin: 0; font: 800 clamp(40px, 6vw, 80px)/.92 var(--f-display); letter-spacing: -.035em; text-wrap: balance; }
 .head h2 em { font-style: normal; color: var(--peach); }
-.head p { margin: 0; color: var(--dim); max-width: 52ch; }
+.head p { margin: 0; color: var(--dim); }
 
 /* ---------- work carousel ---------- */
 .stage { position: relative; overflow: hidden; height: clamp(330px, 38vw, 480px); perspective: 1600px; perspective-origin: 50% 40%; touch-action: pan-y; cursor: grab; user-select: none; }
@@ -133,16 +132,7 @@ main, header, footer { position: relative; z-index: 1; }
 .price li::before { content: "◇"; color: var(--peach); margin-right: 10px; }
 .fine { color: var(--dim); font-size: 15px; margin-top: 18px; }
 
-/* ---------- about + contact ---------- */
-.about { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--gut); align-items: start; }
-.about p { margin: 0 0 16px; font-size: clamp(18px, 1.7vw, 21px); max-width: 58ch; }
-.about p + p { color: var(--dim); font-size: 17px; }
-.spec { border: 1px solid var(--line); margin: 0; }
-.spec div { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--line); }
-.spec div:last-child { border-bottom: 0; }
-.spec dt { color: var(--dim); }
-.spec dd { margin: 0; text-align: right; }
-.spec a { color: var(--peach); }
+/* ---------- contact ---------- */
 .contact { text-align: center; }
 .contact__mail { display: block; font: 800 clamp(30px, 6.4vw, 96px)/1 var(--f-display); letter-spacing: -.04em; text-decoration: none; overflow-wrap: anywhere; margin: 18px 0 26px; }
 .contact__mail:hover { color: var(--peach); }
@@ -157,7 +147,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .tile:nth-child(2) { border-right: 0; }
   .tile:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
-  .steps, .prices, .about { grid-template-columns: 1fr; }
+  .steps, .prices { grid-template-columns: 1fr; }
   .hero__sub { text-align: left; }
   .hero__corner.r { display: none; }
 }
@@ -177,7 +167,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
 
 <header class="nav mono">
   <div class="in">
-    <nav class="nav__l" aria-label="Sections"><a href="#about">About</a><a href="#work">Work</a><a href="kit/">Kit</a></nav>
+    <nav class="nav__l" aria-label="Sections"><a href="#work">Work</a><a href="kit/">Kit</a></nav>
     <a class="mark" href="#top" aria-label="Seth Krch, home">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h6M16 12h6M12 2v6M12 16v6" stroke="#ff9a6b" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="#ff9a6b"/></svg>
     </a>
@@ -189,26 +179,26 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   <section class="hero" aria-label="Intro">
     <canvas id="topo" role="img" aria-label="Slowly shifting topographic map with an orange location marker"></canvas>
     <span class="hero__corner l mono">Web design · Fig. 01</span>
-    <span class="hero__corner r mono">38.49° N · 96.96° W<br>Lincolnville, KS</span>
+    <span class="hero__corner r mono">38.49° N<br>96.96° W</span>
     <div class="hero__copy">
       <h1 aria-label="Krch, Seth Krch web design">Krch</h1>
-      <p class="hero__sub"><b>Websites for local business.</b> Designed and built in Lincolnville, Kansas.</p>
+      <p class="hero__sub mono">Web design · Hosting · Updates</p>
     </div>
   </section>
 
   <section class="sec" id="work" aria-labelledby="work-t">
     <div class="in">
       <div class="head">
-        <span class="head__no mono">01 / Work</span>
-        <h2 id="work-t">Recent <em>sites</em></h2>
-        <p>Drag or swipe to browse. Tap the front site to open it.</p>
+        <span class="head__no mono">01</span>
+        <h2 id="work-t">Work</h2>
+        <p class="mono">Drag to browse</p>
       </div>
       <div class="stage ticks" id="stage">
         <div class="stage__floor" aria-hidden="true"></div>
         <div class="ring" id="ring"></div>
       </div>
       <div class="now">
-        <div><div class="now__k mono" id="nowK">Auto repair · Lincolnville, KS</div><div class="now__t" id="nowT">Krch Auto</div></div>
+        <div><div class="now__k mono" id="nowK">Auto repair</div><div class="now__t" id="nowT">Krch Auto</div></div>
         <div class="now__ctrl">
           <button class="iconbtn" id="prev" type="button" aria-label="Previous site"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
           <button class="iconbtn" id="next" type="button" aria-label="Next site"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
@@ -221,15 +211,14 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   <section class="sec" id="offer" aria-labelledby="offer-t" style="padding-top:0">
     <div class="in">
       <div class="head">
-        <span class="head__no mono">02 / What you get</span>
-        <h2 id="offer-t">A website that brings in <em>calls</em></h2>
-        <p>Built for the way people actually find a local business: on a phone, in a hurry, looking for hours and a number.</p>
+        <span class="head__no mono">02</span>
+        <h2 id="offer-t">Included</h2>
       </div>
       <div class="tiles">
-        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="32" height="24"/><path d="M6 14h32M16 38h12M22 32v6"/><circle cx="22" cy="23" r="5"/></g></svg><h3>Custom design</h3><p>Made for your business, not dragged out of a template.</p></div>
-        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M22 40s12-11 12-21a12 12 0 1 0-24 0c0 10 12 21 12 21z"/><circle cx="22" cy="19" r="4"/></g></svg><h3>Found on Google</h3><p>Your Google Business listing set up and linked, so you show on Maps.</p></div>
-        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="13" y="4" width="18" height="36" rx="3"/><path d="M19 34h6"/><path d="M18 17l4-4 4 4M22 13v10"/></g></svg><h3>Phone first</h3><p>Tap to call, tap for directions and live open or closed hours.</p></div>
-        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="22" cy="22" r="16"/><path d="M22 12v10l7 5"/></g></svg><h3>Updates handled</h3><p>New hours, holiday closures or specials: text me and it's done.</p></div>
+        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="32" height="24"/><path d="M6 14h32M16 38h12M22 32v6"/><circle cx="22" cy="23" r="5"/></g></svg><h3>Design</h3><p>One-page site, designed per business.</p></div>
+        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M22 40s12-11 12-21a12 12 0 1 0-24 0c0 10 12 21 12 21z"/><circle cx="22" cy="19" r="4"/></g></svg><h3>Google listing</h3><p>Google Business Profile setup and linking.</p></div>
+        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="13" y="4" width="18" height="36" rx="3"/><path d="M19 34h6"/><path d="M18 17l4-4 4 4M22 13v10"/></g></svg><h3>Mobile</h3><p>Tap to call, directions and live hours.</p></div>
+        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="22" cy="22" r="16"/><path d="M22 12v10l7 5"/></g></svg><h3>Updates</h3><p>Hours, closures and edits on request.</p></div>
       </div>
     </div>
   </section>
@@ -237,9 +226,9 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   <section class="sec" aria-labelledby="kit-t" style="padding-top:0">
     <div class="in">
       <a class="kitlink ticks" href="kit/">
-        <span class="mono" style="color:var(--peach)">Element kit</span>
-        <span class="kitlink__t" id="kit-t">Search bars, buttons, booking, hours. <em>See the parts up close.</em></span>
-        <span class="kitlink__go mono">Open kit ↗</span>
+        <span class="mono" style="color:var(--peach)">03</span>
+        <span class="kitlink__t" id="kit-t">Element kit</span>
+        <span class="kitlink__go mono">Open ↗</span>
       </a>
     </div>
   </section>
@@ -247,13 +236,13 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   <section class="sec" id="process" aria-labelledby="process-t" style="padding-top:0">
     <div class="in">
       <div class="head">
-        <span class="head__no mono">03 / How it works</span>
-        <h2 id="process-t">Three steps, <em>no homework</em></h2>
+        <span class="head__no mono">04</span>
+        <h2 id="process-t">Process</h2>
       </div>
       <ol class="steps">
-        <li><h3>Free draft</h3><p>I build a first version of your site before you pay anything.</p></li>
-        <li><h3>Your changes</h3><p>Tell me what to fix: words, photos, colors. I handle all of it.</p></li>
-        <li><h3>Live in a week</h3><p>Your site goes up on your own domain, linked to Google.</p></li>
+        <li><h3>Draft</h3><p>First version built before payment.</p></li>
+        <li><h3>Revisions</h3><p>Text, photos and colors adjusted.</p></li>
+        <li><h3>Launch</h3><p>Live on the business's own domain in about a week.</p></li>
       </ol>
     </div>
   </section>
@@ -261,59 +250,38 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   <section class="sec" id="pricing" aria-labelledby="pricing-t" style="padding-top:0">
     <div class="in">
       <div class="head">
-        <span class="head__no mono">04 / Pricing</span>
-        <h2 id="pricing-t">Simple, <em>local</em> pricing</h2>
+        <span class="head__no mono">05</span>
+        <h2 id="pricing-t">Pricing</h2>
       </div>
       <div class="prices">
         <div class="price ticks">
           <span class="mono" style="color:var(--dim)">Setup · one time</span>
-          <div class="price__amt">$300<small> starting</small></div>
-          <ul><li>Custom one-page site</li><li>Your own domain connected</li><li>Google Business listing</li><li>Tap-to-call, maps and hours</li></ul>
+          <div class="price__amt">$150</div>
+          <ul><li>One-page site</li><li>Domain connection</li><li>Google Business listing</li><li>Call, map and hours</li></ul>
         </div>
         <div class="price ticks">
-          <span class="mono" style="color:var(--dim)">Care plan · monthly</span>
+          <span class="mono" style="color:var(--dim)">Care · monthly</span>
           <div class="price__amt">$25<small> / month</small></div>
-          <ul><li>Hosting and security</li><li>Hours and holiday updates</li><li>Small edits on request</li><li>Cancel anytime</li></ul>
+          <ul><li>Hosting and security</li><li>Hours and holiday updates</li><li>Small edits</li><li>Cancel anytime</li></ul>
         </div>
       </div>
-      <p class="fine">Bigger projects like online booking, menus or extra pages are quoted up front.</p>
-    </div>
-  </section>
-
-  <section class="sec" id="about" aria-labelledby="about-t" style="padding-top:0">
-    <div class="in">
-      <div class="head">
-        <span class="head__no mono">05 / About</span>
-        <h2 id="about-t">Built in <em>Lincolnville</em></h2>
-      </div>
-      <div class="about">
-        <div>
-          <p>I'm Seth. My family runs Krch Auto in Lincolnville, Kansas, and I build websites for local businesses like it.</p>
-          <p>By day I'm a developer working on automation and data tools. Most small businesses around here are on an old template or nothing at all. I'd like to change that, one site at a time.</p>
-        </div>
-        <dl class="spec mono">
-          <div><dt>Based in</dt><dd>Lincolnville, KS</dd></div>
-          <div><dt>Serving</dt><dd>Central Kansas</dd></div>
-          <div><dt>Turnaround</dt><dd>About one week</dd></div>
-          <div><dt>Dev work</dt><dd><a href="work/singularity/">Developer portfolio ↗</a></dd></div>
-        </dl>
-      </div>
+      <p class="fine">Extra pages, booking and menus quoted separately.</p>
     </div>
   </section>
 
   <section class="sec contact" id="contact" aria-labelledby="contact-t" style="padding-top:0">
     <div class="in">
-      <span class="mono" style="color:var(--peach)" id="contact-t">06 / Get a free draft</span>
+      <span class="mono" style="color:var(--peach)" id="contact-t">06 · Contact</span>
       <a class="contact__mail" id="mail" href="mailto:sethkrch@gmail.com">sethkrch@gmail.com</a>
       <div class="contact__row">
         <button class="ghost" id="copy" type="button">Copy address</button>
-        <span class="mono" style="color:var(--dim)" id="copyNote" aria-live="polite">Send your business name and town. I'll send back a draft.</span>
+        <span class="mono" style="color:var(--dim)" id="copyNote" aria-live="polite"></span>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="mono"><div class="in"><span>© <span id="yr">2026</span> Seth Krch</span><span>Lincolnville, Kansas</span></div></footer>
+<footer class="mono"><div class="in"><span>© <span id="yr">2026</span> Seth Krch</span><span>sethkrch.com</span></div></footer>
 
 <script>
 (() => {
@@ -330,8 +298,8 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
 
   /* ---------- work ring ---------- */
   const WORK = [
-    { t: "Krch Auto", k: "Auto repair · Lincolnville, KS", img: "work/thumbs/krch-bold.jpg", href: "work/krch-auto/" },
-    { t: "Bright Shine Dental", k: "Dental practice · Demo", img: "work/thumbs/bright-shine.jpg", href: "work/bright-shine/" },
+    { t: "Krch Auto", k: "Auto repair", img: "work/thumbs/krch-bold.jpg", href: "work/krch-auto/" },
+    { t: "Bright Shine Dental", k: "Dental · Demo", img: "work/thumbs/bright-shine.jpg", href: "work/bright-shine/" },
     { t: "Singularity", k: "Developer portfolio", img: "work/thumbs/singularity.jpg", href: "work/singularity/" },
   ];
   const stage = document.getElementById("stage"), ring = document.getElementById("ring");
