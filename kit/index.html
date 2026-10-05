@@ -8,8 +8,8 @@
 <meta name="theme-color" content="#0a0f1d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Big+Shoulders+Display:wght@800&family=Barlow:wght@400;600&family=DM+Serif+Display&family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&family=Cormorant+Garamond:wght@600&display=swap">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23ff9a6b' stroke-width='7'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Big+Shoulders+Display:wght@800&family=Barlow:wght@400;600&family=DM+Serif+Display&family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&family=Cormorant+Garamond:wght@600&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Cpath d='M6 32h16M42 32h16M32 6v16M32 42v16' stroke='%23ff9a6b' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23ff9a6b'/%3E%3C/svg%3E">
 <style>
 /* Layout: the studio's dark frame around light, themeable specimen panels. Frame tokens stay fixed; panel tokens swap with the theme picker. */
 :root {
@@ -19,7 +19,7 @@
   --ink: #e9ecf4;
   --dim: #8d96ad;
   --peach: #ff9a6b;
-  --f-display: "Bodoni Moda", Didot, Georgia, serif;
+  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   --f-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --gut: clamp(16px, 4vw, 48px);
@@ -51,8 +51,8 @@ a { color: inherit; }
 .top a:hover { color: var(--peach); }
 .intro { padding-block: clamp(44px, 7vw, 90px) 26px; }
 .intro .mono { color: var(--peach); }
-.intro h1 { margin: 12px 0 14px; font: 400 clamp(46px, 7vw, 96px)/.95 var(--f-display); font-variation-settings: "opsz" 28; }
-.intro h1 em { color: var(--peach); }
+.intro h1 { margin: 12px 0 14px; font: 800 clamp(44px, 7vw, 96px)/.92 var(--f-display); letter-spacing: -.04em; }
+.intro h1 em { font-style: normal; color: var(--peach); }
 .intro p { margin: 0; color: var(--dim); max-width: 56ch; font-size: 18px; }
 .picker { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgb(10 15 29 / .92); backdrop-filter: blur(8px); border-block: 1px solid var(--line); }
 .picker .in { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding-block: 12px; }
@@ -66,7 +66,7 @@ a { color: inherit; }
 .spec { border: 1px solid var(--line-hi); display: flex; flex-direction: column; min-width: 0; }
 .spec--wide { grid-column: 1 / -1; }
 .spec__bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
-.spec__bar h2 { margin: 0; font: 400 24px/1 var(--f-display); font-variation-settings: "opsz" 24; }
+.spec__bar h2 { margin: 0; font: 700 22px/1 var(--f-display); letter-spacing: -.02em; }
 .spec__bar h2 span { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; color: var(--peach); margin-right: 10px; vertical-align: 3px; }
 .ba { display: inline-flex; border: 1px solid var(--line-hi); }
 .ba button { background: transparent; border: 0; color: var(--dim); padding: 6px 10px; cursor: pointer; font: 500 12px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; }

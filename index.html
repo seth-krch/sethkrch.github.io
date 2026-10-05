@@ -12,10 +12,10 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23ff9a6b' stroke-width='7'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Cpath d='M6 32h16M42 32h16M32 6v16M32 42v16' stroke='%23ff9a6b' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23ff9a6b'/%3E%3C/svg%3E">
 <style>
-/* Layout: a quiet, dark studio page on a faint 12-column grid. One glossy object in the hero, the work in a 3D ring, everything else in thin-ruled panels. */
+/* Layout: a quiet midnight page. A live topographic map fills the hero with the name set heavy at its foot; the work sits in a 3D ring and everything else in thin-ruled panels. */
 :root {
   --bg: #0a0f1d;
   --panel: #0e1528;
@@ -26,7 +26,7 @@
   --peach: #ff9a6b;
   --blue: #7d94ff;
 
-  --f-display: "Bodoni Moda", Didot, "Bodoni 72", Georgia, serif;
+  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
   --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   --f-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --gut: clamp(16px, 4vw, 48px);
@@ -40,11 +40,6 @@ a { color: inherit; }
 .in { max-width: 1240px; margin-inline: auto; padding-inline: var(--gut); }
 .mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 
-/* faint page grid */
-.grid-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-.grid-bg .in { height: 100%; display: grid; grid-template-columns: repeat(12, 1fr); }
-.grid-bg span { border-left: 1px solid rgb(160 180 230 / .045); }
-.grid-bg span:last-child { border-right: 1px solid rgb(160 180 230 / .045); }
 main, header, footer { position: relative; z-index: 1; }
 
 /* crop-mark corners on panels */
@@ -64,24 +59,23 @@ main, header, footer { position: relative; z-index: 1; }
 .mark svg { width: 24px; height: 24px; }
 
 /* ---------- hero ---------- */
-.hero { position: relative; height: clamp(560px, 92vh, 860px); min-height: 520px; display: grid; }
+.hero { position: relative; height: clamp(520px, 88vh, 840px); overflow: hidden; border-bottom: 1px solid var(--line); }
 .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.hero__copy { position: relative; align-self: end; text-align: center; padding-bottom: clamp(36px, 7vh, 80px); }
-.hero__cap { color: var(--dim); letter-spacing: .5em; }
-.hero h1 { margin: 10px 0 8px; font: 500 clamp(54px, 10vw, 150px)/.9 var(--f-display); font-variation-settings: "opsz" 20; letter-spacing: -.01em; text-transform: uppercase; text-shadow: 0 6px 40px rgb(10 15 29 / .6); }
-.hero__sub { color: var(--peach); letter-spacing: .4em; }
-.hero__dot { display: block; width: 5px; height: 5px; background: var(--ink); margin: 12px auto; transform: rotate(45deg); }
-.hero__side { position: absolute; left: var(--gut); top: 50%; display: flex; align-items: center; gap: 12px; color: var(--dim); }
-.hero__side::after { content: ""; width: 60px; height: 1px; background: var(--line-hi); }
-.hero__coords { position: absolute; right: var(--gut); top: 50%; color: var(--dim); text-align: right; line-height: 1.8; }
-.hero__fallback { position: absolute; left: 50%; top: 42%; width: min(60vw, 420px); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: conic-gradient(from 200deg, #2140ff, #ff4f9a, #ffb36b, #2140ff); -webkit-mask: radial-gradient(circle, transparent 38%, #000 39%); mask: radial-gradient(circle, transparent 38%, #000 39%); opacity: .9; }
+.hero__copy { position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(24px, 5vh, 56px); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; pointer-events: none; }
+.hero h1 { margin: 0; font: 800 clamp(56px, 10vw, 150px)/.85 var(--f-display); letter-spacing: -.05em; text-shadow: 0 0 40px var(--bg), 0 0 18px var(--bg); }
+.hero h1 span { display: block; }
+.hero__sub { margin: 0; max-width: 30ch; text-align: right; color: var(--dim); font-size: clamp(15px, 1.4vw, 18px); text-shadow: 0 0 14px var(--bg); }
+.hero__sub b { color: var(--ink); font-weight: 500; }
+.hero__corner { position: absolute; top: 18px; color: var(--dim); text-shadow: 0 0 10px var(--bg); }
+.hero__corner.l { left: var(--gut); }
+.hero__corner.r { right: var(--gut); text-align: right; }
 
 /* ---------- section heads ---------- */
 .sec { padding-block: clamp(70px, 10vw, 130px); }
 .head { display: grid; grid-template-columns: auto 1fr; gap: 10px 22px; align-items: end; margin-bottom: clamp(30px, 5vw, 54px); }
 .head__no { color: var(--peach); grid-row: span 2; align-self: start; padding-top: 10px; }
-.head h2 { margin: 0; font: 400 clamp(40px, 6vw, 80px)/.95 var(--f-display); font-variation-settings: "opsz" 28; text-wrap: balance; }
-.head h2 em { color: var(--peach); }
+.head h2 { margin: 0; font: 800 clamp(40px, 6vw, 80px)/.92 var(--f-display); letter-spacing: -.035em; text-wrap: balance; }
+.head h2 em { font-style: normal; color: var(--peach); }
 .head p { margin: 0; color: var(--dim); max-width: 52ch; }
 
 /* ---------- work carousel ---------- */
@@ -95,7 +89,7 @@ main, header, footer { position: relative; z-index: 1; }
 .card.front .card__meta { color: var(--ink); }
 .stage__floor { position: absolute; left: 10%; right: 10%; bottom: 4%; height: 40px; background: radial-gradient(ellipse at center, rgb(125 148 255 / .2), transparent 70%); filter: blur(6px); }
 .now { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; border-top: 1px solid var(--line); padding-top: 18px; }
-.now__t { font: 400 clamp(26px, 3vw, 38px)/1 var(--f-display); }
+.now__t { font: 700 clamp(26px, 3vw, 38px)/1 var(--f-display); letter-spacing: -.02em; }
 .now__k { color: var(--dim); }
 .now__ctrl { display: flex; gap: 8px; }
 .iconbtn { width: 48px; height: 48px; display: grid; place-items: center; background: transparent; color: var(--ink); border: 1px solid var(--line-hi); cursor: pointer; transition: border-color .15s, color .15s; }
@@ -109,14 +103,14 @@ main, header, footer { position: relative; z-index: 1; }
 .tile { padding: 26px 22px 28px; border-right: 1px solid var(--line); display: grid; gap: 12px; align-content: start; }
 .tile:last-child { border-right: 0; }
 .tile svg { width: 44px; height: 44px; color: var(--peach); }
-.tile h3 { margin: 0; font: 400 26px/1.05 var(--f-display); }
+.tile h3 { margin: 0; font: 700 24px/1.05 var(--f-display); letter-spacing: -.015em; }
 .tile p { margin: 0; color: var(--dim); font-size: 16px; }
 
 /* ---------- kit link ---------- */
 .kitlink { display: grid; grid-template-columns: auto 1fr auto; gap: 14px 28px; align-items: center; text-decoration: none; border: 1px solid var(--line-hi); padding: clamp(20px, 3vw, 32px); background: linear-gradient(100deg, rgb(255 154 107 / .08), transparent 60%); transition: border-color .2s; }
 .kitlink:hover { border-color: var(--peach); }
-.kitlink__t { font: 400 clamp(24px, 3vw, 38px)/1.1 var(--f-display); font-variation-settings: "opsz" 28; }
-.kitlink__t em { color: var(--dim); }
+.kitlink__t { font: 700 clamp(24px, 3vw, 38px)/1.1 var(--f-display); letter-spacing: -.02em; }
+.kitlink__t em { font-style: normal; color: var(--dim); }
 .kitlink__go { padding: 12px 16px; background: var(--ink); color: var(--bg); }
 .kitlink:hover .kitlink__go { background: var(--peach); }
 @media (max-width: 760px) { .kitlink { grid-template-columns: 1fr; } .kitlink__go { justify-self: start; } }
@@ -125,13 +119,13 @@ main, header, footer { position: relative; z-index: 1; }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gut); counter-reset: s; }
 .steps li { counter-increment: s; border-top: 1px solid var(--line-hi); padding-top: 18px; }
 .steps li::before { content: "0" counter(s); display: block; font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; color: var(--peach); margin-bottom: 14px; }
-.steps h3 { margin: 0 0 8px; font: 400 30px/1.05 var(--f-display); }
+.steps h3 { margin: 0 0 8px; font: 700 28px/1.05 var(--f-display); letter-spacing: -.02em; }
 .steps p { margin: 0; color: var(--dim); }
 
 /* ---------- pricing ---------- */
 .prices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gut); }
 .price { border: 1px solid var(--line-hi); padding: clamp(22px, 3vw, 36px); background: linear-gradient(160deg, rgb(125 148 255 / .06), transparent 50%); }
-.price__amt { font: 400 clamp(54px, 7vw, 88px)/1 var(--f-display); margin: 12px 0 6px; }
+.price__amt { font: 800 clamp(54px, 7vw, 88px)/1 var(--f-display); letter-spacing: -.04em; margin: 12px 0 6px; }
 .price__amt small { font-size: .3em; color: var(--dim); font-family: var(--f-body); }
 .price ul { list-style: none; margin: 18px 0 0; padding: 0; }
 .price li { padding: 9px 0; border-top: 1px solid var(--line); color: #c3c9d8; }
@@ -149,7 +143,7 @@ main, header, footer { position: relative; z-index: 1; }
 .spec dd { margin: 0; text-align: right; }
 .spec a { color: var(--peach); }
 .contact { text-align: center; }
-.contact__mail { display: block; font: 400 clamp(32px, 6.4vw, 96px)/1 var(--f-display); text-decoration: none; overflow-wrap: anywhere; margin: 18px 0 26px; }
+.contact__mail { display: block; font: 800 clamp(30px, 6.4vw, 96px)/1 var(--f-display); letter-spacing: -.04em; text-decoration: none; overflow-wrap: anywhere; margin: 18px 0 26px; }
 .contact__mail:hover { color: var(--peach); }
 .contact__row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; align-items: center; }
 .ghost { background: transparent; color: var(--ink); border: 1px solid var(--line-hi); padding: 13px 18px; cursor: pointer; font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
@@ -163,7 +157,8 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   .tile:nth-child(2) { border-right: 0; }
   .tile:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .steps, .prices, .about { grid-template-columns: 1fr; }
-  .hero__coords, .hero__side { display: none; }
+  .hero__sub { text-align: left; }
+  .hero__corner.r { display: none; }
 }
 @media (max-width: 600px) {
   .nav .in { grid-template-columns: auto 1fr; }
@@ -173,19 +168,17 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   .tile:last-child { border-bottom: 0; }
   .now { grid-template-columns: 1fr auto; }
   .now .open { grid-column: 1 / -1; justify-content: center; }
-  .hero__cap, .hero__sub { letter-spacing: .25em; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="grid-bg" aria-hidden="true"><div class="in"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
 
 <header class="nav mono">
   <div class="in">
     <nav class="nav__l" aria-label="Sections"><a href="#about">About</a><a href="#work">Work</a><a href="kit/">Kit</a></nav>
     <a class="mark" href="#top" aria-label="Seth Krch, home">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.5" fill="none" stroke="#ff9a6b" stroke-width="2.4"/><path d="M2 12h20" stroke="#e9ecf4" stroke-width="1"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h6M16 12h6M12 2v6M12 16v6" stroke="#ff9a6b" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="#ff9a6b"/></svg>
     </a>
     <nav class="nav__r" aria-label="More sections"><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
   </div>
@@ -193,15 +186,12 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
 
 <main id="top">
   <section class="hero" aria-label="Intro">
-    <div class="hero__fallback" id="fallback" aria-hidden="true"></div>
-    <canvas id="orb" aria-hidden="true"></canvas>
-    <span class="hero__side mono" aria-hidden="true">01</span>
-    <span class="hero__coords mono" aria-hidden="true">38.49° N<br>96.96° W<br>Lincolnville, KS</span>
-    <div class="hero__copy in">
-      <span class="hero__cap mono">Web design</span>
-      <h1>Seth Krch</h1>
-      <span class="hero__dot" aria-hidden="true"></span>
-      <span class="hero__sub mono">Websites for local business</span>
+    <canvas id="topo" role="img" aria-label="Slowly shifting topographic map with an orange location marker"></canvas>
+    <span class="hero__corner l mono">Web design · Fig. 01</span>
+    <span class="hero__corner r mono">38.49° N · 96.96° W<br>Lincolnville, KS</span>
+    <div class="hero__copy">
+      <h1><span>Seth</span><span>Krch</span></h1>
+      <p class="hero__sub"><b>Websites for local business.</b> Designed and built in Lincolnville, Kansas.</p>
     </div>
   </section>
 
@@ -324,7 +314,6 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
 
 <footer class="mono"><div class="in"><span>© <span id="yr">2026</span> Seth Krch</span><span>Lincolnville, Kansas</span></div></footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -405,82 +394,59 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   addEventListener("resize", layout);
   layout(); render(); requestAnimationFrame(tick);
 
-  /* ---------- hero object ---------- */
-  const canvas = document.getElementById("orb");
-  if (!window.THREE) { canvas.remove(); return; }
-  try {
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(35, 1, .1, 100);
-    camera.position.set(0, 0, 9);
-    const mat = new THREE.ShaderMaterial({
-      uniforms: { uTime: { value: 0 } },
-      vertexShader: `
-        varying vec3 vN; varying vec3 vV; varying vec3 vP;
-        void main() {
-          vec4 mv = modelViewMatrix * vec4(position, 1.0);
-          vN = normalize(normalMatrix * normal); vV = -mv.xyz; vP = position;
-          gl_Position = projectionMatrix * mv;
-        }`,
-      fragmentShader: `
-        uniform float uTime; varying vec3 vN; varying vec3 vV; varying vec3 vP;
-        void main() {
-          vec3 n = normalize(vN), v = normalize(vV);
-          vec3 L = normalize(vec3(-.4, .7, .6));
-          float fres = pow(1.0 - max(dot(n, v), 0.0), 2.4);
-          float t = n.y * .5 + .5 + sin(vP.x * 1.3 + uTime * .35) * .18 + n.x * .15;
-          vec3 deep = vec3(.08, .18, .75), pink = vec3(1.0, .32, .62), peach = vec3(1.0, .68, .42);
-          vec3 base = mix(deep, pink, smoothstep(.25, .7, t));
-          base = mix(base, peach, smoothstep(.62, .95, t));
-          float diff = max(dot(n, L), 0.0);
-          float spec = pow(max(dot(reflect(-L, n), v), 0.0), 48.0);
-          vec3 col = base * (.32 + .75 * diff) + vec3(1.0, .95, .9) * spec * .9 + vec3(.45, .55, 1.0) * fres * .55;
-          gl_FragColor = vec4(col, 1.0);
-        }`
-    });
-    const group = new THREE.Group();
-    const torus = new THREE.Mesh(new THREE.TorusGeometry(1.45, .52, 96, 220), mat);
-    group.add(torus);
-    const lineMat = new THREE.LineBasicMaterial({ color: 0x8fa2ff, transparent: true, opacity: .28 });
-    [2.45, 2.9].forEach((r, i) => {
-      const pts = []; for (let k = 0; k <= 160; k++) { const a = k / 160 * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a) * r, Math.sin(a) * r, 0)); }
-      const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat);
-      l.rotation.x = i ? 1.2 : 1.45; l.rotation.y = i ? .5 : -.3; group.add(l);
-    });
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(.06, 16, 16), new THREE.MeshBasicMaterial({ color: 0xff9a6b }));
-    group.add(dot);
-    scene.add(group);
-    document.getElementById("fallback").remove();
-
-    const m = { x: 0, y: 0, tx: 0, ty: 0 };
-    addEventListener("pointermove", e => { m.tx = e.clientX / innerWidth - .5; m.ty = e.clientY / innerHeight - .5; });
-    function resize() {
-      const r = canvas.getBoundingClientRect();
-      renderer.setSize(r.width, r.height, false);
-      camera.aspect = r.width / Math.max(1, r.height);
-      camera.position.z = camera.aspect < .8 ? 13 : 9;
-      group.position.y = camera.aspect < .8 ? .9 : .55;
-      camera.updateProjectionMatrix();
+  /* ---------- hero: live contour map ---------- */
+  const cvs = document.getElementById("topo"), ctx = cvs.getContext("2d"), hero = cvs.parentElement;
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C = { ink: css("--ink"), faint: "rgb(160 180 230 / .16)", mid: "rgb(160 180 230 / .34)", dim: css("--dim"), accent: css("--peach") };
+  let W = 0, H = 0, dpr = 1;
+  const m = { x: null, y: null, on: false };
+  hero.addEventListener("pointermove", e => { const r = hero.getBoundingClientRect(); m.x = e.clientX - r.left; m.y = e.clientY - r.top; m.on = true; });
+  hero.addEventListener("pointerleave", () => (m.on = false));
+  function size() { dpr = Math.min(devicePixelRatio, 2); W = hero.clientWidth; H = hero.clientHeight; cvs.width = W * dpr; cvs.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  let ax = null, ay = null;
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    const cell = W < 700 ? 14 : 16, cols = Math.ceil(W / cell) + 1, rows = Math.ceil(H / cell) + 1;
+    const cx = W * (W < 700 ? .5 : .58), cy = H * .42, sz = Math.min(W * (W < 700 ? .46 : .3), H * .36);
+    const f = (x, y) => { const u = (x - cx) / 160, v = (y - cy) / 160; return Math.sin(u * 1.1 + t * .05) + Math.cos(v * 1.3 - t * .04) + .7 * Math.sin((u + v) * .9 + t * .07) + .5 * Math.cos(u * 2.1 - v * 1.7) - Math.hypot(u * .6, v * .9) * .35; };
+    const g = new Float32Array(cols * rows);
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) g[j * cols + i] = f(i * cell, j * cell);
+    ctx.lineWidth = 1;
+    let li = 0;
+    for (let L = -2.4; L <= 2.6; L += .32, li++) {
+      ctx.strokeStyle = li % 4 === 0 ? C.mid : C.faint; ctx.beginPath();
+      for (let j = 0; j < rows - 1; j++) for (let i = 0; i < cols - 1; i++) {
+        const a = g[j * cols + i], b = g[j * cols + i + 1], c = g[(j + 1) * cols + i + 1], d = g[(j + 1) * cols + i];
+        const idx = (a > L) | ((b > L) << 1) | ((c > L) << 2) | ((d > L) << 3); if (idx === 0 || idx === 15) continue;
+        const x = i * cell, y = j * cell, lp = (p, q) => (L - p) / (q - p);
+        const T = [x + cell * lp(a, b), y], R = [x + cell, y + cell * lp(b, c)], B = [x + cell * lp(d, c), y + cell], Lf = [x, y + cell * lp(a, d)];
+        const sg = { 1: [Lf, T], 2: [T, R], 3: [Lf, R], 4: [R, B], 5: [Lf, T, R, B], 6: [T, B], 7: [Lf, B], 8: [B, Lf], 9: [T, B], 10: [T, R, B, Lf], 11: [R, B], 12: [R, Lf], 13: [T, R], 14: [Lf, T] }[idx];
+        for (let k = 0; k < sg.length; k += 2) { ctx.moveTo(sg[k][0], sg[k][1]); ctx.lineTo(sg[k + 1][0], sg[k + 1][1]); }
+      }
+      ctx.stroke();
     }
-    new ResizeObserver(resize).observe(canvas); resize();
-    let visible = true;
-    new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(canvas);
-    const t0 = performance.now();
-    function frame(now) {
-      const t = (now - t0) / 1000;
-      m.x += (m.tx - m.x) * .04; m.y += (m.ty - m.y) * .04;
-      mat.uniforms.uTime.value = t;
-      torus.rotation.x = .9 + Math.sin(t * .3) * .25 + m.y * .6;
-      torus.rotation.y = t * .25 + m.x * .8;
-      group.rotation.z = Math.sin(t * .2) * .1;
-      const a = t * .6; dot.position.set(Math.cos(a) * 2.45, Math.sin(a) * 2.45 * Math.cos(1.45), Math.sin(a) * 2.45 * Math.sin(1.45) * -1);
-      dot.position.applyEuler(new THREE.Euler(0, -.3, 0));
-      renderer.render(scene, camera);
-    }
-    if (reduce) { frame(t0 + 4000); return; }
-    (function loop(now) { if (visible) frame(now); requestAnimationFrame(loop); })(t0);
-  } catch (e) { canvas.remove(); }
+    // the marker wanders the terrain, or eases toward the cursor
+    let tx = cx + Math.sin(t * .17) * sz * .9, ty = cy + Math.cos(t * .23) * sz * .5;
+    if (m.on) { tx = m.x; ty = m.y; }
+    ax = ax == null ? tx : ax + (tx - ax) * .05; ay = ay == null ? ty : ay + (ty - ay) * .05;
+    ctx.strokeStyle = C.accent;
+    ctx.beginPath(); ctx.moveTo(ax - 18, ay); ctx.lineTo(ax - 9, ay); ctx.moveTo(ax + 9, ay); ctx.lineTo(ax + 18, ay); ctx.moveTo(ax, ay - 18); ctx.lineTo(ax, ay - 9); ctx.moveTo(ax, ay + 9); ctx.lineTo(ax, ay + 18); ctx.stroke();
+    ctx.fillStyle = C.accent; ctx.beginPath(); ctx.arc(ax, ay, 5, 0, 7); ctx.fill();
+    ctx.globalAlpha = .25; ctx.beginPath(); ctx.arc(ax, ay, 13, 0, 7); ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.font = "500 11px 'JetBrains Mono', monospace";
+    const flip = ax > W - 210, lx = flip ? ax - 22 : ax + 22;
+    ctx.textAlign = flip ? "right" : "left";
+    ctx.fillStyle = C.ink; ctx.fillText(`${(38.49 + (ay - cy) / -9000).toFixed(4)}° N  ${(96.96 - (ax - cx) / 9000).toFixed(4)}° W`, lx, ay - 10);
+    ctx.fillStyle = C.dim; ctx.fillText(`ELEV ${Math.round(1380 + f(ax, ay) * 40)} FT`, lx, ay + 6);
+    ctx.textAlign = "left";
+  }
+  new ResizeObserver(() => { size(); if (reduce) draw(30); }).observe(hero);
+  size();
+  let visible = true;
+  new IntersectionObserver(([e]) => (visible = e.isIntersecting)).observe(hero);
+  const t0 = performance.now();
+  if (reduce) draw(30);
+  else (function loop(now) { if (visible) draw((now - t0) / 1000); requestAnimationFrame(loop); })(t0);
 })();
 </script>
 </body>

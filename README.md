@@ -6,7 +6,7 @@ build step.
 
 | Path | What it is |
 |---|---|
-| `index.html` | Studio home page: glossy Three.js hero, 3D carousel of work, pricing, contact |
+| `index.html` | Studio home page: live contour-map hero, 3D carousel of work, pricing, contact |
 | `work/krch-auto/` | Krch Auto concept drafts (A–G), switchable by `#a` … `#g` |
 | `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
 | `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
