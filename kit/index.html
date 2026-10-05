@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Element Kit · Seth Krch</title>
+<meta name="description" content="Website building blocks for local businesses: buttons, search, hours, booking, forms and more, shown before and after.">
+<meta name="theme-color" content="#0a0f1d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=JetBrains+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Big+Shoulders+Display:wght@800&family=Barlow:wght@400;600&family=DM+Serif+Display&family=Figtree:wght@400;600&family=Fraunces:opsz,wght@9..144,600&family=Cormorant+Garamond:wght@600&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='%23ff9a6b' stroke-width='7'/%3E%3C/svg%3E">
+<style>
+/* Layout: the studio's dark frame around light, themeable specimen panels. Frame tokens stay fixed; panel tokens swap with the theme picker. */
+:root {
+  --bg: #0a0f1d;
+  --line: rgb(160 180 230 / .14);
+  --line-hi: rgb(160 180 230 / .32);
+  --ink: #e9ecf4;
+  --dim: #8d96ad;
+  --peach: #ff9a6b;
+  --f-display: "Bodoni Moda", Didot, Georgia, serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --f-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gut: clamp(16px, 4vw, 48px);
+  color-scheme: dark;
+}
+/* theme tokens for the specimens (auto shop is the default) */
+.kit {
+  --k-bg: #f6f1e8; --k-surface: #ffffff; --k-ink: #1d1a16; --k-muted: #6b6257; --k-line: #e3dacb;
+  --k-accent: #b3261e; --k-accent-ink: #ffffff; --k-soft: #f7e2df;
+  --k-radius: 4px; --k-pill: 4px;
+  --k-head: "Big Shoulders Display", Impact, sans-serif; --k-head-case: uppercase; --k-head-weight: 800;
+  --k-body: "Barlow", system-ui, sans-serif;
+}
+.kit[data-theme="dental"] { --k-bg: #f4faf8; --k-ink: #12312e; --k-muted: #557571; --k-line: #d3e5e0; --k-accent: #0f7f76; --k-soft: #dcf1ec; --k-radius: 18px; --k-pill: 999px; --k-head: "DM Serif Display", Georgia, serif; --k-head-case: none; --k-head-weight: 400; --k-body: "Figtree", system-ui, sans-serif; }
+.kit[data-theme="cafe"] { --k-bg: #fbf5ec; --k-ink: #2b1d14; --k-muted: #7a6656; --k-line: #ead9c4; --k-accent: #b5541c; --k-soft: #f6e1cf; --k-radius: 12px; --k-pill: 12px; --k-head: "Fraunces", Georgia, serif; --k-head-case: none; --k-head-weight: 600; --k-body: "Instrument Sans", system-ui, sans-serif; }
+.kit[data-theme="salon"] { --k-bg: #faf6f8; --k-ink: #2a1b26; --k-muted: #7a6573; --k-line: #ead9e3; --k-accent: #7a3e6c; --k-soft: #f1e0ec; --k-radius: 2px; --k-pill: 999px; --k-head: "Cormorant Garamond", Georgia, serif; --k-head-case: none; --k-head-weight: 600; --k-body: "Instrument Sans", system-ui, sans-serif; }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-ui); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--peach); outline-offset: 3px; }
+.in { max-width: 1240px; margin-inline: auto; padding-inline: var(--gut); }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+
+/* ---------- frame ---------- */
+.top { border-bottom: 1px solid var(--line); }
+.top .in { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 16px; }
+.top a { text-decoration: none; color: var(--dim); }
+.top a:hover { color: var(--peach); }
+.intro { padding-block: clamp(44px, 7vw, 90px) 26px; }
+.intro .mono { color: var(--peach); }
+.intro h1 { margin: 12px 0 14px; font: 400 clamp(46px, 7vw, 96px)/.95 var(--f-display); font-variation-settings: "opsz" 28; }
+.intro h1 em { color: var(--peach); }
+.intro p { margin: 0; color: var(--dim); max-width: 56ch; font-size: 18px; }
+.picker { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgb(10 15 29 / .92); backdrop-filter: blur(8px); border-block: 1px solid var(--line); }
+.picker .in { display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; padding-block: 12px; }
+.picker .mono { color: var(--dim); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chips button { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--ink); border: 1px solid var(--line-hi); padding: 8px 12px; cursor: pointer; font: 500 14px/1 var(--f-ui); }
+.chips button i { width: 12px; height: 12px; border-radius: 50%; }
+.chips button[aria-pressed="true"] { border-color: var(--peach); color: var(--peach); }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding-block: 26px 70px; }
+.spec { border: 1px solid var(--line-hi); display: flex; flex-direction: column; min-width: 0; }
+.spec--wide { grid-column: 1 / -1; }
+.spec__bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.spec__bar h2 { margin: 0; font: 400 24px/1 var(--f-display); font-variation-settings: "opsz" 24; }
+.spec__bar h2 span { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; color: var(--peach); margin-right: 10px; vertical-align: 3px; }
+.ba { display: inline-flex; border: 1px solid var(--line-hi); }
+.ba button { background: transparent; border: 0; color: var(--dim); padding: 6px 10px; cursor: pointer; font: 500 12px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; }
+.ba button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.spec__note { padding: 10px 14px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; }
+
+/* ---------- specimen canvas ---------- */
+.kit { background: var(--k-bg); color: var(--k-ink); font-family: var(--k-body); padding: clamp(18px, 3vw, 30px); flex: 1; position: relative; transition: background .3s; }
+.kit h3 { font-family: var(--k-head); font-weight: var(--k-head-weight); text-transform: var(--k-head-case); line-height: 1.05; margin: 0; }
+.after, .before { display: block; }
+.spec[data-view="after"] .before, .spec[data-view="before"] .after { display: none; }
+
+/* buttons */
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.kb { position: relative; display: inline-flex; align-items: center; gap: 10px; border: 2px solid transparent; border-radius: var(--k-pill); padding: 13px 20px; font: 600 16px/1 var(--k-body); cursor: pointer; text-decoration: none; overflow: hidden; transition: transform .12s, background .2s, color .2s, box-shadow .2s; }
+.kb:active { transform: scale(.97); }
+.kb svg { width: 18px; height: 18px; flex: none; }
+.kb--primary { background: var(--k-accent); color: var(--k-accent-ink); box-shadow: 0 6px 16px -6px var(--k-accent); }
+.kb--primary:hover { box-shadow: 0 10px 22px -8px var(--k-accent); transform: translateY(-1px); }
+.kb--primary .arr { transition: transform .2s; }
+.kb--primary:hover .arr { transform: translateX(4px); }
+.kb--outline { border-color: var(--k-accent); color: var(--k-accent); background: transparent; }
+.kb--outline:hover { background: var(--k-accent); color: var(--k-accent-ink); }
+.kb--ghost { background: var(--k-soft); color: var(--k-accent); }
+.kb--ghost:hover { filter: brightness(.96); }
+.kb--icon { width: 50px; height: 50px; padding: 0; justify-content: center; border-radius: 50%; background: var(--k-ink); color: var(--k-bg); }
+.kb .spin { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ripple { position: absolute; border-radius: 50%; background: rgb(255 255 255 / .45); transform: scale(0); animation: rip .6s ease-out forwards; pointer-events: none; }
+@keyframes rip { to { transform: scale(4); opacity: 0; } }
+.old-btn { font: 15px "Times New Roman", serif; padding: 6px 14px; border: 2px outset #c9c9c9; background: linear-gradient(#fdfdfd, #b9b9b9); color: #0000ee; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 0 #fff; }
+.old-btn.blue { background: linear-gradient(#7fb2ff, #1d4fb8); color: #ffff66; border-color: #3a6fd8; text-shadow: 1px 1px 0 #000; font-weight: bold; }
+
+/* search */
+.search { position: relative; max-width: 520px; }
+.search__field { display: flex; align-items: center; gap: 10px; background: var(--k-surface); border: 2px solid var(--k-line); border-radius: var(--k-pill); padding: 4px 6px 4px 16px; transition: border-color .2s, box-shadow .2s; }
+.search__field:focus-within { border-color: var(--k-accent); box-shadow: 0 0 0 4px var(--k-soft); }
+.search__field svg { width: 20px; height: 20px; color: var(--k-muted); flex: none; }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 17px/1 var(--k-body); color: var(--k-ink); padding: 10px 0; }
+.search__go { border-radius: var(--k-pill); border: 0; background: var(--k-accent); color: var(--k-accent-ink); padding: 10px 16px; font: 600 15px/1 var(--k-body); cursor: pointer; }
+.search__list { list-style: none; margin: 8px 0 0; padding: 6px; background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); box-shadow: 0 14px 30px -12px rgb(0 0 0 / .25); }
+.search__list li { padding: 10px 12px; border-radius: calc(var(--k-radius) * .6); cursor: pointer; display: flex; justify-content: space-between; gap: 10px; }
+.search__list li span { color: var(--k-muted); font-size: 14px; }
+.search__list li mark { background: var(--k-soft); color: var(--k-accent); border-radius: 3px; padding: 0 1px; }
+.search__list li[aria-selected="true"], .search__list li:hover { background: var(--k-soft); }
+.search__empty { padding: 12px; color: var(--k-muted); }
+.old-search { font: 15px "Times New Roman", serif; }
+.old-search input { font: 15px "Times New Roman", serif; width: 220px; }
+
+/* hours */
+.status { display: inline-flex; align-items: center; gap: 10px; background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-pill); padding: 10px 16px; font-weight: 600; cursor: pointer; color: var(--k-ink); font-family: var(--k-body); font-size: 16px; }
+.status__dot { width: 10px; height: 10px; border-radius: 50%; background: #2f9e55; box-shadow: 0 0 0 0 rgb(47 158 85 / .6); animation: pulse 1.8s infinite; }
+.status.closed .status__dot { background: #c2412d; animation: none; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 10px rgb(47 158 85 / 0); } 100% { box-shadow: 0 0 0 0 rgb(47 158 85 / 0); } }
+.status svg { width: 16px; height: 16px; transition: transform .2s; }
+.status[aria-expanded="true"] svg { transform: rotate(180deg); }
+.week { margin-top: 12px; max-width: 380px; background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); padding: 6px 16px; }
+.week div { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--k-line); font-variant-numeric: tabular-nums; }
+.week div:last-child { border-bottom: 0; }
+.week .today { font-weight: 700; color: var(--k-accent); }
+.old-hours { font: 15px "Times New Roman", serif; }
+
+/* phone mock + action bar */
+.phone { width: 250px; height: 440px; margin-inline: auto; border: 10px solid #111; border-radius: 34px; background: var(--k-bg); position: relative; overflow: hidden; box-shadow: 0 24px 50px -20px rgb(0 0 0 / .5); }
+.phone__screen { padding: 20px 16px 80px; height: 100%; overflow: hidden; }
+.phone__screen h3 { font-size: 28px; margin-bottom: 8px; color: var(--k-accent); }
+.phone__screen p { margin: 0 0 10px; font-size: 13px; color: var(--k-muted); }
+.phone__screen .blk { height: 64px; border-radius: var(--k-radius); background: var(--k-soft); margin-bottom: 8px; }
+.phone__bar { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(3, 1fr); background: var(--k-ink); }
+.phone__bar button { background: transparent; border: 0; color: var(--k-bg); padding: 12px 4px 14px; display: grid; justify-items: center; gap: 4px; font: 600 12px/1 var(--k-body); cursor: pointer; }
+.phone__bar button:first-child { background: var(--k-accent); color: var(--k-accent-ink); }
+.phone__bar svg { width: 18px; height: 18px; }
+.toast { position: absolute; left: 50%; bottom: 78px; transform: translate(-50%, 20px); opacity: 0; background: var(--k-ink); color: var(--k-bg); border-radius: var(--k-pill); padding: 8px 14px; font-size: 13px; white-space: nowrap; transition: opacity .2s, transform .2s; pointer-events: none; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* service cards */
+.svc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.svc article { background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); padding: 18px; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+.svc article::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--k-accent); transform: scaleX(0); transform-origin: left; transition: transform .3s; }
+.svc article:hover { transform: translateY(-4px); box-shadow: 0 14px 28px -14px rgb(0 0 0 / .3); }
+.svc article:hover::after { transform: scaleX(1); }
+.svc .ic { width: 42px; height: 42px; border-radius: var(--k-radius); background: var(--k-soft); color: var(--k-accent); display: grid; place-items: center; margin-bottom: 12px; }
+.svc .ic svg { width: 22px; height: 22px; }
+.svc h3 { font-size: 22px; margin-bottom: 6px; }
+.svc p { margin: 0; color: var(--k-muted); font-size: 14px; }
+
+/* reviews */
+.rev { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 18px; align-items: start; }
+.rev__score { font: var(--k-head-weight) 56px/1 var(--k-head); }
+.stars { color: #f2a900; letter-spacing: 2px; font-size: 18px; }
+.bars div { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: center; font-size: 13px; color: var(--k-muted); margin-top: 6px; }
+.bars span { height: 6px; background: var(--k-line); border-radius: 3px; overflow: hidden; }
+.bars span i { display: block; height: 100%; background: var(--k-accent); }
+.quote { background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); padding: 18px; min-height: 150px; }
+.quote p { margin: 6px 0 10px; font-size: 16px; transition: opacity .25s; }
+.quote small { color: var(--k-muted); }
+.dots { display: flex; gap: 6px; margin-top: 10px; }
+.dots button { width: 8px; height: 8px; border-radius: 50%; border: 0; background: var(--k-line); cursor: pointer; padding: 0; }
+.dots button[aria-current="true"] { background: var(--k-accent); width: 22px; border-radius: 4px; }
+
+/* before/after slider */
+.compare { position: relative; height: clamp(300px, 34vw, 420px); max-width: 100%; border-radius: var(--k-radius); overflow: hidden; border: 1px solid var(--k-line); user-select: none; touch-action: pan-y; }
+.compare > div { position: absolute; inset: 0; }
+.cmp-old { background: #c0c0c0; text-align: center; font: 14px "Times New Roman", serif; color: #000; padding: 10px; }
+.cmp-old .t { background: navy; color: yellow; text-align: center; font: bold 22px "Comic Sans MS", cursive; padding: 6px; border: 3px ridge #999; }
+.cmp-old marquee, .cmp-old .mq { display: block; color: red; font-weight: bold; margin: 8px 0; }
+.cmp-old table { width: 100%; text-align: left; border: 2px inset #999; background: #fff; }
+.cmp-old td { border: 1px solid #999; padding: 6px; vertical-align: top; font-size: 13px; }
+.cmp-old .ctr { font: 11px monospace; background: #000; color: #0f0; padding: 1px 4px; }
+.cmp-new { background: var(--k-bg); padding: clamp(14px, 3vw, 26px); display: grid; align-content: center; justify-items: center; text-align: center; gap: 12px; }
+.cmp-new h3 { font-size: clamp(24px, 4vw, 44px); color: var(--k-ink); }
+.cmp-new h3 em { font-style: normal; color: var(--k-accent); }
+.cmp-new .row { justify-content: center; }
+.cmp-new p { margin: 0; color: var(--k-muted); max-width: 40ch; font-size: clamp(13px, 1.4vw, 16px); }
+.cmp-new .row .kb { padding: 10px 14px; font-size: 14px; }
+.compare .cmp-new { clip-path: inset(0 0 0 var(--split, 50%)); }
+.handle { position: absolute; top: 0; bottom: 0; left: var(--split, 50%); width: 2px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / .2); cursor: ew-resize; }
+.handle::after { content: "⟷"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #111; display: grid; place-items: center; font-size: 16px; box-shadow: 0 4px 12px rgb(0 0 0 / .3); }
+.cmp-lbl { position: absolute; top: 10px; padding: 4px 8px; background: rgb(0 0 0 / .65); color: #fff; font: 500 11px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; z-index: 2; }
+
+/* booking */
+.days { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.days button, .slots button { flex: none; background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); padding: 10px 14px; cursor: pointer; font: 600 15px/1.2 var(--k-body); color: var(--k-ink); text-align: center; transition: border-color .15s, background .15s; }
+.days button small { display: block; font-weight: 400; color: var(--k-muted); font-size: 12px; }
+.days button[aria-pressed="true"], .slots button[aria-pressed="true"] { border-color: var(--k-accent); background: var(--k-soft); color: var(--k-accent); }
+.slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; margin: 14px 0; }
+.slots button:disabled { opacity: .4; text-decoration: line-through; cursor: not-allowed; }
+.booked { margin-top: 12px; padding: 12px 14px; border-radius: var(--k-radius); background: var(--k-soft); color: var(--k-accent); font-weight: 600; }
+
+/* banner */
+.banner { display: flex; align-items: center; gap: 12px; background: var(--k-accent); color: var(--k-accent-ink); border-radius: var(--k-radius); padding: 12px 14px; animation: drop .35s ease-out; }
+@keyframes drop { from { transform: translateY(-10px); opacity: 0; } }
+.banner svg { width: 20px; height: 20px; flex: none; }
+.banner p { margin: 0; flex: 1; font-weight: 600; }
+.banner button { background: transparent; border: 0; color: inherit; font-size: 20px; line-height: 1; cursor: pointer; padding: 4px 6px; }
+
+/* faq */
+.faq { background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); }
+.faq + .faq { margin-top: 8px; }
+.faq button { width: 100%; display: flex; justify-content: space-between; gap: 12px; align-items: center; background: transparent; border: 0; padding: 14px 16px; font: 600 16px/1.3 var(--k-body); color: var(--k-ink); cursor: pointer; text-align: left; }
+.faq button i { font-style: normal; color: var(--k-accent); font-size: 22px; transition: transform .25s; }
+.faq button[aria-expanded="true"] i { transform: rotate(45deg); }
+.faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.faq__a > div { overflow: hidden; }
+.faq__a p { margin: 0; padding: 0 16px 14px; color: var(--k-muted); }
+.faq button[aria-expanded="true"] + .faq__a { grid-template-rows: 1fr; }
+
+/* form */
+.kform { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fl { position: relative; }
+.fl.full { grid-column: 1 / -1; }
+.fl input, .fl textarea { width: 100%; font: 400 16px/1.3 var(--k-body); color: var(--k-ink); background: var(--k-surface); border: 2px solid var(--k-line); border-radius: var(--k-radius); padding: 22px 14px 8px; outline: 0; transition: border-color .2s; }
+.fl textarea { min-height: 90px; resize: vertical; }
+.fl label { position: absolute; left: 16px; top: 15px; color: var(--k-muted); pointer-events: none; transition: all .15s; font-size: 16px; }
+.fl input:focus, .fl textarea:focus { border-color: var(--k-accent); }
+.fl input:focus + label, .fl input:not(:placeholder-shown) + label, .fl textarea:focus + label, .fl textarea:not(:placeholder-shown) + label { top: 6px; font-size: 12px; color: var(--k-accent); }
+.fl.bad input { border-color: #c2412d; }
+.fl .err { display: none; color: #c2412d; font-size: 13px; margin-top: 4px; }
+.fl.bad .err { display: block; }
+.sent { text-align: center; padding: 24px; background: var(--k-surface); border: 1px solid var(--k-line); border-radius: var(--k-radius); }
+.sent .tick { width: 54px; height: 54px; border-radius: 50%; background: var(--k-accent); color: var(--k-accent-ink); display: grid; place-items: center; margin: 0 auto 10px; font-size: 26px; animation: pop .4s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { from { transform: scale(0); } }
+.old-form { font: 15px "Times New Roman", serif; }
+.old-form td { padding: 3px; }
+
+/* price list */
+.tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--k-line); margin-bottom: 10px; flex-wrap: wrap; }
+.tabs button { background: transparent; border: 0; padding: 10px 14px; margin-bottom: -2px; border-bottom: 2px solid transparent; font: 600 15px/1 var(--k-body); color: var(--k-muted); cursor: pointer; }
+.tabs button[aria-selected="true"] { color: var(--k-accent); border-bottom-color: var(--k-accent); }
+.prices div { display: flex; align-items: baseline; gap: 8px; padding: 9px 0; }
+.prices div::after { content: ""; order: 1; flex: 1; border-bottom: 2px dotted var(--k-line); }
+.prices b { font-weight: 600; }
+.prices span { order: 2; font-variant-numeric: tabular-nums; color: var(--k-accent); font-weight: 600; }
+.kit .tag { font-size: 12px; color: var(--k-muted); }
+
+.foot { border-top: 1px solid var(--line); color: var(--dim); }
+.foot .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-block: 22px; }
+
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .svc { grid-template-columns: 1fr; }
+  .rev { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) { .kform { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top mono"><div class="in"><a href="../">← Seth Krch</a><span style="color:var(--dim)">Element kit · v1</span></div></header>
+
+<section class="intro"><div class="in">
+  <span class="mono">Element kit</span>
+  <h1>The small things that make a site <em>work</em></h1>
+  <p>Every piece below is live. Tap, type and drag. Switch the theme to see the same parts dressed for a different business, and flip Before / After to see the upgrade.</p>
+</div></section>
+
+<div class="picker" role="region" aria-label="Theme">
+  <div class="in">
+    <span class="mono">Dress it as</span>
+    <div class="chips" role="group" aria-label="Business type">
+      <button type="button" data-theme="auto" aria-pressed="true"><i style="background:#b3261e"></i>Auto shop</button>
+      <button type="button" data-theme="dental" aria-pressed="false"><i style="background:#0f7f76"></i>Dentist</button>
+      <button type="button" data-theme="cafe" aria-pressed="false"><i style="background:#b5541c"></i>Café</button>
+      <button type="button" data-theme="salon" aria-pressed="false"><i style="background:#7a3e6c"></i>Salon</button>
+    </div>
+  </div>
+</div>
+
+<main class="in grid" id="grid">
+
+  <!-- 01 before/after slider -->
+  <section class="spec spec--wide" aria-labelledby="h-compare">
+    <div class="spec__bar"><h2 id="h-compare"><span>01</span>The upgrade</h2><span class="mono" style="color:var(--dim)">Drag the handle</span></div>
+    <div class="kit">
+      <div class="compare" id="compare">
+        <div class="cmp-old" aria-hidden="true">
+          <div class="t">~*~ Welcome to Our Website!! ~*~</div>
+          <span class="mq">*** NOW SERVING THE AREA *** CALL TODAY ***</span>
+          <table><tr><td width="30%"><u>Links</u><br>Home<br>About Us<br>Services<br>Contact<br><br><span class="ctr">Visitors: 004127</span></td><td><b>About Us</b><br>We have been in business for many years and offer many services to our customers. Please call for more information. Hours may vary.<br><br><i>Best viewed in Internet Explorer 6</i></td></tr></table>
+        </div>
+        <div class="cmp-new">
+          <h3 data-k="headline">Honest work. <em>Local care.</em></h3>
+          <p data-k="sub">Full-service repair for cars, trucks and tractors. Call ahead or stop by.</p>
+          <div class="row"><a class="kb kb--primary" href="#h-compare">Call now <span class="arr">→</span></a><span class="status" style="cursor:default"><span class="status__dot"></span><span data-status-short>Open now</span></span></div>
+        </div>
+        <span class="cmp-lbl" style="left:10px">Before</span><span class="cmp-lbl" style="right:10px">After</span>
+        <div class="handle" id="handle" role="slider" tabindex="0" aria-label="Compare before and after" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 buttons -->
+  <section class="spec" data-view="after" aria-labelledby="h-btn">
+    <div class="spec__bar"><h2 id="h-btn"><span>02</span>Buttons</h2><div class="ba" role="group" aria-label="Before or after"><button type="button" aria-pressed="false" data-ba="before">Before</button><button type="button" aria-pressed="true" data-ba="after">After</button></div></div>
+    <div class="kit">
+      <div class="after"><div class="row">
+        <button class="kb kb--primary" type="button" data-ripple>Book a visit <span class="arr">→</span></button>
+        <button class="kb kb--outline" type="button" data-ripple>See services</button>
+        <button class="kb kb--ghost" type="button" data-ripple>Directions</button>
+        <button class="kb kb--icon" type="button" aria-label="Call" data-ripple><svg viewBox="0 0 24 24"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+        <button class="kb kb--primary" type="button" id="sendBtn">Send request</button>
+      </div></div>
+      <div class="before"><div class="row"><button class="old-btn" type="button">Click Here!!</button><button class="old-btn blue" type="button">SUBMIT</button><button class="old-btn" type="button">Contact Us</button></div></div>
+    </div>
+    <div class="spec__note">Clear labels, a press effect and a loading state, so people know it worked.</div>
+  </section>
+
+  <!-- 03 search -->
+  <section class="spec" data-view="after" aria-labelledby="h-search">
+    <div class="spec__bar"><h2 id="h-search"><span>03</span>Search</h2><div class="ba" role="group" aria-label="Before or after"><button type="button" aria-pressed="false" data-ba="before">Before</button><button type="button" aria-pressed="true" data-ba="after">After</button></div></div>
+    <div class="kit">
+      <div class="after">
+        <div class="search">
+          <div class="search__field"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></g></svg><input id="q" type="search" autocomplete="off" aria-label="Search services" aria-controls="qList"><button class="search__go" type="button">Search</button></div>
+          <ul class="search__list" id="qList" role="listbox" aria-label="Matching services"></ul>
+        </div>
+      </div>
+      <div class="before"><div class="old-search">Search: <input type="text" aria-label="Old search"> <input type="button" value="Go"></div></div>
+    </div>
+    <div class="spec__note">Suggestions as you type. Use the arrow keys, or tap a result.</div>
+  </section>
+
+  <!-- 04 hours -->
+  <section class="spec" data-view="after" aria-labelledby="h-hours">
+    <div class="spec__bar"><h2 id="h-hours"><span>04</span>Open / closed</h2><div class="ba" role="group" aria-label="Before or after"><button type="button" aria-pressed="false" data-ba="before">Before</button><button type="button" aria-pressed="true" data-ba="after">After</button></div></div>
+    <div class="kit">
+      <div class="after">
+        <button class="status" id="statusBtn" type="button" aria-expanded="true" aria-controls="week"><span class="status__dot"></span><span id="statusText">Open now</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+        <div class="week" id="week"></div>
+      </div>
+      <div class="before"><p class="old-hours"><b>Hours:</b> M-F 8-5, Sat 8-12 (call to confirm, hours may change)</p></div>
+    </div>
+    <div class="spec__note">Live status in the business's own time zone. Today is highlighted.</div>
+  </section>
+
+  <!-- 05 action bar -->
+  <section class="spec" aria-labelledby="h-bar">
+    <div class="spec__bar"><h2 id="h-bar"><span>05</span>Phone action bar</h2></div>
+    <div class="kit" style="display:grid;place-items:center">
+      <div class="phone">
+        <div class="phone__screen"><h3 data-k="name">Krch Auto</h3><p data-k="sub">Full-service repair for cars, trucks and tractors.</p><div class="blk"></div><div class="blk"></div><div class="blk" style="height:40px"></div></div>
+        <div class="toast" id="toast">Calling… (demo)</div>
+        <div class="phone__bar">
+          <button type="button" data-toast="Calling… (demo)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Call</button>
+          <button type="button" data-toast="Opening Maps… (demo)"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></g></svg>Directions</button>
+          <button type="button" data-toast="Opening booking… (demo)"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></g></svg>Book</button>
+        </div>
+      </div>
+    </div>
+    <div class="spec__note">Stays pinned to the bottom on phones. One tap to call.</div>
+  </section>
+
+  <!-- 06 announcement -->
+  <section class="spec" aria-labelledby="h-banner">
+    <div class="spec__bar"><h2 id="h-banner"><span>06</span>Announcement</h2><button class="ba" type="button" id="bannerReset" style="padding:6px 10px;color:var(--dim);background:transparent;cursor:pointer;font:500 12px/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase">Show again</button></div>
+    <div class="kit" style="min-height:140px">
+      <div class="banner" id="banner" role="status">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/></g></svg>
+        <p data-k="notice">Closed Friday, Nov 14 for deer season. Back Saturday morning.</p>
+        <button type="button" id="bannerX" aria-label="Dismiss">×</button>
+      </div>
+      <p class="tag" style="margin-top:12px">Holiday closures, specials or news. Updated with one text.</p>
+    </div>
+  </section>
+
+  <!-- 12 price list -->
+  <section class="spec" aria-labelledby="h-price">
+    <div class="spec__bar"><h2 id="h-price"><span>07</span>Price list</h2><span class="mono" style="color:var(--dim)">Sample prices</span></div>
+    <div class="kit">
+      <div class="tabs" id="tabs" role="tablist" aria-label="Categories"></div>
+      <div class="prices" id="prices" role="tabpanel"></div>
+    </div>
+  </section>
+
+  <!-- 07 services -->
+  <section class="spec spec--wide" aria-labelledby="h-svc">
+    <div class="spec__bar"><h2 id="h-svc"><span>08</span>Service cards</h2><span class="mono" style="color:var(--dim)">Hover or tap</span></div>
+    <div class="kit"><div class="svc" id="svc"></div></div>
+  </section>
+
+  <!-- 08 booking -->
+  <section class="spec" aria-labelledby="h-book">
+    <div class="spec__bar"><h2 id="h-book"><span>09</span>Booking</h2></div>
+    <div class="kit">
+      <div class="days" id="days" role="group" aria-label="Day"></div>
+      <div class="slots" id="slots" role="group" aria-label="Time"></div>
+      <button class="kb kb--primary" type="button" id="bookBtn">Request this time</button>
+      <div class="booked" id="booked" hidden></div>
+    </div>
+    <div class="spec__note">Sample availability. Can connect to a real calendar.</div>
+  </section>
+
+  <!-- 09 reviews -->
+  <section class="spec" aria-labelledby="h-rev">
+    <div class="spec__bar"><h2 id="h-rev"><span>10</span>Reviews</h2><span class="mono" style="color:var(--dim)">Sample text</span></div>
+    <div class="kit">
+      <div class="rev">
+        <div>
+          <div class="rev__score">4.9</div>
+          <div class="stars" aria-label="4.9 out of 5">★★★★★</div>
+          <div class="bars" aria-hidden="true"><div>5<span><i style="width:88%"></i></span></div><div>4<span><i style="width:9%"></i></span></div><div>3<span><i style="width:2%"></i></span></div><div>2<span><i style="width:1%"></i></span></div><div>1<span><i style="width:0"></i></span></div></div>
+        </div>
+        <div>
+          <div class="quote"><div class="stars" aria-hidden="true">★★★★★</div><p id="quoteText"></p><small>Sample review · pulled from Google on a live site</small></div>
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 faq -->
+  <section class="spec" aria-labelledby="h-faq">
+    <div class="spec__bar"><h2 id="h-faq"><span>11</span>FAQ</h2></div>
+    <div class="kit" id="faq"></div>
+  </section>
+
+  <!-- 11 contact form -->
+  <section class="spec" data-view="after" aria-labelledby="h-form">
+    <div class="spec__bar"><h2 id="h-form"><span>12</span>Contact form</h2><div class="ba" role="group" aria-label="Before or after"><button type="button" aria-pressed="false" data-ba="before">Before</button><button type="button" aria-pressed="true" data-ba="after">After</button></div></div>
+    <div class="kit">
+      <div class="after">
+        <form class="kform" id="kform" novalidate>
+          <div class="fl"><input id="kf-name" placeholder=" " required><label for="kf-name">Your name</label><div class="err">Add your name.</div></div>
+          <div class="fl"><input id="kf-phone" type="tel" placeholder=" " required pattern="[0-9()\-\s.+]{10,}"><label for="kf-phone">Phone</label><div class="err">Enter a 10-digit number.</div></div>
+          <div class="fl full"><textarea id="kf-msg" placeholder=" "></textarea><label for="kf-msg">What do you need?</label></div>
+          <button class="kb kb--primary" type="submit" style="justify-self:start">Send <span class="arr">→</span></button>
+        </form>
+        <div class="sent" id="sent" hidden><div class="tick">✓</div><h3 style="font-size:24px">Thanks, we got it</h3><p style="margin:6px 0 12px;color:var(--k-muted)">Demo only. Nothing was sent.</p><button class="kb kb--ghost" type="button" id="again">Send another</button></div>
+      </div>
+      <div class="before"><table class="old-form"><tr><td>Name:</td><td><input aria-label="Old name"></td></tr><tr><td>Phone:</td><td><input aria-label="Old phone"></td></tr><tr><td>Message:</td><td><textarea aria-label="Old message"></textarea></td></tr><tr><td></td><td><input type="button" value="Submit"> <input type="button" value="Reset"></td></tr></table></div>
+    </div>
+    <div class="spec__note">Labels that stay visible, checks as you go and a clear "sent" state.</div>
+  </section>
+
+</main>
+
+<footer class="foot mono"><div class="in"><span>Element kit by <a href="../" style="color:var(--peach)">Seth Krch</a></span><span>Want these on your site? sethkrch@gmail.com</span></div></footer>
+
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const ICONS = {
+    wrench: '<path d="M14 6a4 4 0 0 0 5 5l-9 9a2 2 0 0 1-3-3l9-9a4 4 0 0 0-2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    gauge: '<g fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16a8 8 0 1 1 16 0"/><path d="M12 16l4-5"/></g>',
+    shield: '<g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 5 3 8 7 10 4-2 7-5 7-10V6z"/><path d="m9 12 2 2 4-4"/></g>',
+    tooth: '<path d="M12 5c-3-2-7-1-8 2s0 7 1 10 1 5 3 5 2-4 4-4 2 4 4 4 2-2 3-5 2-7 1-10-5-4-8-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    spark: '<path d="M12 3l2 7 7 2-7 2-2 7-2-7-7-2 7-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    heart: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z" fill="none" stroke="currentColor" stroke-width="2"/>',
+    cup: '<g fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h12v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2M8 3v2M12 3v2"/></g>',
+    bread: '<g fill="none" stroke="currentColor" stroke-width="2"><path d="M5 11a4 4 0 0 1 3-7h8a4 4 0 0 1 3 7v8H5z"/></g>',
+    bag: '<g fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 12H6z"/><path d="M9 8a3 3 0 0 1 6 0"/></g>',
+    scissors: '<g fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M8.5 7.5 20 18M8.5 16.5 20 6"/></g>',
+    drop: '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" fill="none" stroke="currentColor" stroke-width="2"/>',
+    star: '<path d="M12 3l2.8 6 6.2.6-4.7 4.2 1.4 6.2L12 17l-5.7 3 1.4-6.2L3 9.6 9.2 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>'
+  };
+  const T = {
+    auto: {
+      name: "Krch Auto", headline: 'Honest work. <em>Local care.</em>', sub: "Full-service repair for cars, trucks and tractors. Call ahead or stop by.",
+      notice: "Closed Friday, Nov 14 for deer season. Back Saturday morning.",
+      hours: [null, [8, 17.5], [8, 17.5], [8, 17.5], [8, 17.5], [8, 17.5], [8, 12]],
+      search: [["Oil change", "Maintenance"], ["Brake repair", "Brakes"], ["Check engine light", "Diagnostics"], ["Tire repair", "Tires"], ["A/C recharge", "Electrical & A/C"], ["Diesel service", "Engine"], ["Battery replacement", "Electrical"], ["Transmission", "Drivetrain"], ["Tractor repair", "Ag equipment"], ["Semi brakes (air)", "Heavy duty"]],
+      svc: [["wrench", "Engine & drivetrain", "Gas and diesel, transmissions and clutches."], ["gauge", "Diagnostics", "Check-engine lights and hard-to-find problems."], ["shield", "Brakes", "Hydraulic and air brakes, front ends."]],
+      reviews: ["Fixed a problem two other shops couldn't find, and the price was fair.", "Got our farm truck back the same day. They explained everything.", "Honest folks. They told me what could wait and what couldn't."],
+      faq: [["Do you work on diesel and farm equipment?", "Yes. Cars, pickups, semis, tractors and buses."], ["Do I need an appointment?", "Calling ahead helps, but walk-ins are welcome."], ["Do you give estimates?", "Always, before any work starts."]],
+      prices: { Maintenance: [["Oil change, gas", "$49"], ["Oil change, diesel", "$129"], ["Tire rotation", "$25"]], Repair: [["Diagnostic scan", "$89"], ["Front brake pads", "from $180"], ["Battery install", "$30 + part"]], "Heavy duty": [["Semi inspection", "$150"], ["Tractor service", "Call"], ["Air brake adjust", "from $95"]] }
+    },
+    dental: {
+      name: "Bright Shine", headline: 'Bright smiles, <em>gentle</em> care.', sub: "Family dentistry for all ages. New patients seen the same week.",
+      notice: "Now open late Thursdays until 7pm.",
+      hours: [null, [8, 17], [8, 17], [8, 17], [8, 19], [8, 14], null],
+      search: [["Teeth cleaning", "Preventive"], ["Whitening", "Cosmetic"], ["Fillings", "Restorative"], ["Crowns", "Restorative"], ["Kids' first visit", "Pediatric"], ["Toothache", "Emergency"], ["Night guard", "Preventive"], ["X-rays", "Preventive"]],
+      svc: [["tooth", "Cleanings & exams", "Checkups and cleanings twice a year."], ["spark", "Whitening", "In-office and take-home options."], ["heart", "Kids' dentistry", "Friendly first visits from age one."]],
+      reviews: ["Everyone was kind and patient with my nervous kid.", "They explained the costs before starting. No surprises.", "Easy to book and they were right on time."],
+      faq: [["Do you take new patients?", "Yes, usually within a week."], ["What if I have a toothache?", "Call early. We hold time for emergencies daily."], ["Do you take my insurance?", "Most PPO plans. We'll check for you."]],
+      prices: { Preventive: [["Exam & cleaning", "$129"], ["X-rays", "$60"], ["Fluoride", "$30"]], Cosmetic: [["Whitening, in office", "$350"], ["Take-home kit", "$199"], ["Bonding", "from $150"]], Restorative: [["Filling", "from $140"], ["Crown", "from $950"], ["Night guard", "$300"]] }
+    },
+    cafe: {
+      name: "Main Street Café", headline: 'Coffee, pie and <em>good company.</em>', sub: "Breakfast all day, daily specials and pie from scratch.",
+      notice: "Today's special: chicken-fried steak with mashed potatoes.",
+      hours: [[8, 13], [6, 14], [6, 14], [6, 14], [6, 14], [6, 20], [7, 14]],
+      search: [["Breakfast burrito", "Breakfast"], ["Biscuits & gravy", "Breakfast"], ["Cinnamon roll", "Bakery"], ["Latte", "Coffee"], ["Daily special", "Lunch"], ["Pie of the day", "Dessert"], ["Catering", "Events"], ["Burger", "Lunch"]],
+      svc: [["cup", "Coffee bar", "Drip, lattes and seasonal flavors."], ["bread", "Baked fresh", "Cinnamon rolls and pies every morning."], ["bag", "Catering", "Trays for church, school and family events."]],
+      reviews: ["Best cinnamon rolls in the county, no contest.", "Friendly staff and the coffee's always hot.", "Catered our reunion and everyone asked who made the pie."],
+      faq: [["Do you take call-in orders?", "Yes. Call ahead and it'll be ready."], ["Do you cater?", "Trays for 10 to 200 people. Give us a week's notice."], ["Is there gluten-free?", "Ask about today's options."]],
+      prices: { Breakfast: [["Biscuits & gravy", "$8"], ["Breakfast burrito", "$9"], ["Short stack", "$7"]], Lunch: [["Daily special", "$12"], ["Cheeseburger & fries", "$11"], ["Soup & sandwich", "$10"]], Bakery: [["Cinnamon roll", "$4"], ["Slice of pie", "$5"], ["Whole pie", "$22"]] }
+    },
+    salon: {
+      name: "Willow & Co.", headline: 'Look good. <em>Feel better.</em>', sub: "Cuts, color and styling by appointment. Walk-ins when we can.",
+      notice: "Booking prom and wedding updos now. Spots fill fast.",
+      hours: [null, null, [9, 18], [9, 18], [9, 19], [9, 18], [8, 14]],
+      search: [["Women's haircut", "Cuts"], ["Men's cut", "Cuts"], ["Kids' cut", "Cuts"], ["Color", "Color"], ["Highlights", "Color"], ["Blowout", "Styling"], ["Updo", "Styling"], ["Brow wax", "Extras"]],
+      svc: [["scissors", "Cuts", "For everyone in the family."], ["drop", "Color", "Highlights, balayage and gray coverage."], ["star", "Special events", "Prom, wedding and party styling."]],
+      reviews: ["Finally found someone who listens to what I want.", "My color has never looked this good.", "Booked online in a minute. So easy."],
+      faq: [["Do you take walk-ins?", "When we have room. Booking is the safest bet."], ["How long does color take?", "Plan on two to three hours."], ["Can I book for a group?", "Yes, for weddings and events. Call us."]],
+      prices: { Cuts: [["Women's cut", "$45"], ["Men's cut", "$25"], ["Kids' cut", "$18"]], Color: [["All-over color", "from $85"], ["Partial highlights", "from $95"], ["Toner", "$35"]], Styling: [["Blowout", "$35"], ["Updo", "$65"], ["Brow wax", "$15"]] }
+    }
+  };
+  let theme = "auto";
+  const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], DAYS_L = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const fmt = t => { const h = Math.floor(t), m = Math.round((t - h) * 60); return `${((h + 11) % 12) + 1}${m ? ":" + String(m).padStart(2, "0") : ""}${h >= 12 ? "pm" : "am"}`; };
+  const now = () => { const p = new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", weekday: "short", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(new Date()); const g = k => p.find(x => x.type === k).value; return { day: DAYS.indexOf(g("weekday")), t: (parseInt(g("hour"), 10) % 24) + parseInt(g("minute"), 10) / 60 }; };
+
+  /* ---------- theme ---------- */
+  function applyTheme(name) {
+    theme = name; const d = T[name];
+    $$(".kit").forEach(k => (k.dataset.theme = name));
+    $$(".chips button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.theme === name)));
+    $$('[data-k="headline"]').forEach(e => (e.innerHTML = d.headline));
+    $$('[data-k="sub"]').forEach(e => (e.textContent = d.sub));
+    $$('[data-k="name"]').forEach(e => (e.textContent = d.name));
+    $$('[data-k="notice"]').forEach(e => (e.textContent = d.notice));
+    paintHours(); renderSvc(); renderFaq(); renderPrices(Object.keys(d.prices)[0]); renderDays(); qIndex = -1; renderSearch(""); $("#q").value = ""; startTyping();
+    quoteI = 0; renderQuote();
+    try { localStorage.setItem("kit-theme", name); } catch (e) {}
+  }
+  $$(".chips button").forEach(b => b.addEventListener("click", () => applyTheme(b.dataset.theme)));
+
+  /* ---------- before / after toggles ---------- */
+  $$(".spec[data-view]").forEach(spec => spec.querySelectorAll("[data-ba]").forEach(b => b.addEventListener("click", () => {
+    spec.dataset.view = b.dataset.ba;
+    spec.querySelectorAll("[data-ba]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  })));
+
+  /* ---------- compare slider ---------- */
+  const cmp = $("#compare"), handle = $("#handle");
+  const setSplit = pct => { pct = Math.max(0, Math.min(100, pct)); cmp.style.setProperty("--split", pct + "%"); handle.setAttribute("aria-valuenow", Math.round(pct)); };
+  let dragC = false;
+  const fromEvent = e => { const r = cmp.getBoundingClientRect(); setSplit((e.clientX - r.left) / r.width * 100); };
+  cmp.addEventListener("pointerdown", e => { dragC = true; cmp.setPointerCapture(e.pointerId); fromEvent(e); });
+  cmp.addEventListener("pointermove", e => dragC && fromEvent(e));
+  cmp.addEventListener("pointerup", () => (dragC = false));
+  handle.addEventListener("keydown", e => { const v = parseFloat(handle.getAttribute("aria-valuenow")); if (e.key === "ArrowLeft") setSplit(v - 5); if (e.key === "ArrowRight") setSplit(v + 5); });
+  if (!reduce) { let t = 0; const intro = setInterval(() => { t += .05; setSplit(50 + Math.sin(t) * 22); if (t > Math.PI * 2) { clearInterval(intro); setSplit(50); } }, 30); cmp.addEventListener("pointerdown", () => clearInterval(intro), { once: true }); }
+
+  /* ---------- buttons ---------- */
+  $$("[data-ripple]").forEach(b => b.addEventListener("click", e => {
+    if (reduce) return; const r = b.getBoundingClientRect(), s = Math.max(r.width, r.height), el = document.createElement("span");
+    el.className = "ripple"; el.style.cssText = `width:${s}px;height:${s}px;left:${e.clientX - r.left - s / 2}px;top:${e.clientY - r.top - s / 2}px`;
+    b.appendChild(el); setTimeout(() => el.remove(), 650);
+  }));
+  const sendBtn = $("#sendBtn");
+  sendBtn.addEventListener("click", () => {
+    if (sendBtn.dataset.busy) return; sendBtn.dataset.busy = 1;
+    sendBtn.innerHTML = '<span class="spin"></span>Sending';
+    setTimeout(() => { sendBtn.innerHTML = "Sent ✓"; setTimeout(() => { sendBtn.textContent = "Send request"; delete sendBtn.dataset.busy; }, 1600); }, 1100);
+  });
+
+  /* ---------- search ---------- */
+  const q = $("#q"), qList = $("#qList"); let qIndex = -1, typer = null;
+  const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function renderSearch(v) {
+    const items = T[theme].search, term = v.trim().toLowerCase();
+    const hits = term ? items.filter(([n, c]) => (n + " " + c).toLowerCase().includes(term)) : items.slice(0, 4);
+    if (!hits.length) { qList.innerHTML = `<li class="search__empty" aria-disabled="true">No match for "${esc(v)}". Call us and ask.</li>`; return; }
+    qList.innerHTML = hits.map(([n, c], i) => {
+      const hl = term ? esc(n).replace(new RegExp("(" + term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "i"), "<mark>$1</mark>") : esc(n);
+      return `<li role="option" id="opt${i}" aria-selected="${i === qIndex}">${hl}<span>${c}</span></li>`;
+    }).join("");
+    qList.querySelectorAll("li[role=option]").forEach((li, i) => li.addEventListener("click", () => { q.value = hits[i][0]; renderSearch(q.value); }));
+  }
+  q.addEventListener("input", () => { qIndex = -1; stopTyping(); renderSearch(q.value); });
+  q.addEventListener("focus", stopTyping);
+  q.addEventListener("keydown", e => {
+    const opts = qList.querySelectorAll("li[role=option]"); if (!opts.length) return;
+    if (e.key === "ArrowDown") { qIndex = (qIndex + 1) % opts.length; e.preventDefault(); }
+    else if (e.key === "ArrowUp") { qIndex = (qIndex - 1 + opts.length) % opts.length; e.preventDefault(); }
+    else if (e.key === "Enter" && qIndex >= 0) { opts[qIndex].click(); return; }
+    else return;
+    opts.forEach((o, i) => o.setAttribute("aria-selected", String(i === qIndex)));
+    q.setAttribute("aria-activedescendant", "opt" + qIndex);
+  });
+  function stopTyping() { clearTimeout(typer); typer = null; if (!q.value) q.placeholder = "Search services…"; }
+  function startTyping() {
+    clearTimeout(typer); if (reduce) { q.placeholder = "Search services…"; return; }
+    const words = T[theme].search.map(x => x[0]).slice(0, 5); let w = 0, c = 0, del = false;
+    const step = () => { const word = words[w]; c += del ? -1 : 1; q.placeholder = "Try “" + word.slice(0, c) + "”"; if (!del && c === word.length) { del = true; typer = setTimeout(step, 1300); return; } if (del && c === 0) { del = false; w = (w + 1) % words.length; } typer = setTimeout(step, del ? 35 : 80); };
+    step();
+  }
+
+  /* ---------- hours ---------- */
+  const statusBtn = $("#statusBtn"), week = $("#week");
+  function paintHours() {
+    const H = T[theme].hours, { day, t } = now(); let open = false, text = "Closed";
+    if (H[day] && t >= H[day][0] && t < H[day][1]) { open = true; text = `Open now · until ${fmt(H[day][1])}`; }
+    else for (let i = 0; i < 8; i++) { const d = (day + i) % 7, h = H[d]; if (!h) continue; if (i === 0 && t < h[0]) { text = `Closed · opens ${fmt(h[0])}`; break; } if (i > 0) { text = `Closed · opens ${i === 1 ? "tomorrow" : DAYS_L[d]} ${fmt(h[0])}`; break; } }
+    $("#statusText").textContent = text; statusBtn.classList.toggle("closed", !open);
+    $$("[data-status-short]").forEach(e => { e.textContent = open ? "Open now" : "Closed now"; e.parentElement.classList.toggle("closed", !open); });
+    week.innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d => `<div class="${d === day ? "today" : ""}"><span>${DAYS_L[d]}</span><span>${H[d] ? fmt(H[d][0]) + " – " + fmt(H[d][1]) : "Closed"}</span></div>`).join("");
+  }
+  statusBtn.addEventListener("click", () => { const o = statusBtn.getAttribute("aria-expanded") === "true"; statusBtn.setAttribute("aria-expanded", String(!o)); week.hidden = o; });
+
+  /* ---------- action bar toast ---------- */
+  const toast = $("#toast"); let tt;
+  $$("[data-toast]").forEach(b => b.addEventListener("click", () => { toast.textContent = b.dataset.toast; toast.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => toast.classList.remove("on"), 1400); }));
+
+  /* ---------- banner ---------- */
+  $("#bannerX").addEventListener("click", () => ($("#banner").hidden = true));
+  $("#bannerReset").addEventListener("click", () => { const b = $("#banner"); b.hidden = false; b.style.animation = "none"; b.offsetHeight; b.style.animation = ""; });
+
+  /* ---------- services ---------- */
+  function renderSvc() { $("#svc").innerHTML = T[theme].svc.map(([ic, h, p]) => `<article><div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[ic]}</svg></div><h3>${h}</h3><p>${p}</p></article>`).join(""); }
+
+  /* ---------- booking ---------- */
+  let selDay = 0, selSlot = null;
+  function renderDays() {
+    const H = T[theme].hours, { day } = now(), out = [];
+    for (let i = 1; out.length < 6 && i < 14; i++) { const d = (day + i) % 7; if (H[d]) out.push({ d, i }); }
+    const base = new Date();
+    $("#days").innerHTML = out.map((o, k) => { const dt = new Date(base.getTime() + o.i * 864e5); return `<button type="button" aria-pressed="${k === 0}" data-d="${o.d}">${DAYS[o.d]}<small>${dt.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Chicago" })}</small></button>`; }).join("");
+    $$("#days button").forEach((b, k) => b.addEventListener("click", () => { $$("#days button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); renderSlots(+b.dataset.d, k); }));
+    renderSlots(out[0].d, 0);
+  }
+  function renderSlots(d, k) {
+    const h = T[theme].hours[d], slots = []; for (let t = h[0]; t < h[1] - .4; t += 1) slots.push(t);
+    selSlot = null; $("#booked").hidden = true;
+    $("#slots").innerHTML = slots.map((t, i) => `<button type="button" aria-pressed="false" ${((i + k * 2) % 4 === 1) ? "disabled" : ""} data-t="${t}">${fmt(t)}</button>`).join("");
+    $$("#slots button").forEach(b => b.addEventListener("click", () => { $$("#slots button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); selSlot = b; }));
+  }
+  $("#bookBtn").addEventListener("click", () => { const b = $("#booked"); const d = $("#days [aria-pressed=true]"); b.hidden = false; b.textContent = selSlot ? `Requested ${d.firstChild.textContent} at ${selSlot.textContent}. On a live site, the business would confirm by text.` : "Pick a time first."; });
+
+  /* ---------- reviews ---------- */
+  let quoteI = 0, qt;
+  function renderQuote() {
+    const R = T[theme].reviews; $("#quoteText").textContent = "“" + R[quoteI] + "”";
+    $("#dots").innerHTML = R.map((_, i) => `<button type="button" aria-label="Review ${i + 1}" aria-current="${i === quoteI}"></button>`).join("");
+    $$("#dots button").forEach((b, i) => b.addEventListener("click", () => { quoteI = i; renderQuote(); }));
+  }
+  if (!reduce) qt = setInterval(() => { quoteI = (quoteI + 1) % 3; renderQuote(); }, 4500);
+
+  /* ---------- faq ---------- */
+  function renderFaq() {
+    $("#faq").innerHTML = T[theme].faq.map(([qq, a], i) => `<div class="faq"><button type="button" aria-expanded="${i === 0}" aria-controls="fa${i}">${qq}<i aria-hidden="true">+</i></button><div class="faq__a" id="fa${i}"><div><p>${a}</p></div></div></div>`).join("");
+    $$("#faq button").forEach(b => b.addEventListener("click", () => b.setAttribute("aria-expanded", String(b.getAttribute("aria-expanded") !== "true"))));
+  }
+
+  /* ---------- form ---------- */
+  const form = $("#kform");
+  const check = el => { const ok = el.checkValidity(); el.parentElement.classList.toggle("bad", !ok); return ok; };
+  ["#kf-name", "#kf-phone"].forEach(s => $(s).addEventListener("blur", e => e.target.value && check(e.target)));
+  form.addEventListener("submit", e => { e.preventDefault(); const ok = [$("#kf-name"), $("#kf-phone")].map(check).every(Boolean); if (!ok) return; form.hidden = true; $("#sent").hidden = false; });
+  $("#again").addEventListener("click", () => { form.reset(); form.hidden = false; $("#sent").hidden = true; });
+
+  /* ---------- price list ---------- */
+  function renderPrices(cat) {
+    const P = T[theme].prices;
+    $("#tabs").innerHTML = Object.keys(P).map(c => `<button type="button" role="tab" aria-selected="${c === cat}">${c}</button>`).join("");
+    $$("#tabs button").forEach(b => b.addEventListener("click", () => renderPrices(b.textContent)));
+    $("#prices").innerHTML = P[cat].map(([n, p]) => `<div><b>${n}</b><span>${p}</span></div>`).join("");
+  }
+
+  let start = "auto"; try { const s = localStorage.getItem("kit-theme"); if (T[s]) start = s; } catch (e) {}
+  applyTheme(start);
+  setInterval(paintHours, 60000);
+})();
+</script>
+</body>
+</html>

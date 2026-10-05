@@ -11,6 +11,7 @@ build step.
 | `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
 | `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
 | `work/thumbs/` | Screenshots used by the carousel |
+| `kit/` | Element kit: live components shown before/after, themeable as auto shop, dentist, café or salon |
 
 The carousel list lives in the `WORK` array near the end of `index.html`. To add
 a site, drop a 1280×800 screenshot in `work/thumbs/` and add an entry there.
