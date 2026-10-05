@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Krch Auto · Concepts</title>
+<title>Krch Auto · Concept</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -447,7 +447,7 @@ a { color: inherit; }
   </defs>
 </svg>
 
-<div class="switch" role="region" aria-label="Draft picker">
+<div class="switch" role="region" aria-label="Draft picker" hidden>
   <div class="in">
     <span class="switch__label">Krch Auto · concepts</span>
     <div class="switch__tabs" role="group" aria-label="Drafts">
@@ -1000,7 +1000,7 @@ a { color: inherit; }
   const h = location.hash.replace("#", "");
   if ("abcdefg".split("").includes(h)) start = h;
   else { try { const s = localStorage.getItem("krch-draft"); if ("abcdefg".split("").includes(s)) start = s; } catch (e) {} }
-  show(start);
+  show("b");
   document.querySelectorAll("[data-yr]").forEach(e => (e.textContent = new Date().getFullYear()));
 
   /* ---------- hours (placeholder) + live open status in Kansas time ---------- */

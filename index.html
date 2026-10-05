@@ -82,6 +82,7 @@ main, header, footer { position: relative; z-index: 1; }
 .stage { position: relative; overflow: hidden; height: clamp(330px, 38vw, 480px); perspective: 1600px; perspective-origin: 50% 40%; touch-action: pan-y; cursor: grab; user-select: none; }
 .stage.dragging { cursor: grabbing; }
 .ring { position: absolute; left: 50%; top: 44%; width: 0; height: 0; transform-style: preserve-3d; }
+.card { will-change: transform; }
 .card { position: absolute; width: var(--cw, 340px); left: calc(var(--cw, 340px) / -2); top: calc(var(--cw, 340px) * -0.36); text-decoration: none; background: var(--panel); border: 1px solid var(--line-hi); backface-visibility: hidden; transition: opacity .3s, border-color .2s; }
 .card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); pointer-events: none; }
 .card__meta { display: flex; justify-content: space-between; gap: 10px; padding: 10px 12px; color: var(--dim); }
@@ -207,12 +208,12 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
         <div class="ring" id="ring"></div>
       </div>
       <div class="now">
-        <div><div class="now__k mono" id="nowK">Auto repair</div><div class="now__t" id="nowT">Krch Auto</div></div>
+        <div><div class="now__k mono" id="nowK">Auto repair · Lincolnville, KS</div><div class="now__t" id="nowT">Krch Auto</div></div>
         <div class="now__ctrl">
           <button class="iconbtn" id="prev" type="button" aria-label="Previous site"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
           <button class="iconbtn" id="next" type="button" aria-label="Next site"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
         </div>
-        <a class="open" id="openLink" href="work/krch-auto/#a">Open site ↗</a>
+        <a class="open" id="openLink" href="work/krch-auto/">Open site ↗</a>
       </div>
     </div>
   </section>
@@ -329,15 +330,9 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
 
   /* ---------- work ring ---------- */
   const WORK = [
-    { t: "Krch Auto", k: "Auto repair · Barn concept", img: "work/thumbs/krch-barn.jpg", href: "work/krch-auto/#a" },
+    { t: "Krch Auto", k: "Auto repair · Lincolnville, KS", img: "work/thumbs/krch-bold.jpg", href: "work/krch-auto/" },
     { t: "Bright Shine Dental", k: "Dental practice · Demo", img: "work/thumbs/bright-shine.jpg", href: "work/bright-shine/" },
-    { t: "Krch Auto Gazette", k: "Auto repair · Newspaper concept", img: "work/thumbs/krch-gazette.jpg", href: "work/krch-auto/#f" },
-    { t: "Krch Auto Dashboard", k: "Auto repair · Gauge concept", img: "work/thumbs/krch-dash.jpg", href: "work/krch-auto/#e" },
     { t: "Singularity", k: "Developer portfolio", img: "work/thumbs/singularity.jpg", href: "work/singularity/" },
-    { t: "Krch Auto Work Order", k: "Auto repair · Ticket concept", img: "work/thumbs/krch-workorder.jpg", href: "work/krch-auto/#d" },
-    { t: "Krch Auto Station", k: "Auto repair · Retro concept", img: "work/thumbs/krch-station.jpg", href: "work/krch-auto/#c" },
-    { t: "Krch Auto Shadow Board", k: "Auto repair · Pegboard concept", img: "work/thumbs/krch-shadow.jpg", href: "work/krch-auto/#g" },
-    { t: "Krch Auto Bold", k: "Auto repair · Classic concept", img: "work/thumbs/krch-bold.jpg", href: "work/krch-auto/#b" },
   ];
   const stage = document.getElementById("stage"), ring = document.getElementById("ring");
   const N = WORK.length, STEP = 360 / N;
@@ -347,23 +342,24 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
     a.innerHTML = `<img src="${w.img}" alt="Screenshot of ${w.t}" loading="lazy"><span class="card__meta mono"><span>${String(i + 1).padStart(2, "0")}</span><span>${w.t}</span></span>`;
     ring.appendChild(a); return a;
   });
-  let R = 500, angle = 0, target = 0, vel = 0, dragging = false, moved = 0, idle = 0;
+  let CW = 340, angle = 0, target = 0, vel = 0, dragging = false, moved = 0, idle = 0;
   function layout() {
     const cw = Math.max(220, Math.min(420, stage.clientWidth * .36));
     stage.style.setProperty("--cw", cw + "px");
-    R = Math.round((cw / 2) / Math.tan(Math.PI / N) + 30);
-    cards.forEach((c, i) => (c.style.transform = `rotateY(${i * STEP}deg) translateZ(${R}px)`));
+    CW = cw;
   }
   const frontIndex = () => ((Math.round(-angle / STEP) % N) + N) % N;
   const nowT = document.getElementById("nowT"), nowK = document.getElementById("nowK"), openLink = document.getElementById("openLink");
   let lastFront = -1;
   function render() {
-    ring.style.transform = `translateZ(${-R}px) rotateY(${angle}deg)`;
-    const f = frontIndex();
+    // cover flow: each card sits at its offset from the current position, wrapping around
+    const pos = -angle / STEP, f = frontIndex();
     cards.forEach((c, i) => {
-      let d = Math.abs(((i * STEP + angle) % 360 + 540) % 360 - 180);
-      d = 180 - d;
-      c.style.opacity = String(Math.max(.3, 1 - d / 200));
+      let off = ((i - pos) % N + N) % N; if (off > N / 2) off -= N;
+      const a = Math.abs(off);
+      c.style.transform = `translateX(${off * CW * .82}px) translateZ(${-a * CW * .5}px) rotateY(${-Math.sign(off) * Math.min(a, 1) * 38}deg)`;
+      c.style.zIndex = String(100 - Math.round(a * 10));
+      c.style.opacity = String(Math.max(0, 1 - Math.max(0, a - .6) * .9));
       c.classList.toggle("front", i === f);
       c.tabIndex = i === f ? 0 : -1;
     });
