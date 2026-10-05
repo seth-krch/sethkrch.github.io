@@ -62,7 +62,7 @@ main, header, footer { position: relative; z-index: 1; }
 .hero { position: relative; height: clamp(520px, 88vh, 840px); overflow: hidden; border-bottom: 1px solid var(--line); }
 .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .hero__copy { position: absolute; left: var(--gut); right: var(--gut); bottom: clamp(24px, 5vh, 56px); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; pointer-events: none; }
-.hero h1 { margin: 0; font: 800 clamp(56px, 10vw, 150px)/.85 var(--f-display); letter-spacing: -.05em; text-shadow: 0 0 40px var(--bg), 0 0 18px var(--bg); }
+.hero h1 { margin: 0 0 -.06em; font: 800 clamp(96px, 19vw, 280px)/.8 var(--f-display); letter-spacing: -.06em; text-shadow: 0 0 40px var(--bg), 0 0 18px var(--bg); }
 .hero h1 span { display: block; }
 .hero__sub { margin: 0; max-width: 30ch; text-align: right; color: var(--dim); font-size: clamp(15px, 1.4vw, 18px); text-shadow: 0 0 14px var(--bg); }
 .hero__sub b { color: var(--ink); font-weight: 500; }
@@ -190,7 +190,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
     <span class="hero__corner l mono">Web design · Fig. 01</span>
     <span class="hero__corner r mono">38.49° N · 96.96° W<br>Lincolnville, KS</span>
     <div class="hero__copy">
-      <h1><span>Seth</span><span>Krch</span></h1>
+      <h1 aria-label="Krch, Seth Krch web design">Krch</h1>
       <p class="hero__sub"><b>Websites for local business.</b> Designed and built in Lincolnville, Kansas.</p>
     </div>
   </section>
