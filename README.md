@@ -11,6 +11,8 @@ build step.
 | `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
 | `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
 | `work/cinder-and-crust/` | Cinder & Crust, a concept site for a fictional wood-fired pizzeria (not in the carousel) |
+| `work/pale-elysium/` | Pale Elysium, a vaporwave sculpture garden: raymarched marble bust, three skies, synthesized mixtape (WebGL, not in the carousel) |
+| `work/cathode-archive/` | Cathode Archive, a CRT terminal with a dithered stone bust you can chisel (WebGL, not in the carousel) |
 | `work/thumbs/` | Screenshots used by the carousel |
 | `kit/` | Element kit: live components shown before/after, themeable as auto shop, dentist, café or salon |
 
