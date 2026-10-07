@@ -34,6 +34,7 @@ class Config:
     enable_reproduction: bool = True
     repro_threshold: float = 32.0
     maturity_age: int = 40
+    birth_radius: int = 4         # children settle at the nearest free cell within this distance
     child_energy: float = 12.0
     repro_overhead: float = 4.0
     mutation_rate: float = 0.20   # per integer gene per birth

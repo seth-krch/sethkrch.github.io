@@ -308,14 +308,34 @@ class Creature(mesa.Agent):
                 a._flee(d.x, d.y, cfg.flee_distance)
 
     # --------------------------------------------------------- reproduction
+    def _birth_cell(self):
+        """Nearest free cell within `birth_radius` (random among equally near), or None."""
+        m, r = self.model, self.model.cfg.birth_radius
+        x0, x1 = max(0, self.x - r), min(m.w, self.x + r + 1)
+        y0, y1 = max(0, self.y - r), min(m.h, self.y + r + 1)
+        ys, xs = np.nonzero(m.occ[y0:y1, x0:x1] == 0)
+        if len(ys) == 0:
+            return None
+        best, ties = None, []
+        for iy, ix in zip(ys.tolist(), xs.tolist()):
+            cx, cy = x0 + ix, y0 + iy
+            d = max(abs(cx - self.x), abs(cy - self.y))
+            if d == 0:
+                continue
+            if best is None or d < best:
+                best, ties = d, [(cx, cy)]
+            elif d == best:
+                ties.append((cx, cy))
+        return m.random.choice(ties) if ties else None
+
     def _reproduce(self):
         m, cfg = self.model, self.model.cfg
         if len(m.by_id) >= cfg.max_population:
             return
-        free = self._free_neighbors()
-        if not free:
+        pos = self._birth_cell()
+        if pos is None:
+            m.window["blocked_births"] += 1
             return
-        pos = m.random.choice(free)
         self.energy -= cfg.child_energy + cfg.repro_overhead
         self.stats["children"] += 1
         m.spawn(mutate(self.genes, cfg, m.random), pos, cfg.child_energy,
@@ -340,7 +360,7 @@ class WorldModel(mesa.Model):
         self.by_id = {}
         self.occ = np.zeros((self.h, self.w), dtype=np.int64)
         self.history = []
-        self.window = dict.fromkeys(("births", "deaths", "challenges", "yields", "backdowns", "fights"), 0)
+        self.window = dict.fromkeys(("births", "deaths", "challenges", "yields", "backdowns", "fights", "blocked_births"), 0)
         self._build_world()
         self.log.emit("world", 0, config=cfg.to_dict(), cap_cells=int((self.cap > 0).sum()))
         for _ in range(cfg.initial_population):
