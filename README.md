@@ -7,6 +7,7 @@ build step.
 | Path | What it is |
 |---|---|
 | `index.html` | Studio home page: live contour-map hero, 3D carousel of work, pricing, contact |
+| `portfolio/` | All projects grouped by category (business sites, experiments, developer and tools) with a filter. Cards are listed in the page itself |
 | `work/krch-auto/` | Krch Auto concept site (the "Bold" design) |
 | `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
 | `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
@@ -18,6 +19,8 @@ build step.
 
 The carousel list lives in the `WORK` array near the end of `index.html`. To add
 a site, drop a 1280×800 screenshot in `work/thumbs/` and add an entry there.
+The portfolio page lists every project as a card inside its category section in
+`portfolio/index.html`; the same thumbnails are used.
 
 All motion stops when the visitor's system has reduced motion turned on.
 
