@@ -39,7 +39,7 @@ def test_barren_world_starves_everyone_and_logs_why():
 
 
 def test_old_age_kills_even_in_a_rich_world():
-    m = run(Config(seed=3, max_age=100, **STAGE1), 150)
+    m = run(Config(seed=3, max_age=100, n_patches=0, food_cap=10.0, regrow=0.5, **STAGE1), 150)
     assert len(m.by_id) == 0
     causes = [e["cause"] for e in m.log.events if e["kind"] == "death"]
     assert causes.count("old_age") > 0.8 * len(causes)   # a few start far from food and starve first

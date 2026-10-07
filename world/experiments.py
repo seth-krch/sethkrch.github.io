@@ -65,6 +65,10 @@ def one_run(args):
         "mean_energy": tail_mean(h, "mean_energy") if h else 0,
         "dom_observed": dom["observed_dominance"], "dom_expected": dom["expected_by_chance"],
         "bimodality": A.bimodality(aggs), "agg_hist": A.aggression_histogram(m.by_id.values()),
+        "fight_death_frac": A.death_causes(ev).get("fight", 0) / max(1, sum(A.death_causes(ev).values())),
+        "starve_death_frac": A.death_causes(ev).get("starvation", 0) / max(1, sum(A.death_causes(ev).values())),
+        "min_pop": min((r["pop"] for r in h[len(h) // 5:]), default=0),
+        "max_generation": max((e["generation"] for e in ev if e["kind"] == "birth"), default=0),
         "yield_knew": mem.get("knew", {}).get("yield"), "yield_stranger": mem.get("stranger", {}).get("yield"),
     }
 
@@ -95,14 +99,19 @@ def summarize(name, runs):
                            ("backdown fraction", "backdown_frac", 3), ("births/tick", "births_per_tick", 3),
                            ("mean energy", "mean_energy", 2),
                            ("dominance pairs observed", "dom_observed", 1), ("  ...expected by chance", "dom_expected", 1),
-                           ("aggression bimodality", "bimodality", 2)]:
+                           ("aggression bimodality", "bimodality", 2),
+                           ("deaths by fighting", "fight_death_frac", 3), ("deaths by starvation", "starve_death_frac", 3),
+                           ("min population", "min_pop", 0), ("generations", "max_generation", 0)]:
         print(f"  {label:<24}{fmt([r[key] for r in runs], nd)}   per-seed: "
               + " ".join(f"{r[key]:.2f}" if isinstance(r[key], float) else str(r[key]) for r in runs))
 
 
 def parse_cond(text):
+    from sim.config import PRESETS
     name, _, rest = text.partition(":")
     ov = {}
+    if name in PRESETS:
+        ov.update({k: v for k, v in PRESETS[name].items()})
     for item in filter(None, rest.split(",")):
         k, v = item.split("=", 1)
         ov[k] = v

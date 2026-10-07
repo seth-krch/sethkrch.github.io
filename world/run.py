@@ -7,7 +7,7 @@
 """
 import argparse
 import dataclasses
-from sim.config import Config
+from sim.config import Config, PRESETS
 from sim.runner import simulate
 
 STAGES = {
@@ -34,13 +34,15 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--ticks", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--preset", choices=PRESETS, default="crowded",
+                    help="crowded (default), spread (scattered small patches), sparse (capped population)")
     ap.add_argument("--stage", type=int, choices=STAGES, default=4)
     ap.add_argument("--report-every", type=int, default=100)
     ap.add_argument("--map-every", type=int, default=0)
     ap.add_argument("--log", default=None, help="write the full event log (JSON lines) here")
     ap.add_argument("--set", action="append", default=[], metavar="FIELD=VALUE")
     a = ap.parse_args()
-    cfg = parse_set(Config(seed=a.seed, **STAGES[a.stage]), a.set)
+    cfg = parse_set(Config(seed=a.seed, **{**PRESETS[a.preset], **STAGES[a.stage]}), a.set)
     m = simulate(cfg, a.ticks, log_path=a.log, report_every=a.report_every, map_every=a.map_every)
     print(f"done: {m.tick} ticks, population {len(m.by_id)}, {m.log.next_id} events, {m.wall_seconds:.1f}s")
 

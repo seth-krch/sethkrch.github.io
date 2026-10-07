@@ -1,6 +1,6 @@
 # Persistent World — Phase 1 Design
 
-Status: draft agreed in interview, no code yet.
+Status: implemented. See the implementation notes at the end and PHASE1_RESULTS.md for what was found.
 
 ## Vision (destination, not Phase 1)
 
@@ -97,3 +97,37 @@ requires it. Revisit if populations in the thousands are too slow.
 
 Grid size, initial population, food regrowth rate, cost constants, mutation
 rate, lifespan in ticks, learning rate and decay for memory.
+
+## Implementation notes (what changed while building it)
+
+These are deliberate deviations or details the design left open. Each one was
+chosen for a reason that showed up in testing.
+
+- **Contests are sequential.** The attacker challenges (paying a small
+  `challenge_cost` win or lose); the defender then yields or resists; if it
+  resists, the attacker either escalates to a fight or backs down. That yields
+  exactly the three agreed outcomes. A fight resolves in one tick, but its
+  length in rounds (more rounds when evenly matched) scales both the energy
+  cost and how much each side learns.
+- **What memory stores.** A belief about another creature's *disposition to
+  stand firm / escalate*, as a mean and an uncertainty (a one-dimensional
+  Kalman filter). Beliefs are updated by (a) contest outcomes, with small noise,
+  and (b) weak "glimpses" of nearby creatures each tick, whose noise grows with
+  distance squared, so ten distant sightings teach less than one close fight.
+  Unseen beliefs lose certainty over time; when capacity is full, the least
+  certain belief is dropped.
+- **Aggression is hidden, size is visible.** Both fight decisions are scored
+  from visible size, hunger, possession, memory of the opponent, aggression
+  bias and noise. No creature can read another's aggression directly.
+- **Boxed-in losers swap places with the winner.** Found via the explain tool:
+  a loser with no free cell used to stay on the spot, so the winner re-challenged
+  it every tick forever, inflating contest and rivalry counts.
+- **Newborns disperse** to the nearest free cell within `birth_radius`.
+  Adjacent-only placement blocked reproduction tens of thousands of times in
+  crowded colonies, which removed energy as the limiting factor and hid
+  selection on energy costs.
+- **Satiation.** Creatures at or above `satiation` energy stop eating, so food
+  is not hoarded and well-fed creatures stop seeking.
+- **Default world.** Crowded colonies on two rich food patches, because that
+  is where contests have consequences. `--preset spread` (many small patches)
+  is the contrast case.

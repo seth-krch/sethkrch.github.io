@@ -11,11 +11,11 @@ class Config:
     # --- world (stage 1) ---
     width: int = 40
     height: int = 40
-    n_patches: int = 8            # fertile patches; 0 = uniform fertility
-    patch_radius: int = 4
-    food_cap: float = 10.0        # max food on a fertile cell
+    n_patches: int = 2            # fertile patches; 0 = uniform fertility
+    patch_radius: int = 3
+    food_cap: float = 40.0        # max food on a fertile cell
     barren_cap: float = 0.0       # max food outside patches
-    regrow: float = 0.15          # food regrown per cell per tick
+    regrow: float = 1.0           # food regrown per cell per tick
 
     # --- creatures: energy economy (stage 1) ---
     initial_population: int = 120
@@ -24,7 +24,7 @@ class Config:
     base_cost: float = 0.20       # per tick, scaled by size
     move_cost: float = 0.08       # per step, scaled by size
     perception_cost: float = 0.012  # per tick per unit of perception range
-    memory_cost: float = 0.010    # per tick per memory slot (paid whether used or not)
+    memory_cost: float = 0.003    # per tick per memory slot (paid whether used or not)
     max_age: int = 300
     satiation: float = 40.0       # creatures at/above this energy stop eating
     min_food: float = 1.0         # a cell with less food does not attract creatures
@@ -41,7 +41,7 @@ class Config:
     size_sigma: float = 0.07      # log-normal jitter on size per birth
     aggression_sigma: float = 0.06
     init_aggression_mean: float = 0.5
-    init_aggression_sd: float = 0.08
+    init_aggression_sd: float = 0.25
     init_memory_range: tuple = (2, 6)
     init_perception_range: tuple = (2, 5)
     max_memory: int = 20
@@ -51,11 +51,11 @@ class Config:
     enable_contests: bool = True
     contest_horizon: float = 4.0      # ticks of eating a contested spot is worth
     hunger_weight: float = 1.0        # how much hunger inflates the value of food
-    aggression_weight: float = 6.0    # score bias per unit of (aggression - 0.5)
+    aggression_weight: float = 15.0   # score bias per unit of (aggression - 0.5)
     possession_bonus: float = 0.6     # logit bonus to the creature already eating
     size_advantage: float = 3.0       # logit per unit of ln(size ratio)
     round_cost: float = 0.5           # energy each combatant pays per fight round
-    injury_cost: float = 1.5          # extra energy the loser loses
+    injury_cost: float = 3.0          # extra energy the loser loses
     max_rounds: int = 4
     decision_noise: float = 0.8       # sd of noise added to action scores
     flee_distance: int = 3
@@ -79,3 +79,13 @@ class Config:
     def to_dict(self):
         d = asdict(self)
         return {k: (list(v) if isinstance(v, tuple) else v) for k, v in d.items()}
+
+
+# Named variations on the default (crowded colonies on rich patches). The default
+# is the regime where contests have consequences; "spread" is the contrast case
+# where food is scattered across many small patches and contests rarely matter.
+PRESETS = {
+    "crowded": {},
+    "spread": dict(n_patches=8, patch_radius=4, food_cap=10.0, regrow=0.15),
+    "sparse": dict(n_patches=0, food_cap=10.0, regrow=0.5, initial_population=60, max_population=100),
+}
