@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Concept site for a fictional archive of stone busts, shown on a CRT terminal. Everything is generated in the browser.">
+<style>html{margin:0}body{margin:0}</style>
+<title>Cathode Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=VT323&display=swap">
+<style>
+/* Layout: a beige 1980s monitor in a dark room. The tube holds a command line on the left and a dithered, raymarched stone bust on the right. Click the bust to chisel it, drag to turn it. */
+:root {
+  --room: #0d0b09;
+  --case: #cbc3b0;
+  --case-hi: #ddd6c5;
+  --case-lo: #a69e8b;
+  --glass: #050403;
+  --ph: #ffb02e;
+  --ph-hi: #ffd88a;
+  --ph-dim: rgba(255, 176, 46, 0.35);
+  --glow: rgba(255, 150, 20, 0.55);
+  --f-term: "VT323", "Courier New", ui-monospace, monospace;
+  --f-brand: "Michroma", "Eurostile", "Arial Narrow", sans-serif;
+}
+* { box-sizing: border-box; }
+body { background: #0d0b09; color: #cbc3b0; font-family: var(--f-term); padding-inline: 0; }
+p { margin: 0; }
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--ph-hi); outline-offset: 2px; }
+
+.room { min-height: 100svh; display: grid; place-items: center; padding: clamp(0.75rem, 3vw, 2.5rem) clamp(0.5rem, 2vw, 1.5rem); background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(255, 170, 60, 0.07), transparent 70%), #0d0b09; }
+.stage { width: 100%; max-width: 74rem; display: grid; gap: 1rem; }
+
+/* monitor case */
+.monitor { background: linear-gradient(165deg, var(--case-hi), var(--case) 40%, var(--case-lo)); border-radius: clamp(14px, 2.5vw, 30px); padding: clamp(0.6rem, 2.2vw, 1.6rem) clamp(0.6rem, 2.2vw, 1.6rem) 0; box-shadow: 0 0 0 1px #8d8574, 0 2.5rem 5rem rgba(0, 0, 0, 0.7), inset 0 2px 0 rgba(255, 255, 255, 0.55), inset 0 -6px 14px rgba(0, 0, 0, 0.2); }
+.bezel { background: #17140f; border-radius: clamp(10px, 2vw, 22px); padding: clamp(0.4rem, 1.4vw, 1rem); box-shadow: inset 0 4px 14px rgba(0, 0, 0, 0.9), 0 1px 0 rgba(255, 255, 255, 0.5); }
+.screen { position: relative; border-radius: 3.2% / 4.5%; overflow: hidden; background: var(--glass); box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.95), inset 0 0 18px var(--ph-dim); isolation: isolate; }
+.inner { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); min-height: min(38rem, 78svh); color: var(--ph); text-shadow: -0.7px 0 rgba(255, 70, 70, 0.28), 0.7px 0 rgba(70, 200, 255, 0.28), 0 0 7px var(--glow); transform-origin: center; }
+.on .inner { animation: poweron 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes poweron { 0% { transform: scale(0, 0.004); filter: brightness(9); } 30% { transform: scale(1, 0.004); filter: brightness(9); } 62% { transform: scale(1, 1); filter: brightness(2.2); } 100% { transform: none; filter: none; } }
+.screen::before { content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.3) 3px 4px); mix-blend-mode: multiply; }
+.screen::after { content: ""; position: absolute; inset: 0; z-index: 6; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55) 100%), linear-gradient(115deg, rgba(255, 255, 255, 0.06), transparent 28%); animation: flick 0.18s steps(2) infinite; }
+@keyframes flick { 0% { opacity: 0.94; } 50% { opacity: 1; } 100% { opacity: 0.97; } }
+.hum { position: absolute; left: 0; right: 0; height: 22%; z-index: 4; pointer-events: none; background: linear-gradient(to bottom, transparent, rgba(255, 190, 90, 0.06), transparent); animation: roll 8s linear infinite; }
+@keyframes roll { from { top: -25%; } to { top: 105%; } }
+
+/* terminal */
+.term { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; min-width: 0; padding: clamp(0.8rem, 2vw, 1.4rem); border-right: 1px solid var(--ph-dim); font-size: clamp(1.15rem, 1.7vw, 1.4rem); line-height: 1.12; min-height: 0; }
+#out { overflow-y: auto; scrollbar-width: none; padding-bottom: 0.5rem; max-height: min(30rem, 62svh); }
+#out::-webkit-scrollbar { display: none; }
+#out p { white-space: pre-wrap; overflow-wrap: anywhere; min-height: 1.12em; }
+#out .dim { opacity: 0.6; }
+#out .hi { color: var(--ph-hi); }
+#out .err { color: #ff7a5c; text-shadow: 0 0 7px rgba(255, 90, 60, 0.6); }
+#out .cmd { background: none; border: 0; padding: 0; color: var(--ph-hi); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-style: dotted; }
+#out .cmd:hover { background: var(--ph); color: #000; text-shadow: none; }
+.line { display: flex; gap: 0.6ch; align-items: baseline; border-top: 1px solid var(--ph-dim); padding-top: 0.5rem; }
+.line label { white-space: nowrap; color: var(--ph-hi); }
+.line input { flex: 1; min-width: 0; background: none; border: 0; color: var(--ph); font: inherit; text-shadow: inherit; caret-color: var(--ph-hi); caret-shape: block; padding: 0; outline: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; padding-top: 0.6rem; }
+.chips button { background: transparent; color: var(--ph); border: 1px solid var(--ph-dim); padding: 0 0.6rem; font-size: 1.1rem; cursor: pointer; border-radius: 0; text-shadow: inherit; }
+.chips button:hover { background: var(--ph); color: #000; text-shadow: none; }
+
+/* view */
+.view { position: relative; min-width: 0; min-height: 22rem; }
+#gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; cursor: crosshair; touch-action: none; }
+.hud { position: absolute; inset: 0; pointer-events: none; padding: 0.8rem 1rem; display: flex; flex-direction: column; justify-content: space-between; font-size: 1.1rem; line-height: 1.1; }
+.hud div { display: flex; justify-content: space-between; gap: 1rem; }
+.hud b { font-weight: 400; color: var(--ph-hi); }
+
+/* case chin */
+.chin { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 0.5rem 1.1rem; }
+.brand { font-family: var(--f-brand); font-size: clamp(0.65rem, 1.4vw, 0.95rem); letter-spacing: 0.3em; color: #6e6755; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6); }
+.brand b { color: #4d4738; font-weight: 400; margin-left: 0.4em; }
+.knobs { display: flex; align-items: center; gap: 0.9rem; }
+.vents { display: flex; gap: 4px; }
+.vents i { display: block; width: 3px; height: 1.2rem; background: #8d8574; box-shadow: 1px 0 0 rgba(255, 255, 255, 0.5); }
+.led { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #5a2a14; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5); }
+.on .led { background: #ff9a3c; box-shadow: 0 0 8px #ff9a3c, 0 0 2px #fff6; }
+.pbtn { width: 1.6rem; height: 1.6rem; border-radius: 50%; border: 0; cursor: pointer; background: radial-gradient(circle at 35% 30%, #efe9da, #a69e8b); box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4), inset 0 -2px 3px rgba(0, 0, 0, 0.2); }
+.pbtn:active { transform: translateY(1px); }
+.note { color: #7c7463; font-size: 1.15rem; text-align: center; }
+
+@media (max-width: 52rem) {
+  .inner { grid-template-columns: minmax(0, 1fr); }
+  .view { order: -1; height: min(80vw, 24rem); min-height: 0; }
+  .term { border-right: 0; border-top: 1px solid var(--ph-dim); }
+  #out { max-height: 17rem; }
+  .hud { font-size: 0.95rem; padding: 0.5rem 0.7rem; }
+  .hud div:last-child span:first-child { display: none; }
+  .hud div:last-child { justify-content: flex-end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .on .inner { animation: none; }
+  .screen::after { animation: none; }
+  .hum { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="room">
+  <div class="stage">
+    <div class="monitor" id="monitor">
+      <div class="bezel">
+        <div class="screen" id="screen">
+          <div class="hum" aria-hidden="true"></div>
+          <div class="inner">
+            <section class="term" aria-label="Terminal">
+              <div id="out" role="log" aria-live="polite"></div>
+              <form class="line" id="form" autocomplete="off">
+                <label for="cmd">visitor@cathode:~$</label>
+                <input id="cmd" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Command">
+              </form>
+              <div class="chips" id="chips" aria-label="Quick commands"></div>
+            </section>
+            <section class="view" aria-label="Stone bust viewer">
+              <canvas id="gl" aria-hidden="true"></canvas>
+              <div class="hud" aria-hidden="true">
+                <div><span id="hName">BUST-001 PHILOSOPHER</span><span id="hStone">LIMESTONE</span></div>
+                <div><span>DRAG TURN / CLICK CHISEL</span><span>CHIPS <b id="hChips">00/32</b></span></div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="chin">
+        <span class="brand">MONOLITH<b>7</b></span>
+        <span class="knobs"><span class="vents" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="led" aria-hidden="true"></span><button class="pbtn" id="power" type="button" aria-label="Power: restart the monitor"></button></span>
+      </div>
+    </div>
+    <p class="note">Concept site for a fictional archive. The busts are not meshes or images. Each one is a few dozen shapes blended in a shader.</p>
+  </div>
+</div>
+
+<script type="x-shader/x-vertex" id="vs">
+attribute vec2 a;
+void main(){ gl_Position = vec4(a, 0.0, 1.0); }
+</script>
+<script type="x-shader/x-fragment" id="fs">
+precision highp float;
+uniform vec2 uRes; uniform float uTime; uniform float uYaw; uniform float uPitch;
+uniform vec4 uP; uniform float uStone; uniform float uWire; uniform float uGlitch;
+uniform vec3 uTint; uniform vec4 uDent[32]; uniform int uDentN;
+mat3 gR;
+
+float sdEll(vec3 p, vec3 r){ float k0 = length(p / r); float k1 = length(p / (r * r)); return k0 * (k0 - 1.0) / k1; }
+float smin(float a, float b, float k){ float h = max(k - abs(a - b), 0.0) / k; return min(a, b) - h * h * k * 0.25; }
+float smax(float a, float b, float k){ return -smin(-a, -b, k); }
+
+float bust(vec3 p){
+  float jaw = uP.x, nose = uP.y, brow = uP.z, curls = uP.w;
+  float d = sdEll(p - vec3(0.0, 0.16, -0.02), vec3(0.43, 0.5, 0.47));
+  float f = sdEll(p - vec3(0.0, -0.2, 0.07), vec3(0.34 * jaw, 0.42, 0.36));
+  d = smin(d, f, 0.2);
+  d = smin(d, length(p - vec3(0.0, -0.5, 0.2)) - 0.13 * jaw, 0.12);
+  vec3 q = vec3(abs(p.x), p.y, p.z);
+  d = smin(d, length(q - vec3(0.22, -0.04, 0.32)) - 0.1, 0.12);
+  d = smin(d, sdEll(q - vec3(0.1, 0.14, 0.36), vec3(0.2, 0.05 * brow, 0.12)), 0.06);
+  d = smax(d, -sdEll(q - vec3(0.155, 0.09, 0.4), vec3(0.085, 0.055 * (0.6 + 0.4 * brow), 0.09)), 0.04);
+  d = smin(d, sdEll(p - vec3(0.0, -0.06, 0.45), vec3(0.045, 0.15 * nose, 0.09 * nose)), 0.05);
+  d = smin(d, length(q - vec3(0.05, -0.04 - 0.13 * nose, 0.42)) - 0.04, 0.04);
+  d = smin(d, sdEll(p - vec3(0.0, -0.3, 0.39), vec3(0.1, 0.03, 0.05)), 0.03);
+  d = smax(d, -sdEll(p - vec3(0.0, -0.325, 0.42), vec3(0.09, 0.008, 0.05)), 0.01);
+  d = smin(d, sdEll(q - vec3(0.43, 0.0, -0.03), vec3(0.035, 0.1, 0.07)), 0.04);
+  float n = max(length(p.xz * vec2(1.0, 1.15)) - 0.2, abs(p.y + 0.72) - 0.3);
+  d = smin(d, n, 0.1);
+  float c = sdEll(p - vec3(0.0, -1.02, -0.02), vec3(0.64, 0.3, 0.34));
+  c = max(c, -(p.y + 1.25));
+  d = smin(d, c, 0.2);
+  for (int i = 0; i < 12; i++) {
+    if (float(i) >= curls) break;
+    float a = 0.55 + float(i) * 0.4767;
+    vec3 cp = vec3(sin(a) * 0.35, 0.42 + 0.06 * sin(a * 3.0 + 1.0), cos(a) * 0.37 - 0.03);
+    d = smin(d, length(p - cp) - 0.11, 0.08);
+  }
+  for (int i = 0; i < 32; i++) {
+    if (i >= uDentN) break;
+    d = smax(d, -(length(p - uDent[i].xyz) - uDent[i].w), 0.03);
+  }
+  return d;
+}
+float map(vec3 p){ return bust(gR * p); }
+
+float h31(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float vn(vec3 x){
+  vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(h31(i), h31(i + vec3(1,0,0)), f.x), mix(h31(i + vec3(0,1,0)), h31(i + vec3(1,1,0)), f.x), f.y),
+             mix(mix(h31(i + vec3(0,0,1)), h31(i + vec3(1,0,1)), f.x), mix(h31(i + vec3(0,1,1)), h31(i + vec3(1,1,1)), f.x), f.y), f.z);
+}
+float fbm(vec3 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * vn(p); p = p * 2.03 + 7.1; a *= 0.5; } return s; }
+
+float stoneTex(vec3 pl){
+  float s = uStone;
+  if (s < 0.5) return 0.6 + 0.4 * fbm(vec3(pl.x * 1.3, pl.y * 17.0, pl.z * 1.3));
+  if (s < 1.5) { float pits = smoothstep(0.6, 0.68, fbm(pl * 15.0)); return 0.55 - 0.3 * pits + 0.25 * fbm(pl * 5.0); }
+  if (s < 2.5) return 0.5 + 0.35 * step(0.58, vn(pl * 40.0)) + 0.25 * fbm(pl * 6.0);
+  if (s < 3.5) { float v = 1.0 - smoothstep(0.0, 0.05, abs(fbm(pl * 2.2 + 4.0) - 0.5)); return 0.95 - 0.5 * v + 0.1 * fbm(pl * 9.0); }
+  return 0.7 + 0.3 * fbm(pl * vec3(3.0, 24.0, 3.0)) - 0.15 * fbm(pl * 30.0);
+}
+
+float b2(vec2 p){ p = mod(p, 2.0); return mod(2.0 * p.x + 3.0 * p.y, 4.0); }
+float bayer(vec2 p){ return (b2(p) * 4.0 + b2(floor(p * 0.5))) / 16.0; }
+
+mat3 rotY(float a){ float c = cos(a), s = sin(a); return mat3(c, 0.0, -s, 0.0, 1.0, 0.0, s, 0.0, c); }
+mat3 rotX(float a){ float c = cos(a), s = sin(a); return mat3(1.0, 0.0, 0.0, 0.0, c, s, 0.0, -s, c); }
+
+void main(){
+  vec2 fc = gl_FragCoord.xy;
+  float band = floor(fc.y / 5.0);
+  float rnd = h31(vec3(band, floor(uTime * 24.0), 1.0));
+  if (uGlitch > 0.01 && rnd > 1.0 - uGlitch * 0.55) fc.x += (rnd - 0.5) * uGlitch * 90.0;
+  vec2 uv = (fc - 0.5 * uRes) / uRes.y;
+  vec3 ro = vec3(0.0, -0.1, 4.6);
+  vec3 ta = vec3(0.0, -0.28, 0.0);
+  vec3 fw = normalize(ta - ro);
+  vec3 rt = normalize(cross(fw, vec3(0.0, 1.0, 0.0)));
+  vec3 up = cross(rt, fw);
+  vec3 rd = normalize(uv.x * rt + uv.y * up + 1.55 * fw);
+  gR = rotX(-uPitch) * rotY(-uYaw);
+
+  vec3 oc = ro - vec3(0.0, -0.3, 0.0);
+  float b = dot(oc, rd);
+  float disc = b * b - (dot(oc, oc) - 2.89);
+  float dm = 1e9; bool hit = false; float t = 0.0;
+  if (disc > 0.0) {
+    t = -b - sqrt(disc);
+    for (int i = 0; i < 80; i++) {
+      float d = map(ro + rd * t);
+      dm = min(dm, d);
+      if (d < 0.002) { hit = true; break; }
+      t += d * 0.9;
+      if (t > 8.0) break;
+    }
+  }
+  float L = 0.0;
+  float sy = 1.0 - gl_FragCoord.y / uRes.y;
+  float sweep = uWire * 1.1 - 0.05;
+  if (hit) {
+    vec3 p = ro + rd * t;
+    vec2 k = vec2(1.0, -1.0); float h = 0.0015;
+    vec3 n = normalize(k.xyy * map(p + k.xyy * h) + k.yyx * map(p + k.yyx * h) + k.yxy * map(p + k.yxy * h) + k.xxx * map(p + k.xxx * h));
+    vec3 pl = gR * p;
+    float ao = 0.4 + 0.6 * clamp(map(p + n * 0.14) / 0.14, 0.0, 1.0);
+    vec3 Ld = normalize(vec3(-0.55, 0.65, 0.6));
+    float diff = clamp(dot(n, Ld) * 0.5 + 0.5, 0.0, 1.0); diff *= diff;
+    float rim = pow(1.0 - max(dot(n, -rd), 0.0), 2.5);
+    float tex = stoneTex(pl);
+    float stone = (diff * 1.05 * (0.45 + 0.7 * tex) + rim * 0.38) * ao;
+    float ly = smoothstep(0.42, 0.5, abs(fract(pl.y * 15.0) - 0.5));
+    float lx = smoothstep(0.43, 0.5, abs(fract(pl.x * 11.0) - 0.5));
+    float lz = smoothstep(0.43, 0.5, abs(fract(pl.z * 11.0) - 0.5));
+    float wire = (0.12 + 0.3 * diff) + 0.75 * max(ly, max(lx, lz) * 0.7);
+    L = (sy < sweep) ? wire : stone;
+  } else {
+    L = 0.16 * exp(-max(dm, 0.0) * 5.0) * step(dm, 1e8) * step(0.0, dm);
+    L += 0.03 * (0.5 + 0.5 * sin(uTime * 0.8 + sy * 6.0));
+  }
+  // measuring ticks on the left edge
+  float ex = uv.x + 0.5 * uRes.x / uRes.y;
+  float tickMajor = step(abs(fract(uv.y * 10.0 + 0.5) - 0.5), 0.012) * step(ex, 0.05) * step(0.02, ex);
+  float tickMinor = step(abs(fract(uv.y * 20.0 + 0.5) - 0.5), 0.012) * step(ex, 0.03) * step(0.02, ex);
+  L = max(L, (tickMajor + tickMinor) * 0.45);
+  // the scan line itself
+  float edge = exp(-abs(sy - sweep) * 90.0) * step(0.001, uWire) * step(uWire, 0.999);
+  L += edge * 0.9;
+  L += (h31(vec3(gl_FragCoord.xy, uTime * 40.0)) - 0.5) * 0.04 + uGlitch * (h31(vec3(gl_FragCoord.xy, uTime * 77.0)) - 0.5) * 0.7;
+  L = clamp(L, 0.0, 1.0);
+  float lv = floor(L * 5.0 + bayer(floor(gl_FragCoord.xy)) - 0.3) / 5.0;
+  lv = clamp(lv, 0.0, 1.0);
+  vec3 col = uTint * lv;
+  col += uTint * 0.02;
+  gl_FragColor = vec4(col, 1.0);
+}
+</script>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- the collection ---------- */
+  var BUSTS = [
+    { id: "001", name: "Philosopher", stone: "limestone", s: 0, P: [0.95, 1.15, 1.5, 4] },
+    { id: "002", name: "Emperor", stone: "basalt", s: 1, P: [1.15, 1.0, 1.2, 12] },
+    { id: "003", name: "Orator", stone: "granite", s: 2, P: [0.9, 0.8, 0.8, 8] },
+    { id: "004", name: "Athlete", stone: "marble", s: 3, P: [1.2, 0.7, 1.7, 10] },
+    { id: "005", name: "Unknown", stone: "sandstone", s: 4, P: [0.82, 1.5, 0.5, 0] }
+  ];
+  var cur = 0, P = BUSTS[0].P.slice(), Pt = BUSTS[0].P.slice(), stoneId = 0;
+  var COLORS = {
+    amber: { t: [1.0, 0.69, 0.18], ph: "#ffb02e", hi: "#ffd88a", dim: "rgba(255,176,46,0.35)", glow: "rgba(255,150,20,0.55)" },
+    green: { t: [0.25, 1.0, 0.45], ph: "#4dff77", hi: "#b8ffc8", dim: "rgba(77,255,119,0.33)", glow: "rgba(40,255,100,0.5)" },
+    ice: { t: [0.45, 0.85, 1.0], ph: "#74d9ff", hi: "#cdf0ff", dim: "rgba(116,217,255,0.33)", glow: "rgba(60,190,255,0.5)" },
+    white: { t: [0.92, 0.95, 0.9], ph: "#e8f0e4", hi: "#ffffff", dim: "rgba(232,240,228,0.3)", glow: "rgba(220,235,215,0.45)" }
+  };
+  var tint = COLORS.amber.t.slice(), tintT = COLORS.amber.t.slice();
+  function setColor(n) {
+    var c = COLORS[n], r = document.documentElement.style;
+    tintT = c.t.slice();
+    r.setProperty("--ph", c.ph); r.setProperty("--ph-hi", c.hi); r.setProperty("--ph-dim", c.dim); r.setProperty("--glow", c.glow);
+  }
+
+  /* ---------- state ---------- */
+  var yaw = 0.4, pitch = 0.0, yawGoal = null, auto = !reduce, wire = 0, wireT = 0, glitch = 0, dents = [];
+  var MAXD = 32;
+  var FOCAL = 1.55;
+
+  /* ---------- JS copy of the distance field, for picking where a click lands ---------- */
+  function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+  function len(a) { return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]); }
+  function ell(p, r) {
+    var a = [p[0] / r[0], p[1] / r[1], p[2] / r[2]], k0 = len(a);
+    var b = [p[0] / (r[0] * r[0]), p[1] / (r[1] * r[1]), p[2] / (r[2] * r[2])], k1 = len(b);
+    return k0 * (k0 - 1) / k1;
+  }
+  function smin(a, b, k) { var h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; }
+  function smax(a, b, k) { return -smin(-a, -b, k); }
+  function bustJ(p) {
+    var jaw = P[0], nose = P[1], brow = P[2], curls = P[3];
+    var d = ell(sub(p, [0, 0.16, -0.02]), [0.43, 0.5, 0.47]);
+    var f = ell(sub(p, [0, -0.2, 0.07]), [0.34 * jaw, 0.42, 0.36]);
+    d = smin(d, f, 0.2);
+    d = smin(d, len(sub(p, [0, -0.5, 0.2])) - 0.13 * jaw, 0.12);
+    var q = [Math.abs(p[0]), p[1], p[2]];
+    d = smin(d, len(sub(q, [0.22, -0.04, 0.32])) - 0.1, 0.12);
+    d = smin(d, ell(sub(q, [0.1, 0.14, 0.36]), [0.2, 0.05 * brow, 0.12]), 0.06);
+    d = smax(d, -ell(sub(q, [0.155, 0.09, 0.4]), [0.085, 0.055 * (0.6 + 0.4 * brow), 0.09]), 0.04);
+    d = smin(d, ell(sub(p, [0, -0.06, 0.45]), [0.045, 0.15 * nose, 0.09 * nose]), 0.05);
+    d = smin(d, len(sub(q, [0.05, -0.04 - 0.13 * nose, 0.42])) - 0.04, 0.04);
+    d = smin(d, ell(sub(p, [0, -0.3, 0.39]), [0.1, 0.03, 0.05]), 0.03);
+    d = smax(d, -ell(sub(p, [0, -0.325, 0.42]), [0.09, 0.008, 0.05]), 0.01);
+    d = smin(d, ell(sub(q, [0.43, 0, -0.03]), [0.035, 0.1, 0.07]), 0.04);
+    var n = Math.max(Math.hypot(p[0], p[2] * 1.15) - 0.2, Math.abs(p[1] + 0.72) - 0.3);
+    d = smin(d, n, 0.1);
+    var c = ell(sub(p, [0, -1.02, -0.02]), [0.64, 0.3, 0.34]);
+    c = Math.max(c, -(p[1] + 1.25));
+    d = smin(d, c, 0.2);
+    for (var i = 0; i < 12; i++) {
+      if (i >= curls) break;
+      var a = 0.55 + i * 0.4767;
+      d = smin(d, len(sub(p, [Math.sin(a) * 0.35, 0.42 + 0.06 * Math.sin(a * 3 + 1), Math.cos(a) * 0.37 - 0.03])) - 0.11, 0.08);
+    }
+    for (var j = 0; j < dents.length; j++) d = smax(d, -(len(sub(p, dents[j])) - dents[j][3]), 0.03);
+    return d;
+  }
+  function toLocal(p) {
+    var a = -yaw, c = Math.cos(a), s = Math.sin(a);
+    var x = c * p[0] + s * p[2], y = p[1], z = -s * p[0] + c * p[2];
+    var b = -pitch, c2 = Math.cos(b), s2 = Math.sin(b);
+    return [x, c2 * y - s2 * z, s2 * y + c2 * z];
+  }
+  function pickPoint(cx, cy, rect) {
+    var ro = [0, -0.1, 4.6], ta = [0, -0.28, 0];
+    var fw = sub(ta, ro), fl = len(fw); fw = [fw[0] / fl, fw[1] / fl, fw[2] / fl];
+    var rt = [-fw[2], 0, fw[0]], rl = len(rt); rt = [rt[0] / rl, 0, rt[2] / rl];
+    var up = [rt[1] * fw[2] - rt[2] * fw[1], rt[2] * fw[0] - rt[0] * fw[2], rt[0] * fw[1] - rt[1] * fw[0]];
+    var ux = (cx - rect.left - rect.width / 2) / rect.height, uy = -((cy - rect.top) - rect.height / 2) / rect.height;
+    var rd = [ux * rt[0] + uy * up[0] + FOCAL * fw[0], ux * rt[1] + uy * up[1] + FOCAL * fw[1], ux * rt[2] + uy * up[2] + FOCAL * fw[2]];
+    var rn = len(rd); rd = [rd[0] / rn, rd[1] / rn, rd[2] / rn];
+    var t = 1.5;
+    for (var i = 0; i < 90; i++) {
+      var p = [ro[0] + rd[0] * t, ro[1] + rd[1] * t, ro[2] + rd[2] * t];
+      var d = bustJ(toLocal(p));
+      if (d < 0.003) return toLocal(p);
+      t += d * 0.9;
+      if (t > 8) break;
+    }
+    return null;
+  }
+  function chisel(cx, cy, rect) {
+    if (dents.length >= MAXD) { say("The stone will take no more chips. Type [[reset]] to restore it.", "err"); return; }
+    var p = pickPoint(cx, cy, rect);
+    if (!p) return;
+    dents.push([p[0], p[1], p[2], 0.05 + Math.random() * 0.045]);
+    glitch = Math.max(glitch, 0.18);
+    updateHud();
+  }
+  function updateHud() {
+    $("hChips").textContent = String(dents.length).padStart(2, "0") + "/" + MAXD;
+    $("hName").textContent = "BUST-" + BUSTS[cur].id + " " + BUSTS[cur].name.toUpperCase();
+    $("hStone").textContent = BUSTS[cur].stone.toUpperCase();
+  }
+
+  /* ---------- WebGL ---------- */
+  var cv = $("gl"), gl = cv.getContext("webgl", { antialias: false, alpha: false }) || cv.getContext("experimental-webgl");
+  var U = {}, pxScale = 2.4;
+  if (!gl) { cv.style.display = "none"; }
+  else {
+    var mk = function (type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+    var pr = gl.createProgram();
+    gl.attachShader(pr, mk(gl.VERTEX_SHADER, $("vs").textContent));
+    gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, $("fs").textContent));
+    gl.linkProgram(pr);
+    if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { console.error('LINK ' + gl.getProgramInfoLog(pr)); }
+    gl.useProgram(pr);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    ["uRes", "uTime", "uYaw", "uPitch", "uP", "uStone", "uWire", "uGlitch", "uTint", "uDent", "uDentN"].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var resize = function () {
+      // layout size, so the power-on squash animation can't shrink the canvas
+      var w = Math.max(2, Math.round(cv.clientWidth / pxScale)), h = Math.max(2, Math.round(cv.clientHeight / pxScale));
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); }
+    };
+    addEventListener("resize", resize);
+    setInterval(resize, 700);
+    if (window.ResizeObserver) new ResizeObserver(resize).observe(cv);
+    resize();
+
+    // drag turns the bust, a click without movement chisels it
+    var down = null, moved = false;
+    cv.addEventListener("pointerdown", function (e) { down = { x: e.clientX, y: e.clientY, px: e.clientX, py: e.clientY }; moved = false; cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      if (Math.abs(e.clientX - down.x) + Math.abs(e.clientY - down.y) > 5) moved = true;
+      if (moved) { yawGoal = null; yaw += (e.clientX - down.px) * 0.011; pitch = Math.max(-0.5, Math.min(0.5, pitch + (e.clientY - down.py) * 0.005)); auto = false; }
+      down.px = e.clientX; down.py = e.clientY;
+    });
+    cv.addEventListener("pointerup", function (e) { if (down && !moved) chisel(e.clientX, e.clientY, cv.getBoundingClientRect()); down = null; });
+    cv.addEventListener("pointercancel", function () { down = null; });
+
+    var t0 = performance.now(), last = t0, running = true, dbuf = new Float32Array(32 * 4);
+    var frame = function (now) {
+      if (!running) return;
+      var dt = Math.min(0.1, (now - last) / 1000); last = now;
+      if (auto) yaw += dt * 0.45;
+      if (yawGoal !== null) { yaw += (yawGoal - yaw) * Math.min(1, dt * 5); pitch *= 1 - Math.min(1, dt * 5); if (Math.abs(yawGoal - yaw) < 0.003) { yaw = yawGoal; yawGoal = null; } }
+      glitch = Math.max(0, glitch - dt * 1.4);
+      var k = Math.min(1, dt * 6);
+      for (var i = 0; i < 4; i++) P[i] += (Pt[i] - P[i]) * k;
+      for (i = 0; i < 3; i++) tint[i] += (tintT[i] - tint[i]) * Math.min(1, dt * 5);
+      wire += Math.sign(wireT - wire) * Math.min(Math.abs(wireT - wire), dt * 0.45);
+      for (i = 0; i < 32; i++) { var d = dents[i] || [0, 0, 0, 0]; dbuf[i * 4] = d[0]; dbuf[i * 4 + 1] = d[1]; dbuf[i * 4 + 2] = d[2]; dbuf[i * 4 + 3] = d[3]; }
+      gl.uniform2f(U.uRes, cv.width, cv.height);
+      gl.uniform1f(U.uTime, (now - t0) / 1000);
+      gl.uniform1f(U.uYaw, yaw); gl.uniform1f(U.uPitch, pitch);
+      gl.uniform4f(U.uP, P[0], P[1], P[2], P[3]);
+      gl.uniform1f(U.uStone, stoneId); gl.uniform1f(U.uWire, wire); gl.uniform1f(U.uGlitch, glitch);
+      gl.uniform3fv(U.uTint, tint);
+      gl.uniform4fv(U.uDent, dbuf); gl.uniform1i(U.uDentN, dents.length);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      requestAnimationFrame(frame);
+    };
+    document.addEventListener("visibilitychange", function () { running = !document.hidden; if (running) { last = performance.now(); requestAnimationFrame(frame); } });
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- terminal ---------- */
+  var out = $("out"), inp = $("cmd"), hist = [], hi = 0, queue = Promise.resolve();
+  function say(text, cls, instant) {
+    queue = queue.then(function () {
+      return new Promise(function (res) {
+        var p = document.createElement("p"); if (cls) p.className = cls;
+        var parts = String(text).split(/(\[\[[^\]]+\]\])/);
+        parts.forEach(function (s) {
+          var m = s.match(/^\[\[([^\]]+)\]\]$/);
+          if (m) { var b = document.createElement("button"); b.type = "button"; b.className = "cmd"; b.textContent = m[1]; b.dataset.cmd = m[1]; p.appendChild(b); }
+          else p.appendChild(document.createTextNode(s));
+        });
+        out.appendChild(p); out.scrollTop = out.scrollHeight;
+        if (instant || reduce) res(); else setTimeout(res, 16);
+      });
+    });
+    return queue;
+  }
+  out.addEventListener("click", function (e) { var c = e.target.closest && e.target.closest("[data-cmd]"); if (c) run(c.dataset.cmd); });
+
+  var CMDS = ["help", "ls", "open", "front", "rotate", "scan", "stone", "chisel", "undo", "reset", "color", "about", "whoami", "date", "clear"];
+  function find(arg) {
+    if (!arg) return null; arg = arg.toLowerCase();
+    return BUSTS.findIndex(function (b) { return b.id === arg.padStart(3, "0") || b.name.toLowerCase() === arg || ("bust-" + b.id) === arg; });
+  }
+  function faceFront() { auto = false; yawGoal = Math.round(yaw / 6.2832) * 6.2832; }
+  function openBust(i) {
+    cur = i; Pt = BUSTS[i].P.slice(); stoneId = BUSTS[i].s; dents = []; glitch = 1; faceFront(); updateHud();
+  }
+  var HANDLERS = {
+    help: function () {
+      ["Commands:", "  [[ls]]            list the busts in the archive", "  [[open 003]]      show a bust by number or name", "  [[front]]         turn the bust to face you", "  [[rotate]]        turn the auto-rotation on or off", "  [[scan]]          sweep the bust into a wireframe", "  [[stone]]         sweep it back to stone", "  [[undo]]          put back the last chip", "  [[reset]]         restore the stone to its original state", "  [[color amber]]   amber, green, ice or white phosphor", "  [[about]]         what this is", "  clear           clear the screen", "", "You can also click the bust to chisel it and drag to turn it."].forEach(function (l) { say(l); });
+    },
+    ls: function () {
+      say("COMMAND      NAME         STONE");
+      BUSTS.forEach(function (b) { say("[[open " + b.id + "]]  " + (b.name + "            ").slice(0, 12) + " " + b.stone); });
+    },
+    open: function (a) {
+      var i = find(a);
+      if (i == null || i < 0) { say(a ? "No bust matches '" + a + "'. Type [[ls]] for the list." : "Usage: open <number or name>", "err"); return; }
+      openBust(i); say("Loading BUST-" + BUSTS[i].id + " " + BUSTS[i].name.toUpperCase() + " (" + BUSTS[i].stone + ")... done.", "hi");
+    },
+    rotate: function (a) {
+      auto = a === "on" ? true : a === "off" ? false : !auto;
+      say("Auto-rotation " + (auto ? "on" : "off") + ".");
+    },
+    front: function () { faceFront(); say("Turning the bust to face you."); },
+    scan: function () { wireT = 1; say("Scanning surface... sweep started.", "hi"); },
+    stone: function () { wireT = 0; say("Restoring stone render.", "hi"); },
+    chisel: function () { say("Click anywhere on the bust to remove a chip. " + dents.length + " of " + MAXD + " chips used."); },
+    undo: function () { if (!dents.length) { say("Nothing to undo.", "err"); return; } dents.pop(); updateHud(); say("Chip restored. " + dents.length + " remaining."); },
+    reset: function () { dents = []; Pt = BUSTS[cur].P.slice(); glitch = 0.6; updateHud(); say("Stone restored.", "hi"); },
+    color: function (a) {
+      if (!a || !COLORS[a]) { say("Usage: color amber | green | ice | white", "err"); return; }
+      setColor(a); say("Phosphor set to " + a + ".");
+    },
+    about: function () {
+      ["CATHODE ARCHIVE", "A catalogue of five stone busts. None of them is a mesh or a photograph.", "Each head is a few dozen shapes blended by distance functions, drawn by a", "shader at about 300 by 380 pixels and dithered down to five brightness levels.", "The chisel finds where your click lands by running the same math in JavaScript."].forEach(function (l, i) { say(l, i ? "" : "hi"); });
+    },
+    whoami: function () { say("visitor. no account is required."); },
+    date: function () { say(new Date().toString().replace(/ GMT.*/, "")); },
+    clear: function () { out.innerHTML = ""; },
+    sudo: function () { say("visitor is not in the sudoers file. This incident will not be reported.", "err"); },
+    exit: function () { say("There is no exit. Close the tab.", "dim"); }
+  };
+  function run(line) {
+    line = (line || "").trim(); if (!line) return;
+    hist.push(line); hi = hist.length;
+    say("visitor@cathode:~$ " + line, "dim", true);
+    var parts = line.split(/\s+/), c = parts[0].toLowerCase();
+    if (HANDLERS[c]) HANDLERS[c](parts.slice(1).join(" ").toLowerCase());
+    else say("command not found: " + c + ". Type [[help]].", "err");
+  }
+  $("form").addEventListener("submit", function (e) { e.preventDefault(); var v = inp.value; inp.value = ""; run(v); });
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowUp") { if (hi > 0) { hi--; inp.value = hist[hi]; } e.preventDefault(); }
+    else if (e.key === "ArrowDown") { if (hi < hist.length - 1) { hi++; inp.value = hist[hi]; } else { hi = hist.length; inp.value = ""; } e.preventDefault(); }
+    else if (e.key === "Tab") {
+      e.preventDefault(); var v = inp.value.toLowerCase(); if (!v || v.indexOf(" ") >= 0) return;
+      var m = CMDS.filter(function (c) { return c.indexOf(v) === 0; }); if (m.length === 1) inp.value = m[0] + " ";
+    }
+  });
+  [["help", "help"], ["ls", "ls"], ["front", "front"], ["scan", "scan"], ["stone", "stone"], ["rotate", "rotate"], ["amber", "color amber"], ["green", "color green"], ["ice", "color ice"], ["reset", "reset"]].forEach(function (c) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = c[0];
+    b.addEventListener("click", function () { run(c[1]); });
+    $("chips").appendChild(b);
+  });
+
+  /* ---------- boot ---------- */
+  function boot() {
+    out.innerHTML = ""; dents = []; updateHud();
+    var lines = [
+      ["MONOLITH SYSTEMS MODEL 7   BIOS 2.31", "dim"], ["MEMORY TEST ........ 640K OK", "dim"], ["CATHODE DRIVE ...... READY", "dim"], ["LOADING SCULPT.SYS . OK", "dim"], ["", ""],
+      ["CATHODE ARCHIVE", "hi"], ["Five stone busts, carved from math. Type [[help]] for commands or [[ls]] for the collection.", ""], ["Click the bust to chisel it. Drag to turn it.", ""]
+    ];
+    lines.forEach(function (l) { say(l[0], l[1]); });
+  }
+  var mon = $("monitor");
+  function powerOn() {
+    mon.classList.remove("on"); void mon.offsetWidth;
+    mon.classList.add("on");
+    glitch = 1; boot();
+  }
+  $("power").addEventListener("click", function () { powerOn(); });
+  mon.classList.add("on"); boot();
+  document.addEventListener("keydown", function (e) { if (e.target === document.body && e.key.length === 1) inp.focus(); });
+  updateHud();
+})();
+</script>
+
+</body>
+</html>

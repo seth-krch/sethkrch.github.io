@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Concept site for Cinder &amp; Crust, a fictional wood-fired pizzeria.">
+<title>Cinder & Crust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+html, body { margin: 0; }
+/* Layout: a dark oven-mouth hero with drifting embers, then a light menu that builds an order ticket beside it. Colors come from a Margherita: basil, mozzarella, tomato. */
+:root {
+  --bg: #ecebe6;
+  --surface: #f7f6f2;
+  --fg: #1b1a17;
+  --muted: #5b5951;
+  --line: #cdcbc1;
+  --basil: #1d5a3f;
+  --on-basil: #f7f6f2;
+  --tomato: #c23a22;
+  --flour: #faf9f5;
+  --oven: #17130f;
+  --oven-fg: #f3eadb;
+  --ember: #ff7a2f;
+  --f-display: "Bricolage Grotesque", "Arial Narrow", Impact, sans-serif;
+  --f-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141512; --surface: #1d1f1b; --fg: #efede6; --muted: #a5a399; --line: #34362f;
+    --basil: #66c595; --on-basil: #10241a; --tomato: #f0694b; --flour: #efede6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141512; --surface: #1d1f1b; --fg: #efede6; --muted: #a5a399; --line: #34362f;
+  --basil: #66c595; --on-basil: #10241a; --tomato: #f0694b; --flour: #efede6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 16px; line-height: 1.55; padding-inline: 0; padding-block: 0; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; line-height: 1; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--tomato); outline-offset: 2px; }
+.wrap { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
+.label { font-family: var(--f-mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.tri { display: grid; grid-template-columns: 1fr 1fr 1fr; height: 6px; }
+.tri i:nth-child(1) { background: var(--basil); }
+.tri i:nth-child(2) { background: var(--flour); }
+.tri i:nth-child(3) { background: var(--tomato); }
+
+/* header */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1rem; }
+.mark { font-family: var(--f-display); font-weight: 800; font-stretch: 80%; font-size: 1.35rem; letter-spacing: 0.01em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+.mark span { color: var(--tomato); }
+.bar nav { display: flex; gap: 1.25rem; font-size: 0.95rem; font-weight: 500; }
+.bar nav a { text-decoration: none; padding-block: 0.25rem; border-bottom: 2px solid transparent; }
+.bar nav a:hover { border-color: var(--tomato); }
+
+/* hero */
+.hero { position: relative; background: var(--oven); color: var(--oven-fg); overflow: hidden; isolation: isolate; }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.hero::before { content: ""; position: absolute; inset: auto -10% -35% -10%; height: 70%; background: radial-gradient(ellipse at 50% 100%, rgba(255, 122, 47, 0.34), transparent 65%); z-index: -1; }
+.hero .bar { color: var(--oven-fg); }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2.5rem; align-items: end; padding-block: 3.5rem 4rem; }
+.hero h1 { font-weight: 800; font-stretch: 75%; font-size: clamp(3.5rem, 11vw, 8.5rem); text-transform: uppercase; line-height: 0.88; }
+.hero h1 span { display: block; color: var(--ember); }
+.hero .lede { margin-top: 1.5rem; max-width: 34rem; font-size: 1.15rem; color: rgba(243, 234, 219, 0.88); }
+.cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 2.9rem; padding-inline: 1.4rem; font: 600 0.95rem var(--f-body); text-decoration: none; border: 2px solid var(--basil); background: var(--basil); color: var(--on-basil); cursor: pointer; border-radius: 0; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: inherit; border-color: currentColor; }
+.hero .btn { background: var(--ember); border-color: var(--ember); color: #1a0d03; }
+.hero .btn.ghost { background: transparent; color: var(--oven-fg); border-color: rgba(243, 234, 219, 0.55); }
+.gauge { border: 1px solid rgba(243, 234, 219, 0.28); padding: 1.25rem 1.5rem; background: rgba(23, 19, 15, 0.55); backdrop-filter: blur(2px); }
+.gauge .label { color: rgba(243, 234, 219, 0.7); }
+.gauge output { display: block; font-family: var(--f-display); font-weight: 800; font-stretch: 80%; font-size: clamp(3.5rem, 8vw, 5.5rem); line-height: 1; margin-block: 0.4rem 0.2rem; font-variant-numeric: tabular-nums; color: var(--ember); }
+.gauge output small { font-size: 0.4em; margin-left: 0.15em; color: var(--oven-fg); }
+.gauge p { font-size: 0.9rem; color: rgba(243, 234, 219, 0.78); }
+
+/* sections */
+section { padding-block: 4rem; }
+.head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem 2rem; margin-bottom: 2rem; }
+.head h2 { font-weight: 800; font-stretch: 80%; font-size: clamp(2.25rem, 6vw, 3.75rem); text-transform: uppercase; }
+
+/* menu */
+.tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.tabs button { font: 500 0.9rem var(--f-body); padding: 0.5rem 1rem; background: transparent; color: var(--fg); border: 1.5px solid var(--line); cursor: pointer; border-radius: 0; }
+.tabs button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.menu-grid { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: 3rem; align-items: start; }
+.items { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.25rem 1rem; align-items: start; padding-block: 1.1rem; border-bottom: 1px solid var(--line); }
+.item h3 { font-weight: 700; font-stretch: 85%; font-size: 1.4rem; }
+.item p { grid-column: 1; color: var(--muted); font-size: 0.95rem; max-width: 40rem; }
+.item .tag { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--basil); margin-left: 0.5rem; vertical-align: middle; }
+.price { font-family: var(--f-mono); font-weight: 500; font-size: 1.05rem; padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.add { width: 2.4rem; height: 2.4rem; display: grid; place-items: center; font: 500 1.4rem/1 var(--f-body); background: transparent; color: var(--fg); border: 1.5px solid var(--fg); cursor: pointer; border-radius: 0; grid-row: 1 / span 2; grid-column: 3; }
+.add:hover { background: var(--tomato); border-color: var(--tomato); color: #fff; }
+.item .price { grid-column: 2; grid-row: 1 / span 2; }
+
+.ticket { position: sticky; top: 1rem; background: var(--surface); border: 1px solid var(--line); padding: 1.25rem; display: grid; gap: 1rem; }
+.ticket::before, .ticket::after { content: ""; position: absolute; left: 0; right: 0; height: 8px; background: radial-gradient(circle at 6px 0, var(--bg) 4px, transparent 4.5px) 0 0 / 12px 8px repeat-x; }
+.ticket::before { top: -1px; }
+.ticket::after { bottom: -1px; transform: scaleY(-1); }
+.ticket h3 { font-weight: 800; font-stretch: 80%; font-size: 1.4rem; text-transform: uppercase; margin-top: 0.25rem; }
+.ticket ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; font-size: 0.95rem; }
+.ticket li { display: grid; grid-template-columns: 1fr auto auto; gap: 0.5rem; align-items: center; }
+.ticket li .q { display: inline-flex; align-items: center; gap: 0.35rem; font-family: var(--f-mono); }
+.ticket li button { width: 1.6rem; height: 1.6rem; background: transparent; color: var(--fg); border: 1px solid var(--line); cursor: pointer; font: 500 1rem/1 var(--f-body); border-radius: 0; }
+.ticket .empty { color: var(--muted); font-size: 0.95rem; }
+.total { display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid var(--fg); padding-top: 0.75rem; font-family: var(--f-mono); }
+.total b { font-size: 1.4rem; font-weight: 500; }
+.ticket .note { font-size: 0.85rem; color: var(--muted); }
+.ticket .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.ticket .btn { min-height: 2.5rem; padding-inline: 1rem; font-size: 0.9rem; }
+
+/* process */
+.process { background: var(--surface); border-block: 1px solid var(--line); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; margin: 0; }
+.facts div { border-top: 3px solid var(--fg); padding-top: 1rem; }
+.facts dt { font-family: var(--f-display); font-weight: 800; font-stretch: 80%; font-size: 1.6rem; text-transform: uppercase; margin-bottom: 0.5rem; }
+.facts dd { margin: 0; color: var(--muted); }
+.facts dd strong { color: var(--fg); font-family: var(--f-mono); font-weight: 500; }
+
+/* visit */
+.visit { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem; }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-weight: 400; }
+td { font-family: var(--f-mono); font-size: 0.95rem; text-align: right; }
+tr.today th, tr.today td { font-weight: 600; color: var(--tomato); }
+.contact { display: grid; gap: 1.25rem; align-content: start; }
+.contact h3 { font-family: var(--f-display); font-weight: 800; font-stretch: 80%; font-size: 1.4rem; text-transform: uppercase; margin-bottom: 0.35rem; }
+.phone { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.phone output { font-family: var(--f-mono); font-size: 1.6rem; }
+footer { padding-block: 2rem 3rem; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; }
+
+@media (max-width: 56rem) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); padding-block: 2.5rem 3rem; }
+  .menu-grid, .visit { grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+  .ticket { position: relative; top: 0; }
+  .facts { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+  section { padding-block: 3rem; }
+}
+@media (max-width: 30rem) {
+  .bar nav { gap: 0.8rem; font-size: 0.85rem; }
+  .mark { font-size: 1.1rem; }
+  .item { grid-template-columns: minmax(0, 1fr) auto; }
+  .item .price { grid-column: 2; grid-row: 1; }
+  .add { grid-column: 2; grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="hero" id="top">
+  <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="bar">
+      <a class="mark" href="#top">Cinder <span>&amp;</span> Crust</a>
+      <nav aria-label="Main"><a href="#menu">Menu</a><a href="#oven">Oven</a><a href="#visit">Visit</a></nav>
+    </div>
+    <div class="hero-grid">
+      <div>
+        <h1>Cinder <span>&amp; Crust</span></h1>
+        <p class="lede">Neapolitan pizza baked in a wood-fired oven. Takeout and dine-in, Wednesday through Sunday.</p>
+        <div class="cta">
+          <a class="btn" href="#menu">See the menu</a>
+          <a class="btn ghost" href="#visit">Hours and phone</a>
+        </div>
+      </div>
+      <div class="gauge" role="group" aria-label="Oven temperature">
+        <span class="label">Oven floor</span>
+        <output id="temp">905<small>°F</small></output>
+        <p>About 485°C. Each pizza bakes for 90 seconds.</p>
+      </div>
+    </div>
+  </div>
+  <div class="tri" aria-hidden="true"><i></i><i></i><i></i></div>
+</header>
+
+<main>
+  <section id="menu">
+    <div class="wrap">
+      <div class="head">
+        <h2>Menu</h2>
+        <span class="label">Pizzas are 12 inches. Add items to build a ticket.</span>
+      </div>
+      <div class="tabs" role="group" aria-label="Menu section">
+        <button type="button" data-cat="all" aria-pressed="true">All</button>
+        <button type="button" data-cat="pizza" aria-pressed="false">Pizza</button>
+        <button type="button" data-cat="side" aria-pressed="false">Sides</button>
+        <button type="button" data-cat="drink" aria-pressed="false">Drinks</button>
+      </div>
+      <div class="menu-grid">
+        <ul class="items" id="items"></ul>
+        <aside class="ticket" aria-labelledby="ticket-h">
+          <div>
+            <span class="label">Order ticket</span>
+            <h3 id="ticket-h">Your order</h3>
+          </div>
+          <ol id="lines"></ol>
+          <p class="empty" id="empty">Nothing added yet.</p>
+          <div class="total"><span class="label">Total</span><b id="sum">$0.00</b></div>
+          <p class="note">Orders are taken by phone. This ticket adds up prices before you call.</p>
+          <div class="row"><button type="button" class="btn ghost" id="clear" style="color:var(--fg)">Clear</button></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="process" id="oven">
+    <div class="wrap">
+      <div class="head"><h2>The oven</h2><span class="label">What goes into one pizza</span></div>
+      <dl class="facts">
+        <div><dt>Dough</dt><dd>Type 00 flour, water, salt and yeast. Fermented cold for <strong>72 hours</strong>, then stretched by hand. Nothing is rolled.</dd></div>
+        <div><dt>Fire</dt><dd>Split oak burns at one side of the dome. The floor holds <strong>900°F</strong> or more, and each pizza is turned by hand through the bake.</dd></div>
+        <div><dt>Toppings</dt><dd>Canned San Marzano tomatoes crushed by hand, fior di latte pulled in the kitchen each morning, and basil from a local grower.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="visit">
+    <div class="wrap">
+      <div class="head"><h2>Visit</h2><span class="label">Dine-in and takeout. No delivery.</span></div>
+      <div class="visit">
+        <table aria-label="Opening hours">
+          <tbody id="hours"></tbody>
+        </table>
+        <div class="contact">
+          <div>
+            <h3>Phone orders</h3>
+            <div class="phone"><output id="num">(555) 010-0148</output><button type="button" class="btn ghost" id="copy" style="color:var(--fg)">Copy number</button></div>
+            <p class="note label" id="copied" role="status" style="margin-top:0.5rem" hidden>Copied</p>
+          </div>
+          <div>
+            <h3>Address</h3>
+            <p>123 Example Street<br>Your Town, KS 00000</p>
+          </div>
+          <div>
+            <h3>Good to know</h3>
+            <p style="color:var(--muted)">Large groups are seated by reservation. Gluten-free pizza is not offered because flour is in the air of the whole kitchen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="tri" aria-hidden="true" style="margin-bottom:2rem"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <span>Cinder &amp; Crust</span>
+    <span>Concept site for a fictional restaurant. Address, phone and hours are placeholders.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var MENU = [
+    { n: "Margherita", c: "pizza", p: 14, d: "San Marzano tomato, fior di latte, basil, olive oil.", t: "Classic" },
+    { n: "Marinara", c: "pizza", p: 11, d: "Tomato, garlic, oregano, olive oil. No cheese.", t: "Vegan" },
+    { n: "Diavola", c: "pizza", p: 17, d: "Tomato, fior di latte, spicy salami, Calabrian chili, honey." },
+    { n: "Funghi", c: "pizza", p: 16, d: "Fior di latte, roasted mushrooms, thyme, parmigiano." },
+    { n: "Quattro Formaggi", c: "pizza", p: 17, d: "Fior di latte, gorgonzola, fontina, parmigiano." },
+    { n: "Salsiccia e Rapini", c: "pizza", p: 18, d: "Fennel sausage, broccoli rabe, chili flake, provolone." },
+    { n: "Bianca", c: "pizza", p: 15, d: "Ricotta, garlic, lemon zest, arugula after the bake." },
+    { n: "Burrata Plate", c: "side", p: 12, d: "Burrata, olive oil, flaky salt, grilled bread." },
+    { n: "Little Gem Salad", c: "side", p: 9, d: "Little gem lettuce, shaved fennel, lemon, pecorino." },
+    { n: "Olive Oil Cake", c: "side", p: 8, d: "Orange zest, sea salt, whipped mascarpone." },
+    { n: "Local Lager", c: "drink", p: 6, d: "Draft, 16 oz." },
+    { n: "House Red or White", c: "drink", p: 9, d: "Glass, 6 oz." },
+    { n: "Italian Soda", c: "drink", p: 4, d: "Blood orange, lemon or cherry." }
+  ];
+  var HOURS = [["Sunday", "3 – 8 pm"], ["Monday", "Closed"], ["Tuesday", "Closed"], ["Wednesday", "4 – 9 pm"], ["Thursday", "4 – 9 pm"], ["Friday", "4 – 10 pm"], ["Saturday", "4 – 10 pm"]];
+  var cat = "all", cart = {};
+  var $ = function (id) { return document.getElementById(id); };
+  var money = function (n) { return "$" + n.toFixed(2); };
+
+  function renderItems() {
+    var ul = $("items"); ul.innerHTML = "";
+    MENU.forEach(function (m, i) {
+      if (cat !== "all" && m.c !== cat) return;
+      var li = document.createElement("li"); li.className = "item";
+      var h = document.createElement("h3"); h.textContent = m.n;
+      if (m.t) { var t = document.createElement("span"); t.className = "tag"; t.textContent = m.t; h.appendChild(t); }
+      var d = document.createElement("p"); d.textContent = m.d;
+      var pr = document.createElement("span"); pr.className = "price"; pr.textContent = money(m.p);
+      var b = document.createElement("button"); b.type = "button"; b.className = "add"; b.textContent = "+";
+      b.setAttribute("aria-label", "Add " + m.n + " to ticket");
+      b.addEventListener("click", function () { cart[i] = (cart[i] || 0) + 1; renderTicket(); });
+      li.append(h, d, pr, b); ul.appendChild(li);
+    });
+  }
+  function renderTicket() {
+    var ol = $("lines"); ol.innerHTML = ""; var sum = 0, count = 0;
+    Object.keys(cart).forEach(function (k) {
+      var m = MENU[k], q = cart[k]; if (!q) return;
+      sum += m.p * q; count += q;
+      var li = document.createElement("li");
+      var nm = document.createElement("span"); nm.textContent = m.n;
+      var qty = document.createElement("span"); qty.className = "q";
+      var minus = document.createElement("button"); minus.type = "button"; minus.textContent = "−"; minus.setAttribute("aria-label", "Remove one " + m.n);
+      var num = document.createElement("span"); num.textContent = q;
+      var plus = document.createElement("button"); plus.type = "button"; plus.textContent = "+"; plus.setAttribute("aria-label", "Add one " + m.n);
+      minus.addEventListener("click", function () { cart[k] = Math.max(0, cart[k] - 1); renderTicket(); });
+      plus.addEventListener("click", function () { cart[k] += 1; renderTicket(); });
+      qty.append(minus, num, plus);
+      var pr = document.createElement("span"); pr.className = "price"; pr.style.paddingTop = "0"; pr.textContent = money(m.p * q);
+      li.append(nm, qty, pr); ol.appendChild(li);
+    });
+    $("empty").hidden = count > 0; $("sum").textContent = money(sum);
+  }
+  document.querySelectorAll(".tabs button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      cat = b.dataset.cat;
+      document.querySelectorAll(".tabs button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      renderItems();
+    });
+  });
+  $("clear").addEventListener("click", function () { cart = {}; renderTicket(); });
+
+  var today = new Date().getDay(), tb = $("hours");
+  HOURS.forEach(function (h, i) {
+    var tr = document.createElement("tr"); if (i === today) tr.className = "today";
+    var th = document.createElement("th"); th.scope = "row"; th.textContent = h[0];
+    var td = document.createElement("td"); td.textContent = h[1];
+    tr.append(th, td); tb.appendChild(tr);
+  });
+
+  $("copy").addEventListener("click", function () {
+    var text = $("num").textContent, done = function () { $("copied").hidden = false; setTimeout(function () { $("copied").hidden = true; }, 1800); };
+    var fallback = function () { var r = document.createRange(); r.selectNodeContents($("num")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+  });
+
+  renderItems(); renderTicket();
+
+  // oven reading drifts a few degrees, as a real dome does
+  var temp = $("temp"), base = 905;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!reduce) setInterval(function () { temp.firstChild.nodeValue = String(base + Math.round((Math.random() - 0.5) * 12)); }, 1400);
+
+  // embers
+  var cv = $("embers"), cx = cv.getContext("2d"), W, H, ps = [], dpr = Math.min(devicePixelRatio || 1, 2);
+  function size() { var r = cv.getBoundingClientRect(); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function spawn(initial) { return { x: Math.random() * W, y: initial ? Math.random() * H : H + 10, r: 0.6 + Math.random() * 1.8, v: 14 + Math.random() * 38, s: Math.random() * 6.28, a: 0.35 + Math.random() * 0.65 }; }
+  function init() { size(); ps = []; var n = Math.round(Math.min(90, W / 14)); for (var i = 0; i < n; i++) ps.push(spawn(true)); }
+  var last = 0;
+  function frame(t) {
+    var dt = Math.min(0.05, (t - last) / 1000 || 0.016); last = t;
+    cx.clearRect(0, 0, W, H); cx.globalCompositeOperation = "lighter";
+    ps.forEach(function (p, i) {
+      p.y -= p.v * dt; p.x += Math.sin(t / 900 + p.s) * 14 * dt;
+      var life = p.y / H; if (p.y < -10) ps[i] = spawn(false);
+      cx.beginPath(); cx.fillStyle = "rgba(255," + Math.round(110 + 80 * life) + ",50," + (p.a * Math.min(1, life * 1.4)).toFixed(3) + ")";
+      cx.arc(p.x, p.y, p.r, 0, 6.283); cx.fill();
+    });
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  init(); requestAnimationFrame(frame);
+  addEventListener("resize", init);
+})();
+</script>
+
+</body>
+</html>
