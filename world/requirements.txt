@@ -1,0 +1,4 @@
+mesa==3.5.1
+numpy
+networkx
+pytest
