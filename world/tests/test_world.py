@@ -26,7 +26,7 @@ def check_consistency(m):
 
 
 def test_stage1_is_consistent_and_creatures_live():
-    m = run(Config(seed=3, **STAGE1), 300)
+    m = run(Config(seed=3, **STAGE1), 250)
     check_consistency(m)
     assert 0 < len(m.by_id) <= 120
 

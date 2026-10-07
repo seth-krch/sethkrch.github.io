@@ -149,3 +149,49 @@ def fitness_correlation(events, gene, outcome="children", min_age=0):
     if sxx == 0 or syy == 0:
         return None
     return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / (sxx * syy) ** 0.5
+
+
+def _binom_upper_tail(n, k, p=0.5):
+    from math import comb
+    return sum(comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(k, n + 1))
+
+
+def dominance_vs_chance(events, min_contests=5, dominance=0.85):
+    """Do lopsided pairings appear more often than coin-flipping would produce?
+
+    For every pair that met at least `min_contests` times, compute the chance
+    that a fair coin would make one side win >= `dominance` of the meetings,
+    and compare the expected number of such pairs with the observed number.
+    (Visible size differences also create lopsided pairs; compare runs with
+    memory used vs ignored to separate that out.)
+    """
+    from math import ceil
+    observed = expected = pairs = 0
+    for r in relationships(events, min_contests=min_contests, dominance=dominance):
+        pairs += 1
+        observed += r["dominance"]
+        n = r["meetings"]
+        expected += min(1.0, 2 * _binom_upper_tail(n, ceil(dominance * n)))
+    return {"pairs": pairs, "observed_dominance": observed, "expected_by_chance": round(expected, 1)}
+
+
+def aggression_histogram(creatures, bins=10):
+    h = [0] * bins
+    for c in creatures:
+        h[min(bins - 1, int(c.genes.aggression * bins))] += 1
+    return h
+
+
+def bimodality(values):
+    """Sarle's bimodality coefficient; > 0.555 suggests more than one mode."""
+    n = len(values)
+    if n < 10:
+        return None
+    m = sum(values) / n
+    s2 = sum((v - m) ** 2 for v in values) / n
+    if s2 == 0:
+        return None
+    s3 = sum((v - m) ** 3 for v in values) / n
+    s4 = sum((v - m) ** 4 for v in values) / n
+    skew, kurt = s3 / s2 ** 1.5, s4 / s2 ** 2 - 3
+    return (skew ** 2 + 1) / (kurt + 3 * (n - 1) ** 2 / ((n - 2) * (n - 3)))
