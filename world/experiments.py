@@ -43,6 +43,8 @@ def one_run(args):
     ev = m.log.events
     h = m.history
     mem = A.does_memory_change_outcomes(ev)
+    dom = A.dominance_vs_chance(ev)
+    aggs = [c.genes.aggression for c in m.by_id.values()]
     rel = A.relationship_summary(ev)
     return {
         "seed": seed, "extinct": not m.by_id, "pop": tail_mean(h, "pop") if h else 0,
@@ -61,6 +63,8 @@ def one_run(args):
         "backdown_frac": sum(1 for e in A.contests(ev) if e["outcome"] == "backdown") / max(1, len(A.contests(ev))),
         "births_per_tick": m.log.counts.get("birth", 0) / max(1, m.tick),
         "mean_energy": tail_mean(h, "mean_energy") if h else 0,
+        "dom_observed": dom["observed_dominance"], "dom_expected": dom["expected_by_chance"],
+        "bimodality": A.bimodality(aggs), "agg_hist": A.aggression_histogram(m.by_id.values()),
         "yield_knew": mem.get("knew", {}).get("yield"), "yield_stranger": mem.get("stranger", {}).get("yield"),
     }
 
@@ -89,7 +93,9 @@ def summarize(name, runs):
                            ("fitness corr: memory", "fit_memory", 3), ("fitness corr: aggression", "fit_aggression", 3),
                            ("fitness corr: size", "fit_size", 3),
                            ("backdown fraction", "backdown_frac", 3), ("births/tick", "births_per_tick", 3),
-                           ("mean energy", "mean_energy", 2)]:
+                           ("mean energy", "mean_energy", 2),
+                           ("dominance pairs observed", "dom_observed", 1), ("  ...expected by chance", "dom_expected", 1),
+                           ("aggression bimodality", "bimodality", 2)]:
         print(f"  {label:<24}{fmt([r[key] for r in runs], nd)}   per-seed: "
               + " ".join(f"{r[key]:.2f}" if isinstance(r[key], float) else str(r[key]) for r in runs))
 
