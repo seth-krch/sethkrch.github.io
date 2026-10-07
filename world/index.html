@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>World · Phase 1 simulation</title>
+<meta name="description" content="A text-only artificial-life simulation you can run and tinker with in the browser.">
+<meta name="theme-color" content="#0a0f1d">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0f1d'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%23ff9a6b' stroke-width='5'/%3E%3Ccircle cx='32' cy='32' r='6' fill='%23ff9a6b'/%3E%3C/svg%3E">
+<style>
+/* A plain control panel and a text terminal. No graphics on purpose: Phase 1 is about whether the simulation itself is interesting. */
+:root {
+  --bg: #0a0f1d;
+  --panel: #0e1528;
+  --line: rgb(160 180 230 / .14);
+  --line-hi: rgb(160 180 230 / .32);
+  --ink: #e9ecf4;
+  --dim: #8d96ad;
+  --peach: #ff9a6b;
+  --blue: #7d94ff;
+  --bad: #ff7b7b;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --f-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--f-body); padding: 0 16px 48px; }
+main { max-width: 960px; margin: 0 auto; }
+a { color: var(--blue); }
+a:hover { color: var(--peach); }
+.crumbs { padding: 18px 0 0; color: var(--dim); font: 13px var(--f-mono); }
+.crumbs a { color: var(--dim); text-decoration: none; }
+.crumbs a:hover { color: var(--peach); }
+h1 { margin: 10px 0 6px; font-size: clamp(30px, 8vw, 44px); line-height: 1.05; letter-spacing: -.02em; }
+.lede { margin: 0 0 18px; color: var(--dim); max-width: 62ch; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 640px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+label { display: block; font: 12px var(--f-mono); color: var(--dim); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 5px; }
+select, input, textarea, button { font: 16px var(--f-body); color: var(--ink); }
+select, input[type=number], input[type=text], textarea {
+  width: 100%; background: var(--bg); border: 1px solid var(--line-hi); border-radius: 7px; padding: 10px 10px; min-height: 44px;
+}
+textarea { font-family: var(--f-mono); font-size: 14px; min-height: 76px; resize: vertical; }
+:focus-visible { outline: 2px solid var(--peach); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; text-transform: none; letter-spacing: 0; font: 15px var(--f-body); color: var(--ink); }
+.check input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--peach); }
+.check small { display: block; color: var(--dim); font-size: 13px; }
+button { min-height: 46px; padding: 0 20px; border-radius: 8px; border: 1px solid var(--line-hi); background: transparent; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--peach); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.go { background: var(--peach); color: #1a0e08; border-color: var(--peach); font-weight: 700; }
+#status { font: 13px var(--f-mono); color: var(--dim); min-height: 1.5em; margin-top: 12px; }
+#status.err { color: var(--bad); }
+progress { width: 100%; height: 6px; margin-top: 8px; accent-color: var(--peach); }
+details { margin-top: 14px; }
+summary { cursor: pointer; color: var(--dim); font: 13px var(--f-mono); padding: 6px 0; }
+#fields { display: grid; grid-template-columns: 1fr; gap: 2px; font: 13px var(--f-mono); max-height: 320px; overflow: auto; margin-top: 8px; }
+@media (min-width: 640px) { #fields { grid-template-columns: 1fr 1fr; } }
+#fields button { min-height: 36px; padding: 4px 8px; text-align: left; border: 0; border-radius: 5px; font: 13px var(--f-mono); color: var(--ink); display: flex; justify-content: space-between; gap: 10px; }
+#fields button:hover { background: rgb(255 154 107 / .12); }
+#fields span { color: var(--dim); }
+.tabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 20px 0 8px; }
+.tabs button { min-height: 40px; padding: 0 16px; border-color: var(--line); color: var(--dim); }
+.tabs button[aria-selected=true] { color: var(--ink); border-color: var(--peach); }
+pre { margin: 0; background: #070b16; border: 1px solid var(--line); border-radius: 10px; padding: 14px; font: 12.5px/1.45 var(--f-mono); overflow: auto; max-height: 70vh; white-space: pre; tab-size: 4; }
+#out-summary, #out-explain { white-space: pre-wrap; overflow-wrap: anywhere; }
+#explain-bar { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+#explain-bar input { flex: 1 1 200px; font-family: var(--f-mono); font-size: 15px; }
+.quick { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.quick button { min-height: 34px; padding: 0 12px; font: 13px var(--f-mono); color: var(--dim); }
+.note { color: var(--dim); font-size: 14px; margin: 18px 0 0; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="crumbs"><a href="/">sethkrch.com</a> / world</div>
+  <h1>World</h1>
+  <p class="lede">Creatures eat, grow old, reproduce with mutation, fight over food and remember each other. This runs the project's real Python in your browser. Nothing is sent anywhere, and the simulation is deterministic for a given seed.</p>
+
+  <section class="card" aria-label="Run settings">
+    <div class="grid">
+      <div><label for="preset">World</label>
+        <select id="preset"></select></div>
+      <div><label for="stage">Systems</label>
+        <select id="stage">
+          <option value="1">1 · food + energy</option>
+          <option value="2">2 · + genes, reproduction</option>
+          <option value="3">3 · + contests</option>
+          <option value="4" selected>4 · + memory</option>
+        </select></div>
+      <div><label for="ticks">Ticks</label>
+        <input id="ticks" type="number" inputmode="numeric" min="1" value="800"></div>
+      <div><label for="seed">Seed</label>
+        <input id="seed" type="number" inputmode="numeric" value="1"></div>
+      <div><label for="report_every">Report every</label>
+        <input id="report_every" type="number" inputmode="numeric" min="1" value="100"></div>
+      <div><label for="map_every">Map every <span style="text-transform:none">(0 = end only)</span></label>
+        <input id="map_every" type="number" inputmode="numeric" min="0" value="0"></div>
+    </div>
+    <label class="check"><input id="ablate" type="checkbox"><span>Ignore memory when deciding
+      <small>Creatures still pay for it. This is the control that shows whether memory is actually worth anything.</small></span></label>
+    <div style="margin-top:14px"><label for="overrides">Other settings, one per line (name=value)</label>
+      <textarea id="overrides" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="food_cap=30&#10;memory_cost=0.005"></textarea></div>
+    <details><summary>All settings and defaults (tap one to add it)</summary><div id="fields"></div></details>
+    <div class="row">
+      <button id="run" class="go" disabled>Run</button>
+      <button id="stop" disabled>Stop</button>
+      <button id="log" disabled>Download event log</button>
+    </div>
+    <div id="status" role="status" aria-live="polite">Starting…</div>
+    <progress id="bar" max="1" value="0" hidden></progress>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="report">Report</button>
+    <button role="tab" aria-selected="false" data-tab="map">Map</button>
+    <button role="tab" aria-selected="false" data-tab="summary">Summary</button>
+    <button role="tab" aria-selected="false" data-tab="explain">Explain</button>
+  </div>
+  <section id="tab-report"><pre id="out-report" tabindex="0">Press Run.</pre></section>
+  <section id="tab-map" hidden><pre id="out-map" tabindex="0">Finishes when a run ends. Creatures are digits (their aggression, 0 to 9); food is shaded from empty to full.</pre></section>
+  <section id="tab-summary" hidden><pre id="out-summary" tabindex="0">Finishes when a run ends.</pre></section>
+  <section id="tab-explain" hidden>
+    <div class="quick"><button data-ask="help">help</button><button data-ask="summary">summary</button><button data-ask="rivals 10">rivals 10</button></div>
+    <form id="explain-bar"><input id="ask" type="text" placeholder="e.g. rivalry 596 669, life 42, contest 1893" autocapitalize="off" autocomplete="off" spellcheck="false" aria-label="Explain command"><button>Ask</button></form>
+    <pre id="out-explain" tabindex="0">Ask why something happened in the run you just did. Type help for commands.</pre>
+  </section>
+
+  <p class="note">First visit downloads Python (about 10 MB) and caches it. Runs are slower on a phone than on a computer. Design and findings: <a href="https://github.com/seth-krch/sethkrch.github.io/blob/main/world/PHASE1_RESULTS.md">results</a> · <a href="https://github.com/seth-krch/sethkrch.github.io/tree/main/world">source</a>.</p>
+</main>
+
+<script>
+const BUILD = '2026-10-07b';       // bump to make browsers re-fetch the Python files
+const $ = (id) => document.getElementById(id);
+const worker = new Worker('worker.js?v=' + BUILD);
+let running = false, ready = false, hasRun = false, lines = [];
+
+const KEYS = ['preset', 'stage', 'ticks', 'seed', 'report_every', 'map_every', 'overrides'];
+function save() {
+  try {
+    const o = {}; KEYS.forEach((k) => o[k] = $(k).value); o.ablate = $('ablate').checked;
+    localStorage.setItem('world-settings', JSON.stringify(o));
+  } catch (e) { /* private mode: fine */ }
+}
+function restore() {
+  try {
+    const o = JSON.parse(localStorage.getItem('world-settings') || '{}');
+    KEYS.forEach((k) => { if (o[k] !== undefined && k !== 'preset') $(k).value = o[k]; });
+    $('ablate').checked = !!o.ablate;
+    return o.preset;
+  } catch (e) { return undefined; }
+}
+const saved = restore();
+
+function status(text, err) { const s = $('status'); s.textContent = text; s.className = err ? 'err' : ''; }
+function sync() {
+  $('run').disabled = !ready || running;
+  $('stop').disabled = !running;
+  $('log').disabled = !hasRun || running;
+}
+
+function params() {
+  let overrides = $('overrides').value;
+  if ($('ablate').checked) overrides += '\nmemory_has_effect=false';
+  return {
+    preset: $('preset').value, stage: +$('stage').value, ticks: +$('ticks').value, seed: +$('seed').value,
+    report_every: +$('report_every').value, map_every: +$('map_every').value, overrides,
+  };
+}
+
+worker.onmessage = (e) => {
+  const m = e.data;
+  if (m.type === 'status') status(m.text);
+  else if (m.type === 'ready') {
+    const o = m.options;
+    o.presets.forEach((p) => { const opt = document.createElement('option'); opt.value = p; opt.textContent = p; $('preset').appendChild(opt); });
+    if (saved && o.presets.includes(saved)) $('preset').value = saved;
+    $('ticks').max = o.max_ticks;
+    const box = $('fields');
+    o.fields.forEach((f) => {
+      const b = document.createElement('button'); b.type = 'button';
+      const v = Array.isArray(f.default) ? f.default.join(',') : String(f.default);
+      b.innerHTML = '<b></b><span></span>'; b.firstChild.textContent = f.name; b.lastChild.textContent = v;
+      b.onclick = () => {
+        const t = $('overrides'); t.value = (t.value && !t.value.endsWith('\n') ? t.value + '\n' : t.value) + f.name + '=' + v;
+        t.focus(); save();
+      };
+      box.appendChild(b);
+    });
+    ready = true; status('Ready.'); sync();
+  } else if (m.type === 'started') {
+    lines = [m.header]; $('out-report').textContent = lines.join('\n');
+    $('bar').hidden = false; $('bar').max = m.ticks; $('bar').value = 0;
+    status('Running… 0 / ' + m.ticks + ' ticks, ' + m.population + ' creatures');
+  } else if (m.type === 'progress') {
+    if (m.lines.length) { lines.push(...m.lines); const pre = $('out-report'); pre.textContent = lines.join('\n'); pre.scrollTop = pre.scrollHeight; }
+    $('bar').value = m.tick;
+    status('Running… ' + m.tick + ' / ' + $('bar').max + ' ticks, ' + m.population + ' creatures');
+  } else if (m.type === 'done' || m.type === 'stopped') {
+    running = false; hasRun = true; $('bar').hidden = true;
+    $('out-map').textContent = m.map; $('out-summary').textContent = m.summary;
+    status(m.type === 'done' ? 'Done. Try the Summary and Explain tabs.' : 'Stopped. You can still explore this run in the other tabs.');
+    sync();
+  } else if (m.type === 'explain') {
+    $('out-explain').textContent = m.text;
+  } else if (m.type === 'log') {
+    const url = URL.createObjectURL(new Blob([m.text], { type: 'application/x-ndjson' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'world-events.jsonl'; document.body.appendChild(a); a.click();
+    a.remove(); setTimeout(() => URL.revokeObjectURL(url), 5000);
+    status('Event log downloaded.'); sync();
+  } else if (m.type === 'error') {
+    running = false; $('bar').hidden = true; status(m.text, true); sync();
+  }
+};
+worker.onerror = (e) => { status('The simulation could not start: ' + (e.message || 'unknown error'), true); };
+worker.postMessage({ type: 'init', build: BUILD });
+
+$('run').onclick = () => { save(); running = true; hasRun = false; sync(); worker.postMessage({ type: 'run', params: params() }); };
+$('stop').onclick = () => { status('Stopping…'); worker.postMessage({ type: 'stop' }); };
+$('log').onclick = () => { status('Preparing the event log…'); worker.postMessage({ type: 'log' }); };
+document.querySelectorAll('input, select, textarea').forEach((el) => el.addEventListener('change', save));
+
+document.querySelectorAll('.tabs button').forEach((b) => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach((x) => x.setAttribute('aria-selected', x === b));
+  ['report', 'map', 'summary', 'explain'].forEach((t) => $('tab-' + t).hidden = (t !== b.dataset.tab));
+});
+function ask(text) {
+  if (!text.trim()) return;
+  if (!hasRun) { $('out-explain').textContent = 'Run a world first.'; return; }
+  worker.postMessage({ type: 'explain', text });
+}
+$('explain-bar').onsubmit = (e) => { e.preventDefault(); ask($('ask').value); };
+document.querySelectorAll('[data-ask]').forEach((b) => b.onclick = () => { $('ask').value = b.dataset.ask; ask(b.dataset.ask); });
+</script>
+</body>
+</html>

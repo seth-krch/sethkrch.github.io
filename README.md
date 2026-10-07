@@ -11,6 +11,7 @@ build step.
 | `work/bright-shine/` | Bright Shine Family Dental, a demo site for a fictional practice |
 | `work/singularity/` | Copy of the developer portfolio, whose home is krch.dev |
 | `work/thumbs/` | Screenshots used by the carousel |
+| `world/` | Text-only artificial-life simulation (Python), runnable in the browser at `/world/`; see `world/README.md` |
 | `kit/` | Element kit: live components shown before/after, themeable as auto shop, dentist, café or salon |
 
 The carousel list lives in the `WORK` array near the end of `index.html`. To add
