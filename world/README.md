@@ -25,6 +25,21 @@ Stages (each adds one system on top of the previous): 1 world + energy,
 The ASCII map shows creatures as a digit (their aggression decile, 0–9) and food
 as shading (` .:*#`, empty to full).
 
+## In the browser
+
+`index.html` runs the same Python in the browser (Pyodide, in a web worker), so it
+works from a phone. Served by GitHub Pages it lives at `sethkrch.com/world/`. To try
+it locally from the repository root: `python3 -m http.server 8000`, then open
+`http://127.0.0.1:8000/world/`.
+
+It fetches the Python files from this folder, so the page always runs exactly the
+code in the repository. Real Mesa also needs pandas and scipy, which are heavy for a
+phone, so the page swaps in `web/mesa_shim.py` (a small stand-in for the two Mesa
+classes the simulation uses). `tests/test_web.py` proves runs under the shim and
+under real Mesa give identical event logs, and that the simulation imports nothing the
+browser cannot load. After changing any Python file, bump `BUILD` in `index.html` so
+browsers re-fetch it.
+
 ## Ask "why did that happen?"
 
 Every run can write an append-only JSON-lines event log (births, deaths,
@@ -67,4 +82,6 @@ python -m pytest -q
 | `sim/model.py` | Mesa `Model`/`Agent` glue: grid, food, creatures, contests |
 | `sim/events.py` | append-only event log |
 | `sim/analysis.py` | questions answered from the log (relationships, selection, memory value) |
+| `sim/settings.py` | presets, stages and `FIELD=VALUE` overrides, shared by the command line and the page |
 | `run.py`, `explain.py`, `experiments.py` | command-line tools |
+| `index.html`, `worker.js`, `web/` | the browser page: UI, Pyodide worker, Mesa stand-in, and the bridge the page calls |

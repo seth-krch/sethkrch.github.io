@@ -6,28 +6,9 @@
   python run.py --stage 1       # energy economy only (no genes/contests/memory)
 """
 import argparse
-import dataclasses
-from sim.config import Config, PRESETS
+from sim.config import PRESETS
+from sim.settings import STAGES, build_config
 from sim.runner import simulate
-
-STAGES = {
-    1: dict(enable_reproduction=False, enable_contests=False, enable_memory=False),
-    2: dict(enable_reproduction=True, enable_contests=False, enable_memory=False),
-    3: dict(enable_reproduction=True, enable_contests=True, enable_memory=False),
-    4: dict(enable_reproduction=True, enable_contests=True, enable_memory=True),
-}
-
-
-def parse_set(cfg, items):
-    fields = {f.name: f for f in dataclasses.fields(Config)}
-    kw = {}
-    for item in items:
-        k, v = item.split("=", 1)
-        if k not in fields:
-            raise SystemExit(f"unknown config field: {k}")
-        cur = getattr(cfg, k)
-        kw[k] = (v.lower() in ("1", "true", "yes")) if isinstance(cur, bool) else type(cur)(v)
-    return cfg.with_(**kw)
 
 
 def main():
@@ -42,7 +23,10 @@ def main():
     ap.add_argument("--log", default=None, help="write the full event log (JSON lines) here")
     ap.add_argument("--set", action="append", default=[], metavar="FIELD=VALUE")
     a = ap.parse_args()
-    cfg = parse_set(Config(seed=a.seed, **{**PRESETS[a.preset], **STAGES[a.stage]}), a.set)
+    try:
+        cfg = build_config(a.preset, a.stage, a.seed, a.set)
+    except ValueError as e:
+        raise SystemExit(str(e))
     m = simulate(cfg, a.ticks, log_path=a.log, report_every=a.report_every, map_every=a.map_every)
     print(f"done: {m.tick} ticks, population {len(m.by_id)}, {m.log.next_id} events, {m.wall_seconds:.1f}s")
 
