@@ -89,3 +89,39 @@ def test_ablation_flag_changes_behavior_but_not_costs():
     a = run(base, 600)
     b = run(base.with_(memory_has_effect=False), 600)
     assert a.log.events != b.log.events
+
+
+def _stage(cfg_over=None):
+    cfg = Config(seed=1, initial_population=0, decision_noise=0.0, n_patches=0, food_cap=10.0,
+                 **(cfg_over or {}))
+    return WorldModel(cfg, EventLog())
+
+
+def _genes(size, aggression):
+    from sim.genes import Genes
+    return Genes(size=size, aggression=aggression, perception=3, memory=3)
+
+
+def test_boxed_in_yielder_swaps_places_instead_of_staying_put():
+    """Regression: a creature that yields but cannot move away used to stay on the
+    spot, so the attacker re-challenged it every tick forever."""
+    m = _stage()
+    d = m.spawn(_genes(0.5, 0.0), (5, 5), 30.0)
+    for dx, dy in [(-1, -1), (0, -1), (1, -1), (1, 0), (-1, 1), (0, 1), (1, 1)]:
+        m.spawn(_genes(1.0, 0.5), (5 + dx, 5 + dy), 30.0)    # box the defender in
+    a = m.spawn(_genes(2.0, 0.9), (4, 5), 12.0)
+    a._challenge(d)
+    contest = [e for e in m.log.events if e["kind"] == "contest"][-1]
+    assert contest["outcome"] == "yield"
+    assert (a.x, a.y) == (5, 5) and (d.x, d.y) == (4, 5)
+    assert m.occ[5, 5] == a.unique_id and m.occ[5, 4] == d.unique_id
+    check_consistency(m)
+
+
+def test_free_yielder_flees_and_attacker_takes_the_spot():
+    m = _stage()
+    d = m.spawn(_genes(0.5, 0.0), (10, 10), 30.0)
+    a = m.spawn(_genes(2.0, 0.9), (9, 10), 12.0)
+    a._challenge(d)
+    assert (a.x, a.y) == (10, 10) and (d.x, d.y) != (10, 10)
+    check_consistency(m)

@@ -293,9 +293,14 @@ class Creature(mesa.Agent):
             if c.energy <= 0.0:
                 m.kill(c, "fight")
         if outcome in ("yield", "fight_attacker_wins"):
+            px, py = rec["pos"]
             if d.alive:
                 d._flee(a.x, a.y, cfg.flee_distance)
-            px, py = rec["pos"]
+                if a.alive and (d.x, d.y) == (px, py):
+                    # boxed in with nowhere to flee: the loser is pushed into the winner's place
+                    m.swap(a, d)
+                    a.energy -= cfg.move_cost * a.genes.size
+                    a.stats["moves"] += 1
             if a.alive and m.occ[py, px] == 0:
                 a._move_to(px, py)
         elif outcome == "fight_defender_wins":
@@ -381,6 +386,12 @@ class WorldModel(mesa.Model):
                       stats={k: (round(v, 2) if isinstance(v, float) else v) for k, v in c.stats.items()},
                       memory=c.memory.snapshot(self.tick))
         c.remove()
+
+    def swap(self, a, b):
+        """Exchange the positions of two creatures."""
+        a.x, a.y, b.x, b.y = b.x, b.y, a.x, a.y
+        self.occ[a.y, a.x] = a.unique_id
+        self.occ[b.y, b.x] = b.unique_id
 
     # ----------------------------------------------------------------- tick
     def step(self):
