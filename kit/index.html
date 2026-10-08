@@ -34,13 +34,15 @@
   --k-body: "Barlow", system-ui, sans-serif;
 }
 .kit[data-theme="dental"] { --k-bg: #f4faf8; --k-ink: #12312e; --k-muted: #557571; --k-line: #d3e5e0; --k-accent: #0f7f76; --k-soft: #dcf1ec; --k-radius: 18px; --k-pill: 999px; --k-head: "DM Serif Display", Georgia, serif; --k-head-case: none; --k-head-weight: 400; --k-body: "Figtree", system-ui, sans-serif; }
-.kit[data-theme="cafe"] { --k-bg: #fbf5ec; --k-ink: #2b1d14; --k-muted: #7a6656; --k-line: #ead9c4; --k-accent: #b5541c; --k-soft: #f6e1cf; --k-radius: 12px; --k-pill: 12px; --k-head: "Fraunces", Georgia, serif; --k-head-case: none; --k-head-weight: 600; --k-body: "Instrument Sans", system-ui, sans-serif; }
+.kit[data-theme="cafe"] { --k-bg: #fbf5ec; --k-ink: #2b1d14; --k-muted: #6b5646; --k-line: #ead9c4; --k-accent: #b5541c; --k-soft: #f6e1cf; --k-radius: 12px; --k-pill: 12px; --k-head: "Fraunces", Georgia, serif; --k-head-case: none; --k-head-weight: 600; --k-body: "Instrument Sans", system-ui, sans-serif; }
 .kit[data-theme="salon"] { --k-bg: #faf6f8; --k-ink: #2a1b26; --k-muted: #7a6573; --k-line: #ead9e3; --k-accent: #7a3e6c; --k-soft: #f1e0ec; --k-radius: 2px; --k-pill: 999px; --k-head: "Cormorant Garamond", Georgia, serif; --k-head-case: none; --k-head-weight: 600; --k-body: "Instrument Sans", system-ui, sans-serif; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-ui); }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--peach); outline-offset: 3px; }
+.kit :focus-visible { outline-color: var(--k-ink); }
+.kit .phone__bar :focus-visible { outline-color: var(--k-bg); outline-offset: -4px; }
 .in { max-width: 1240px; margin-inline: auto; padding-inline: var(--gut); }
 .mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
 
@@ -102,7 +104,7 @@ a { color: inherit; }
 
 /* search */
 .search { position: relative; max-width: 520px; }
-.search__field { display: flex; align-items: center; gap: 10px; background: var(--k-surface); border: 2px solid var(--k-line); border-radius: var(--k-pill); padding: 4px 6px 4px 16px; transition: border-color .2s, box-shadow .2s; }
+.search__field { display: flex; align-items: center; gap: 10px; background: var(--k-surface); border: 2px solid var(--k-muted); border-radius: var(--k-pill); padding: 4px 6px 4px 16px; transition: border-color .2s, box-shadow .2s; }
 .search__field:focus-within { border-color: var(--k-accent); box-shadow: 0 0 0 4px var(--k-soft); }
 .search__field svg { width: 20px; height: 20px; color: var(--k-muted); flex: none; }
 .search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font: 400 17px/1 var(--k-body); color: var(--k-ink); padding: 10px 0; }
@@ -218,7 +220,7 @@ a { color: inherit; }
 .kform { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .fl { position: relative; }
 .fl.full { grid-column: 1 / -1; }
-.fl input, .fl textarea { width: 100%; font: 400 16px/1.3 var(--k-body); color: var(--k-ink); background: var(--k-surface); border: 2px solid var(--k-line); border-radius: var(--k-radius); padding: 22px 14px 8px; outline: 0; transition: border-color .2s; }
+.fl input, .fl textarea { width: 100%; font: 400 16px/1.3 var(--k-body); color: var(--k-ink); background: var(--k-surface); border: 2px solid var(--k-muted); border-radius: var(--k-radius); padding: 22px 14px 8px; outline: 0; transition: border-color .2s; }
 .fl textarea { min-height: 90px; resize: vertical; }
 .fl label { position: absolute; left: 16px; top: 15px; color: var(--k-muted); pointer-events: none; transition: all .15s; font-size: 16px; }
 .fl input:focus, .fl textarea:focus { border-color: var(--k-accent); }
@@ -279,7 +281,7 @@ a { color: inherit; }
 
   <!-- 01 before/after slider -->
   <section class="spec spec--wide" aria-labelledby="h-compare">
-    <div class="spec__bar"><h2 id="h-compare"><span>01</span>The upgrade</h2><span class="mono" style="color:var(--dim)">Drag the handle</span></div>
+    <div class="spec__bar"><h2 id="h-compare"><span>01</span>Before and after</h2><span class="mono" style="color:var(--dim)">Drag the handle</span></div>
     <div class="kit">
       <div class="compare" id="compare">
         <div class="cmp-old" aria-hidden="true">
@@ -348,7 +350,7 @@ a { color: inherit; }
     <div class="kit" style="display:grid;place-items:center">
       <div class="phone">
         <div class="phone__screen"><h3 data-k="name">Krch Auto</h3><p data-k="sub">Full-service repair for cars, trucks and tractors.</p><div class="blk"></div><div class="blk"></div><div class="blk" style="height:40px"></div></div>
-        <div class="toast" id="toast">Calling… (demo)</div>
+        <div class="toast" id="toast" role="status">Calling… (demo)</div>
         <div class="phone__bar">
           <button type="button" data-toast="Calling… (demo)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A17 17 0 0 1 3 5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Call</button>
           <button type="button" data-toast="Opening Maps… (demo)"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></g></svg>Directions</button>
@@ -394,7 +396,7 @@ a { color: inherit; }
       <div class="days" id="days" role="group" aria-label="Day"></div>
       <div class="slots" id="slots" role="group" aria-label="Time"></div>
       <button class="kb kb--primary" type="button" id="bookBtn">Request this time</button>
-      <div class="booked" id="booked" hidden></div>
+      <div class="booked" id="booked" role="status" hidden></div>
     </div>
     <div class="spec__note">Sample availability.</div>
   </section>
@@ -406,7 +408,7 @@ a { color: inherit; }
       <div class="rev">
         <div>
           <div class="rev__score">4.9</div>
-          <div class="stars" aria-label="4.9 out of 5">★★★★★</div>
+          <div class="stars" role="img" aria-label="4.9 out of 5">★★★★★</div>
           <div class="bars" aria-hidden="true"><div>5<span><i style="width:88%"></i></span></div><div>4<span><i style="width:9%"></i></span></div><div>3<span><i style="width:2%"></i></span></div><div>2<span><i style="width:1%"></i></span></div><div>1<span><i style="width:0"></i></span></div></div>
         </div>
         <div>
@@ -443,7 +445,7 @@ a { color: inherit; }
 
 </main>
 
-<footer class="foot mono"><div class="in"><span>© Seth Krch</span><span>sethkrch@gmail.com</span></div></footer>
+<footer class="foot mono"><div class="in"><span>© Seth Krch</span><span>seth@krch.dev</span></div></footer>
 
 <script>
 (() => {
@@ -475,7 +477,7 @@ a { color: inherit; }
       prices: { Maintenance: [["Oil change, gas", "$49"], ["Oil change, diesel", "$129"], ["Tire rotation", "$25"]], Repair: [["Diagnostic scan", "$89"], ["Front brake pads", "from $180"], ["Battery install", "$30 + part"]], "Heavy duty": [["Semi inspection", "$150"], ["Tractor service", "Call"], ["Air brake adjust", "from $95"]] }
     },
     dental: {
-      name: "Bright Shine", headline: 'Bright smiles, <em>gentle</em> care.', sub: "Family dentistry for all ages. New patients seen the same week.",
+      name: "Bright Shine", headline: 'Family dentistry, <em>Monday to Friday</em>', sub: "Patients of all ages. New patients seen the same week.",
       notice: "Now open late Thursdays until 7pm.",
       hours: [null, [8, 17], [8, 17], [8, 17], [8, 19], [8, 14], null],
       search: [["Teeth cleaning", "Preventive"], ["Whitening", "Cosmetic"], ["Fillings", "Restorative"], ["Crowns", "Restorative"], ["Kids' first visit", "Pediatric"], ["Toothache", "Emergency"], ["Night guard", "Preventive"], ["X-rays", "Preventive"]],
@@ -485,7 +487,7 @@ a { color: inherit; }
       prices: { Preventive: [["Exam & cleaning", "$129"], ["X-rays", "$60"], ["Fluoride", "$30"]], Cosmetic: [["Whitening, in office", "$350"], ["Take-home kit", "$199"], ["Bonding", "from $150"]], Restorative: [["Filling", "from $140"], ["Crown", "from $950"], ["Night guard", "$300"]] }
     },
     cafe: {
-      name: "Main Street Café", headline: 'Coffee, pie and <em>good company.</em>', sub: "Breakfast all day, daily specials and pie from scratch.",
+      name: "Main Street Café", headline: 'Breakfast and lunch, <em>open every day</em>', sub: "Breakfast all day, daily specials and pie from scratch.",
       notice: "Today's special: chicken-fried steak with mashed potatoes.",
       hours: [[8, 13], [6, 14], [6, 14], [6, 14], [6, 14], [6, 20], [7, 14]],
       search: [["Breakfast burrito", "Breakfast"], ["Biscuits & gravy", "Breakfast"], ["Cinnamon roll", "Bakery"], ["Latte", "Coffee"], ["Daily special", "Lunch"], ["Pie of the day", "Dessert"], ["Catering", "Events"], ["Burger", "Lunch"]],
@@ -495,7 +497,7 @@ a { color: inherit; }
       prices: { Breakfast: [["Biscuits & gravy", "$8"], ["Breakfast burrito", "$9"], ["Short stack", "$7"]], Lunch: [["Daily special", "$12"], ["Cheeseburger & fries", "$11"], ["Soup & sandwich", "$10"]], Bakery: [["Cinnamon roll", "$4"], ["Slice of pie", "$5"], ["Whole pie", "$22"]] }
     },
     salon: {
-      name: "Willow & Co.", headline: 'Look good. <em>Feel better.</em>', sub: "Cuts, color and styling by appointment. Walk-ins when we can.",
+      name: "Willow & Co.", headline: 'Hair salon, <em>Tuesday to Saturday</em>', sub: "Cuts, color and styling by appointment. Walk-ins when we can.",
       notice: "Booking prom and wedding updos now. Spots fill fast.",
       hours: [null, null, [9, 18], [9, 18], [9, 19], [9, 18], [8, 14]],
       search: [["Women's haircut", "Cuts"], ["Men's cut", "Cuts"], ["Kids' cut", "Cuts"], ["Color", "Color"], ["Highlights", "Color"], ["Blowout", "Styling"], ["Updo", "Styling"], ["Brow wax", "Extras"]],

@@ -31,7 +31,8 @@
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--f-body); }
 a { color: inherit; }
-:focus-visible { outline: 3px solid var(--shine); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.demo :focus-visible, footer :focus-visible, .callbar :focus-visible { outline-color: var(--shine); }
 .in { max-width: 1160px; margin-inline: auto; padding-inline: var(--gut); }
 h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.05; text-wrap: balance; margin: 0; }
 
@@ -41,7 +42,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.05;
 .topbar .in { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding-block: 8px; }
 .status { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
 .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.status.is-open { color: #1c8a4e; }
+.status.is-open { color: #177a45; }
 .status.is-closed { color: #b1452f; }
 
 .nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgb(246 251 249 / .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
@@ -76,7 +77,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.05;
 
 .sec { padding-block: clamp(56px, 8vw, 100px); }
 .sec--mint { background: var(--mint); }
-.kicker { font-weight: 600; font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); margin: 0 0 10px; }
+.kicker { font-weight: 600; font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal-dk); margin: 0 0 10px; }
 .sec h2 { font-size: clamp(36px, 4.6vw, 56px); margin-bottom: 14px; }
 .lede { color: var(--muted); max-width: 56ch; margin: 0 0 36px; }
 .svc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
@@ -97,7 +98,7 @@ h1, h2, h3 { font-family: var(--f-display); font-weight: 400; line-height: 1.05;
 .chips li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 15px; }
 .team { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .team div { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: flex; gap: 12px; align-items: center; }
-.team span.av { flex: none; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--mint), #b9e3da); display: grid; place-items: center; color: var(--teal); font: 400 20px/1 var(--f-display); }
+.team span.av { flex: none; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--mint), #b9e3da); display: grid; place-items: center; color: var(--teal-dk); font: 400 20px/1 var(--f-display); }
 .team b { display: block; }
 .team small { color: var(--muted); }
 
@@ -162,8 +163,8 @@ footer a { color: var(--shine); }
   <section class="hero">
     <div class="in">
       <div>
-        <span class="eyebrow">✦ Family dentistry for all ages</span>
-        <h1>Bright smiles, <em>gentle</em> care.</h1>
+        <span class="eyebrow">✦ Family dentistry in Anytown, Kansas</span>
+        <h1>Bright Shine <em>Family Dental</em></h1>
         <p>Cleanings, fillings, whitening and emergency visits, with a team that explains every step and never rushes you out the door.</p>
         <div class="hero__actions">
           <a class="btn btn--teal" href="#book">Request an appointment</a>
@@ -175,8 +176,8 @@ footer a { color: var(--shine); }
           <span><b>Evening</b>hours on Thursdays</span>
         </div>
       </div>
-      <div class="art" aria-hidden="true">
-        <svg viewBox="0 0 400 400">
+      <div class="art">
+        <svg viewBox="0 0 400 400" aria-hidden="true">
           <defs>
             <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f7f76"/><stop offset="1" stop-color="#37b3a3"/></linearGradient>
           </defs>
@@ -201,8 +202,8 @@ footer a { color: var(--shine); }
   <section class="sec sec--mint" id="services">
     <div class="in">
       <p class="kicker">Services</p>
-      <h2>Everything your smile needs</h2>
-      <p class="lede">Routine care and the bigger fixes, all under one roof.</p>
+      <h2>Preventive, cosmetic and emergency care</h2>
+      <p class="lede">Checkups, repairs and cosmetic work, all done in this office.</p>
       <div class="svc">
         <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8c-5-4-13-3-15 3s0 13 2 19c2 6 2 13 5 13s4-8 8-8 5 8 8 8 3-7 5-13c2-6 4-13 2-19s-10-7-15-3z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg><h3>Cleanings &amp; exams</h3><p>Checkups, X-rays and cleanings every six months.</p></article>
         <article><svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.6"><path d="M24 6l3 11 11 3-11 3-3 11-3-11-11-3 11-3z" stroke-linejoin="round"/><path d="M38 32l1.5 4.5L44 38l-4.5 1.5L38 44l-1.5-4.5L32 38l4.5-1.5z" stroke-linejoin="round"/></g></svg><h3>Whitening</h3><p>In-office and take-home options for a brighter smile.</p></article>
@@ -217,7 +218,7 @@ footer a { color: var(--shine); }
   <section class="sec" id="first-visit">
     <div class="in">
       <p class="kicker">Your first visit</p>
-      <h2>Simple from the first call</h2>
+      <h2>What happens at a first visit</h2>
       <p class="lede">New to the practice? Here's what to expect.</p>
       <ol class="steps">
         <li><h3>Book online or call</h3><p>Pick a time that works. We'll confirm by text.</p></li>
@@ -231,7 +232,7 @@ footer a { color: var(--shine); }
     <div class="in split">
       <div>
         <p class="kicker">Insurance &amp; payment</p>
-        <h2>We'll handle the paperwork</h2>
+        <h2>Plans and payments accepted</h2>
         <p class="lede" style="margin-bottom:22px">We file claims for you and explain your coverage before treatment.</p>
         <ul class="chips"><li>Most PPO plans</li><li>Medicaid (KanCare)</li><li>HSA &amp; FSA cards</li><li>Payment plans</li><li>Cash discounts</li></ul>
       </div>
@@ -251,14 +252,14 @@ footer a { color: var(--shine); }
     <div class="in visit">
       <div class="panel">
         <p class="kicker">Hours &amp; location</p>
-        <h2 style="font-size:clamp(30px,3.4vw,40px)">Come see us</h2>
+        <h2 style="font-size:clamp(30px,3.4vw,40px)">Open Monday to Friday</h2>
         <p style="margin:12px 0 4px">123 Main Street<br>Anytown, Kansas</p>
         <p style="margin:0 0 8px"><span class="status" data-status></span></p>
         <table class="hours" data-hours></table>
       </div>
       <div class="panel" id="book">
         <p class="kicker">Request an appointment</p>
-        <h2 style="font-size:clamp(30px,3.4vw,40px);margin-bottom:18px">We'll call you back</h2>
+        <h2 style="font-size:clamp(30px,3.4vw,40px);margin-bottom:18px">Callback within one business day</h2>
         <form id="bookForm">
           <label>Name<input id="f-name" name="name" autocomplete="name" required></label>
           <label>Phone<input id="f-phone" name="phone" type="tel" autocomplete="tel" required></label>
@@ -266,7 +267,7 @@ footer a { color: var(--shine); }
           <label>Best time<select id="f-time" name="time"><option>Morning</option><option>Afternoon</option><option>Thursday evening</option></select></label>
           <label class="full">Anything we should know?<textarea id="f-notes" name="notes"></textarea></label>
           <button class="btn btn--teal" type="submit">Send request</button>
-          <p class="formnote" id="formNote">We'll reply within one business day.</p>
+          <p class="formnote" id="formNote" role="status">The office calls back to confirm a time.</p>
         </form>
       </div>
     </div>
@@ -275,7 +276,7 @@ footer a { color: var(--shine); }
   <section class="sec sec--mint">
     <div class="in" style="max-width:820px">
       <p class="kicker">Questions</p>
-      <h2 style="margin-bottom:24px">Good to know</h2>
+      <h2 style="margin-bottom:24px">Common questions</h2>
       <details><summary>Do you see kids?</summary><p>Yes. We recommend a first visit by age one, and we keep it short and fun.</p></details>
       <details><summary>What if I have a dental emergency?</summary><p>Call as early as you can. We hold time each day for toothaches, chips and broken teeth.</p></details>
       <details><summary>I'm nervous about the dentist. Can you help?</summary><p>Tell us when you book. We'll go at your pace, explain each step, and stop whenever you need.</p></details>
