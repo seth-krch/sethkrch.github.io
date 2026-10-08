@@ -123,13 +123,20 @@ main, header, footer { position: relative; z-index: 1; }
 .steps p { margin: 0; color: var(--dim); }
 
 /* ---------- pricing ---------- */
-.prices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--gut); }
-.price { border: 1px solid var(--line-hi); padding: clamp(22px, 3vw, 36px); background: linear-gradient(160deg, rgb(125 148 255 / .06), transparent 50%); }
-.price__amt { font: 800 clamp(54px, 7vw, 88px)/1 var(--f-display); letter-spacing: -.04em; margin: 12px 0 6px; }
-.price__amt small { font-size: .3em; color: var(--dim); font-family: var(--f-body); }
-.price ul { list-style: none; margin: 18px 0 0; padding: 0; }
-.price li { padding: 9px 0; border-top: 1px solid var(--line); color: #c3c9d8; }
-.price li::before { content: "◇"; color: var(--peach); margin-right: 10px; }
+.prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); align-items: stretch; }
+.price { display: flex; flex-direction: column; border: 1px solid var(--line-hi); padding: clamp(22px, 2.6vw, 32px); background: linear-gradient(160deg, rgb(125 148 255 / .06), transparent 50%); }
+.price--mid { border-color: var(--peach); background: linear-gradient(160deg, rgb(255 154 107 / .10), transparent 55%); }
+.price h3 { margin: 0; font: 700 26px/1.05 var(--f-display); letter-spacing: -.015em; }
+.price__for { margin: 8px 0 0; color: var(--dim); font-size: 16px; min-height: 3.2em; }
+.price__amt { font: 800 clamp(54px, 6vw, 80px)/1 var(--f-display); letter-spacing: -.04em; margin: 18px 0 6px; }
+.price ul { list-style: none; margin: 18px 0 0; padding: 0; flex: 1; }
+.price li { padding: 10px 0 10px 24px; border-top: 1px solid var(--line); color: #c3c9d8; position: relative; font-size: 16px; }
+.price li::before { content: "◇"; color: var(--peach); position: absolute; left: 0; }
+.price li.inc { color: var(--ink); }
+.price__go { margin-top: 22px; display: block; text-align: center; text-decoration: none; padding: 13px 16px; border: 1px solid var(--line-hi); }
+.price__go:hover { border-color: var(--peach); color: var(--peach); }
+.price--mid .price__go { background: var(--peach); border-color: var(--peach); color: var(--bg); }
+.price--mid .price__go:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 .fine { color: var(--dim); font-size: 15px; margin-top: 18px; }
 
 /* ---------- contact ---------- */
@@ -148,6 +155,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   .tile:nth-child(2) { border-right: 0; }
   .tile:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
   .steps, .prices { grid-template-columns: 1fr; }
+  .price__for { min-height: 0; }
   .hero__sub { text-align: left; }
   .hero__corner.r { display: none; }
 }
@@ -215,7 +223,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
         <h2 id="offer-t">Included</h2>
       </div>
       <div class="tiles">
-        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="32" height="24"/><path d="M6 14h32M16 38h12M22 32v6"/><circle cx="22" cy="23" r="5"/></g></svg><h3>Design</h3><p>One-page site, designed per business.</p></div>
+        <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="6" y="8" width="32" height="24"/><path d="M6 14h32M16 38h12M22 32v6"/><circle cx="22" cy="23" r="5"/></g></svg><h3>Design</h3><p>Designed per business, or built from the element kit.</p></div>
         <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M22 40s12-11 12-21a12 12 0 1 0-24 0c0 10 12 21 12 21z"/><circle cx="22" cy="19" r="4"/></g></svg><h3>Google listing</h3><p>Google Business Profile setup and linking.</p></div>
         <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><rect x="13" y="4" width="18" height="36" rx="3"/><path d="M19 34h6"/><path d="M18 17l4-4 4 4M22 13v10"/></g></svg><h3>Mobile</h3><p>Tap to call, directions and live hours.</p></div>
         <div class="tile"><svg viewBox="0 0 44 44" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="22" cy="22" r="16"/><path d="M22 12v10l7 5"/></g></svg><h3>Updates</h3><p>Hours, closures and edits on request.</p></div>
@@ -255,24 +263,56 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
       </div>
       <div class="prices">
         <div class="price ticks">
-          <span class="mono" style="color:var(--dim)">Setup · one time</span>
+          <h3>Home page</h3>
+          <p class="price__for">A single page with the basics a customer looks for.</p>
+          <div class="price__amt">$20</div>
+          <span class="mono" style="color:var(--dim)">One time</span>
+          <ul>
+            <li>One home page</li>
+            <li>Built from one of our styles</li>
+            <li>Name, services, hours, phone and map</li>
+            <li>Live on your domain</li>
+          </ul>
+          <a class="price__go mono" href="mailto:seth@krch.dev?subject=Home%20page">Ask about this</a>
+        </div>
+        <div class="price price--mid ticks">
+          <h3>Full site</h3>
+          <p class="price__for">A complete static site, designed and built for one business.</p>
           <div class="price__amt">$150</div>
-          <ul><li>One-page site</li><li>Domain connection</li><li>Google Business listing</li><li>Call, map and hours</li></ul>
+          <span class="mono" style="color:var(--dim)">One time</span>
+          <ul>
+            <li>Multi-page site, built by hand for your business</li>
+            <li>Pick a style from the <a href="kit/">element kit</a>, or describe your own</li>
+            <li>Google Business Profile set up</li>
+            <li>Your domain connected and the site live</li>
+            <li>Changes until you approve it</li>
+          </ul>
+          <a class="price__go mono" href="mailto:seth@krch.dev?subject=Full%20site">Ask about this</a>
         </div>
         <div class="price ticks">
-          <span class="mono" style="color:var(--dim)">Care · monthly</span>
-          <div class="price__amt">$25<small> / month</small></div>
-          <ul><li>Hosting and security</li><li>Hours and holiday updates</li><li>Small edits</li><li>Cancel anytime</li></ul>
+          <h3>Full site with a backend</h3>
+          <p class="price__for">For businesses that sell, book or keep customer accounts online.</p>
+          <div class="price__amt">$300</div>
+          <span class="mono" style="color:var(--dim)">One time</span>
+          <ul>
+            <li class="inc">Everything in Full site</li>
+            <li>Server and database written in Python</li>
+            <li>Online store and card payments</li>
+            <li>Customer accounts and logins</li>
+            <li>Bookings, orders, memberships and forms</li>
+            <li>An admin page to edit products and content</li>
+          </ul>
+          <a class="price__go mono" href="mailto:seth@krch.dev?subject=Full%20site%20with%20a%20backend">Ask about this</a>
         </div>
       </div>
-      <p class="fine">Extra pages, booking and menus quoted separately.</p>
+      <p class="fine">Hosting and updates are $25 a month after launch; cancel anytime. For a site with a backend, server, database and payment processor fees are billed at cost on top of that. No domain yet? We can register one for you.</p>
     </div>
   </section>
 
   <section class="sec contact" id="contact" aria-labelledby="contact-t" style="padding-top:0">
     <div class="in">
       <span class="mono" style="color:var(--peach)" id="contact-t">06 · Contact</span>
-      <a class="contact__mail" id="mail" href="mailto:sethkrch@gmail.com">sethkrch@gmail.com</a>
+      <a class="contact__mail" id="mail" href="mailto:seth@krch.dev">seth@krch.dev</a>
       <div class="contact__row">
         <button class="ghost" id="copy" type="button">Copy address</button>
         <span class="mono" style="color:var(--dim)" id="copyNote" aria-live="polite"></span>
@@ -291,7 +331,7 @@ footer .in { display: flex; justify-content: space-between; gap: 12px; flex-wrap
   /* ---------- copy email ---------- */
   const note = document.getElementById("copyNote");
   document.getElementById("copy").addEventListener("click", () => {
-    const addr = "sethkrch@gmail.com";
+    const addr = "seth@krch.dev";
     const fallback = () => { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); note.textContent = "Selected. Press copy."; };
     try { navigator.clipboard.writeText(addr).then(() => (note.textContent = "Copied " + addr), fallback); } catch (e) { fallback(); }
   });

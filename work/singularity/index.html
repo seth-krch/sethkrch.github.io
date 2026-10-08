@@ -22,7 +22,7 @@
   --void:   #0c0a11;   /* purple-black ground */
   --panel:  #120e19;   /* raised panel */
   --ink:    #b9b0c4;   /* lilac-grey fill type */
-  --dim:    #6f6680;   /* secondary text, ticks */
+  --dim:    #827994;   /* secondary text, ticks */
   --violet: #7d45a8;   /* frames, echo outlines */
   --glow:   #b98cff;   /* hover / live accent */
   --teal:   #63e0d6;   /* deep-well highlight */
@@ -88,7 +88,7 @@ a { color: inherit; }
 .bar nav { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
 .bar nav a { text-decoration: none; padding: 4px 10px; border: 1px solid transparent; color: var(--dim); }
 .bar nav a:hover { color: var(--ink); border-color: var(--violet); }
-.bar nav a i { font-style: normal; color: var(--violet); margin-right: 6px; }
+.bar nav a i { font-style: normal; color: var(--glow); margin-right: 6px; }
 .bar__clock { color: var(--dim); font-variant-numeric: tabular-nums; }
 
 /* ---------- framed panel ---------- */
@@ -144,6 +144,8 @@ a { color: inherit; }
   background: var(--ink); color: var(--void); transition: background .15s, color .15s;
 }
 .btn:hover { background: var(--glow); }
+.btn:focus-visible { outline-offset: -4px; outline-color: var(--void); }
+.btn--ghost:focus-visible { outline-color: var(--glow); }
 .btn--ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--dim); }
 .btn--ghost:hover { background: var(--violet); color: var(--ink); }
 
@@ -195,7 +197,7 @@ section { scroll-margin-top: 70px; }
 .proto dd { color: var(--ink); text-align: right; }
 .flow { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: f; }
 .flow li { position: relative; border: 1px solid #2a2036; margin-left: -1px; padding: 10px 10px 9px; counter-increment: f; }
-.flow li::before { content: "0" counter(f); display: block; color: var(--violet); margin-bottom: 6px; }
+.flow li::before { content: "0" counter(f); display: block; color: var(--glow); margin-bottom: 6px; }
 .flow li b { display: block; font-weight: 400; color: var(--ink); }
 .flow li span { color: var(--dim); font-size: 11px; }
 .flow li:not(:last-child)::after { content: "▸"; position: absolute; right: -7px; top: 50%; transform: translateY(-50%); color: var(--teal); z-index: 1; background: var(--panel); line-height: 1; }
@@ -537,9 +539,9 @@ section { scroll-margin-top: 70px; }
       </div>
       <div class="channel frame"><div class="frame__in">
         <span class="hud" style="color:var(--dim)">Email</span>
-        <span class="channel__mail" id="mail">sethkrch@gmail.com</span>
+        <span class="channel__mail" id="mail">seth@krch.dev</span>
         <div class="channel__row">
-          <a class="btn" href="mailto:sethkrch@gmail.com">Send email →</a>
+          <a class="btn" href="mailto:seth@krch.dev">Send email →</a>
           <button class="btn btn--ghost" id="copy" type="button" style="border:0;cursor:pointer">Copy address</button>
           <span class="channel__note hud" id="copyNote" aria-live="polite">Describe the process you want automated. I'll reply with questions and a proposed approach.</span>
         </div>
